@@ -126,12 +126,13 @@ export const useVocabularyState = () => {
     }
   }
 
-  const updateProgress = (word, isCorrect) => {
+  const updateProgress = (word, isCorrect, section = 'Unknown') => {
     const newState = { ...state }
     if (!newState.progress[word]) {
       newState.progress[word] = {
         correctCount: 0,
-        incorrectCount: 0
+        incorrectCount: 0,
+        section: section
       }
     }
 
@@ -140,7 +141,9 @@ export const useVocabularyState = () => {
       
       // Move to mastered if correct 3 times
       if (newState.progress[word].correctCount >= 3) {
-        const index = newState.pools.reviewQueue.indexOf(word)
+        const index = newState.pools.reviewQueue.findIndex(item => 
+          typeof item === 'string' ? item === word : item.word === word
+        )
         if (index > -1) {
           newState.pools.reviewQueue.splice(index, 1)
         }
@@ -157,9 +160,12 @@ export const useVocabularyState = () => {
     } else {
       newState.progress[word].incorrectCount++
       
-      // Add to review queue if not already there
-      if (!newState.pools.reviewQueue.includes(word)) {
-        newState.pools.reviewQueue.push(word)
+      // Add to review queue with section info if not already there
+      const existsInReview = newState.pools.reviewQueue.findIndex(item => 
+        typeof item === 'string' ? item === word : item.word === word
+      )
+      if (existsInReview === -1) {
+        newState.pools.reviewQueue.push({ word, section })
       }
     }
 

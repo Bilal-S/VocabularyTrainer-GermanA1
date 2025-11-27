@@ -9,28 +9,31 @@ export class VocabularyManager {
 
   // Generate Step 1: Review Previous Mistakes
   generateReviewBatch(reviewQueue, batchSize = 10) {
-    // Get review items from vocabulary data
-    const reviewItems = reviewQueue.map(word => {
+    // Get review items from vocabulary data with origin section tracking
+    const reviewItems = reviewQueue.map(item => {
+      const { word, section } = item // Destructure word and section from review item
       const noun = this.vocabulary.nouns.find(n => n.german === word)
       const verb = this.vocabulary.verbs.find(v => v.german === word)
       
       if (noun) {
         return {
           type: 'noun',
-          question: `What is the German word for "${noun.english}"?`,
+          question: `What is German word for "${noun.english}"?`,
           answer: noun.german,
           word: noun.german,
           english: noun.english,
           gender: noun.gender,
-          article: noun.article
+          article: noun.article,
+          originSection: section || 'Unknown'
         }
       } else if (verb) {
         return {
           type: 'verb',
-          question: `What is the German word for "${verb.english}"?`,
+          question: `What is German word for "${verb.english}"?`,
           answer: verb.german,
           word: verb.german,
-          english: verb.english
+          english: verb.english,
+          originSection: section || 'Unknown'
         }
       }
       return null

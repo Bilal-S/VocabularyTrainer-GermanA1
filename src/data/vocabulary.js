@@ -1,14 +1,15 @@
-// Sample A1 German vocabulary data
+// Expanded A1 German vocabulary data
 // This would normally be parsed from A1_SD1_Wortliste_02.pdf
 
 export const vocabularyData = {
   nouns: [
+    // Basic nouns
     {
-      german: 'das Buch',
-      english: 'book',
+      german: 'das Haus',
+      english: 'house',
       type: 'noun',
       gender: 'neuter',
-      plural: 'die Bücher',
+      plural: 'die Häuser',
       article: 'das',
       pluralArticle: 'die'
     },
@@ -22,20 +23,11 @@ export const vocabularyData = {
       pluralArticle: 'die'
     },
     {
-      german: 'die Tür',
-      english: 'door',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Türen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Auto',
-      english: 'car',
+      german: 'das Buch',
+      english: 'book',
       type: 'noun',
       gender: 'neuter',
-      plural: 'die Autos',
+      plural: 'die Bücher',
       article: 'das',
       pluralArticle: 'die'
     },
@@ -85,14 +77,413 @@ export const vocabularyData = {
       pluralArticle: 'die'
     },
     {
-      german: 'das Haus',
-      english: 'house',
+      german: 'das Auto',
+      english: 'car',
       type: 'noun',
       gender: 'neuter',
-      plural: 'die Häuser',
+      plural: 'die Autos',
       article: 'das',
       pluralArticle: 'die'
+    },
+    {
+      german: 'die Tür',
+      english: 'door',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Türen',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    // Additional A1 vocabulary
+    {
+      german: 'der Abflug',
+      english: 'departure',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Abflüge',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Absender',
+      english: 'sender',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Absender',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Angebot',
+      english: 'offer',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Angebote',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Anruf',
+      english: 'call (phone call)',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Anrufe',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Antwort',
+      english: 'answer',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Antworten',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Arbeit',
+      english: 'work',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Arbeiten',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Fahrstuhl',
+      english: 'elevator',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Fahrstühle',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Auge',
+      english: 'eye',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Augen',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Ausgang',
+      english: 'exit',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Ausgänge',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Personalausweis',
+      english: 'ID card',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Personalausweise',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Bad',
+      english: 'bath',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Bäder',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Zug',
+      english: 'train (railway)',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Züge',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Bahnhof',
+      english: 'station (train station)',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Bahnhöfe',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Baum',
+      english: 'tree',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Bäume',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Bein',
+      english: 'leg',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Beine',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Beispiel',
+      english: 'example',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Beispiele',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Blume',
+      english: 'flower',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Blumen',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Briefmarke',
+      english: 'stamp (postage)',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Briefmarken',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Brötchen',
+      english: 'roll (bread)',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Brötchen',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Chef',
+      english: 'boss (male)',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Chefs',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Zeit',
+      english: 'time',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Zeiten',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Tag',
+      english: 'day',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Tage',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Jahr',
+      english: 'year',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Jahre',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Schule',
+      english: 'school',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Schulen',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Lehrer',
+      english: 'teacher',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Lehrer',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Student',
+      english: 'student',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Studenten',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Stadt',
+      english: 'city',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Städte',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Wasser',
+      english: 'water',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Wasser',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Apfel',
+      english: 'apple',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Äpfel',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Banane',
+      english: 'banana',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Bananen',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Brot',
+      english: 'bread',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Brote',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Kaffee',
+      english: 'coffee',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Kaffees',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Tee',
+      english: 'tea',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Tees',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    // --- START New A1 Nouns from PDF (10 entries) ---
+    {
+      german: 'die Adresse',
+      english: 'address',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Adressen',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Apartment',
+      english: 'apartment',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Apartments',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Automat',
+      english: 'machine (vending, ticket, etc.)',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Automaten',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Bäckerei',
+      english: 'bakery',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Bäckereien',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Bahn',
+      english: 'rail, train',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Bahnen',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'die Bank',
+      english: 'bank; bench',
+      type: 'noun',
+      gender: 'feminine',
+      plural: 'die Banken',
+      article: 'die',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'das Beispiel',
+      english: 'example',
+      type: 'noun',
+      gender: 'neuter',
+      plural: 'die Beispiele',
+      article: 'das',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Beruf',
+      english: 'profession, job',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Berufe',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Bleistift',
+      english: 'pencil',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Bleistifte',
+      article: 'der',
+      pluralArticle: 'die'
+    },
+    {
+      german: 'der Bruder',
+      english: 'brother',
+      type: 'noun',
+      gender: 'masculine',
+      plural: 'die Brüder',
+      article: 'der',
+      pluralArticle: 'die'
     }
+    // --- END New A1 Nouns ---
   ],
   verbs: [
     {
@@ -174,7 +565,89 @@ export const vocabularyData = {
         sie: 'sprechen',
         Sie: 'sprechen'
       }
+    },
+    // --- START New A1 Verbs from PDF (5 entries) ---
+    {
+      german: 'arbeiten',
+      english: 'to work',
+      type: 'verb',
+      conjugations: {
+        ich: 'arbeite',
+        du: 'arbeitest',
+        er: 'arbeitet',
+        sie: 'arbeitet',
+        es: 'arbeitet',
+        wir: 'arbeiten',
+        ihr: 'arbeitet',
+        sie: 'arbeiten',
+        Sie: 'arbeiten'
+      }
+    },
+    {
+      german: 'fragen',
+      english: 'to ask',
+      type: 'verb',
+      conjugations: {
+        ich: 'frage',
+        du: 'fragst',
+        er: 'fragt',
+        sie: 'fragt',
+        es: 'fragt',
+        wir: 'fragen',
+        ihr: 'fragt',
+        sie: 'fragen',
+        Sie: 'fragen'
+      }
+    },
+    {
+      german: 'kaufen',
+      english: 'to buy',
+      type: 'verb',
+      conjugations: {
+        ich: 'kaufe',
+        du: 'kaufst',
+        er: 'kauft',
+        sie: 'kauft',
+        es: 'kauft',
+        wir: 'kaufen',
+        ihr: 'kauft',
+        sie: 'kaufen',
+        Sie: 'kaufen'
+      }
+    },
+    {
+      german: 'kennen',
+      english: 'to know (a person or place)',
+      type: 'verb',
+      conjugations: {
+        ich: 'kenne',
+        du: 'kennst',
+        er: 'kennt',
+        sie: 'kennt',
+        es: 'kennt',
+        wir: 'kennen',
+        ihr: 'kennt',
+        sie: 'kennen',
+        Sie: 'kennen'
+      }
+    },
+    {
+      german: 'machen',
+      english: 'to do, to make',
+      type: 'verb',
+      conjugations: {
+        ich: 'mache',
+        du: 'machst',
+        er: 'macht',
+        sie: 'macht',
+        es: 'macht',
+        wir: 'machen',
+        ihr: 'macht',
+        sie: 'machen',
+        Sie: 'machen'
+      }
     }
+    // --- END New A1 Verbs ---
   ],
   sentences: {
     nominative: [
@@ -195,7 +668,39 @@ export const vocabularyData = {
         english: 'The child plays in the garden.',
         answer: 'Das',
         case: 'nominative'
+      },
+      // --- START New A1 Nominative Sentences (5 entries) ---
+      {
+        german: '___ Auto ist alt.',
+        english: 'The car is old.',
+        answer: 'Das',
+        case: 'nominative'
+      },
+      {
+        german: '___ Apfel schmeckt gut.',
+        english: 'The apple tastes good.',
+        answer: 'Der',
+        case: 'nominative'
+      },
+      {
+        german: '___ Blume ist schön.',
+        english: 'The flower is beautiful.',
+        answer: 'Die',
+        case: 'nominative'
+      },
+      {
+        german: '___ Chefs sind im Büro.',
+        english: 'The bosses are in the office.',
+        answer: 'Die',
+        case: 'nominative'
+      },
+      {
+        german: '___ Bahnhof ist weit.',
+        english: 'The train station is far.',
+        answer: 'Der',
+        case: 'nominative'
       }
+      // --- END New A1 Nominative Sentences ---
     ],
     accusative: [
       {
@@ -215,7 +720,39 @@ export const vocabularyData = {
         english: 'She visits the woman.',
         answer: 'die',
         case: 'accusative'
+      },
+      // --- START New A1 Accusative Sentences (5 entries) ---
+      {
+        german: 'Wir trinken ___ Kaffee.',
+        english: 'We drink the coffee.',
+        answer: 'den',
+        case: 'accusative'
+      },
+      {
+        german: 'Du kaufst ___ Hund.',
+        english: 'You buy the dog.',
+        answer: 'den',
+        case: 'accusative'
+      },
+      {
+        german: 'Ich brauche ___ Bleistift.',
+        english: 'I need the pencil.',
+        answer: 'den',
+        case: 'accusative'
+      },
+      {
+        german: 'Er isst ___ Brötchen.',
+        english: 'He eats the roll.',
+        answer: 'das',
+        case: 'accusative'
+      },
+      {
+        german: 'Sie hat ___ Arbeit.',
+        english: 'She has the job (work).',
+        answer: 'die',
+        case: 'accusative'
       }
+      // --- END New A1 Accusative Sentences ---
     ],
     dative: [
       {
@@ -235,7 +772,39 @@ export const vocabularyData = {
         english: 'I thank the child.',
         answer: 'dem',
         case: 'dative'
+      },
+      // --- START New A1 Dative Sentences (5 entries) ---
+      {
+        german: 'Ich wohne bei ___ Eltern.',
+        english: 'I live with the parents.',
+        answer: 'den', // Plural Dative 'die' becomes 'den'
+        case: 'dative'
+      },
+      {
+        german: 'Er fährt mit ___ Zug.',
+        english: 'He travels by train.',
+        answer: 'dem',
+        case: 'dative'
+      },
+      {
+        german: 'Sie hilft ___ Lehrer.',
+        english: 'She helps the teacher.',
+        answer: 'dem',
+        case: 'dative'
+      },
+      {
+        german: 'Ich gebe ___ Katze die Banane.',
+        english: 'I give the banana to the cat.',
+        answer: 'der',
+        case: 'dative'
+      },
+      {
+        german: 'Wir sind in ___ Stadt.',
+        english: 'We are in the city.',
+        answer: 'der',
+        case: 'dative'
       }
+      // --- END New A1 Dative Sentences ---
     ]
   }
 }

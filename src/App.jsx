@@ -27,7 +27,8 @@ function App() {
     saveState,
     resetState,
     importState,
-    exportState
+    exportState,
+    updateProgress
   } = useVocabularyState()
 
   const {
@@ -36,7 +37,7 @@ function App() {
     processCommand,
     getCurrentSection,
     getSectionProgress
-  } = useDailyRoutine(state, setMessages)
+  } = useDailyRoutine(state, setMessages, updateProgress)
 
   // Initialize with welcome message
   useEffect(() => {
@@ -109,6 +110,21 @@ Type **"Today is a new day"** to begin your German learning journey!`
 
   const currentSection = getCurrentSection()
   const sectionInfo = SECTIONS[currentSection] || SECTIONS.INTRO
+  const progress = getSectionProgress()
+
+  // Get step config for current section
+  const STEP_CONFIG = {
+    INTRO: { totalItems: 0 },
+    REVIEW: { totalItems: 10 },
+    VOCABULARY: { totalItems: 20 },
+    PLURAL: { totalItems: 20 },
+    ARTICLES: { totalItems: 30 },
+    TRANSLATIONS: { totalItems: 30 },
+    VERBS: { totalItems: 30 },
+    RECAP: { totalItems: 0 }
+  }
+
+  const stepNumber = Object.values(STEP_CONFIG).findIndex(config => config.totalItems === progress.total && progress.total > 0) + 1
 
   return (
     <div className="chat-container">
@@ -119,8 +135,10 @@ Type **"Today is a new day"** to begin your German learning journey!`
       />
       
       <SectionBanner 
-        section={sectionInfo}
-        progress={getSectionProgress()}
+        section={{...sectionInfo, totalItems: progress.total}}
+        progress={progress}
+        stepNumber={currentStep > 0 && currentStep < 8 ? currentStep : null}
+        isReviewMode={currentStep === 1}
       />
       
       <ChatInterface 

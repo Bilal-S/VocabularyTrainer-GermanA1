@@ -47,14 +47,17 @@ const STEP_CONFIG = {
   }
 }
 
-export const useDailyRoutine = (state, setMessages) => {
+export const useDailyRoutine = (state, setMessages, updateProgress) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [batchProgress, setBatchProgress] = useState({
     completed: 0,
     total: 0
   })
-  const [vocabManager] = useState(() => new VocabularyManager())[0]
+  const vocabManager = useState(() => new VocabularyManager())[0]
   const [currentExercise, setCurrentExercise] = useState(null)
+  const [currentBatch, setCurrentBatch] = useState([])
+  const [batchAnswers, setBatchAnswers] = useState({})
+  const [isBatchMode, setIsBatchMode] = useState(false)
 
   const getCurrentSection = useCallback(() => {
     return STEPS[currentStep] || 'INTRO'
@@ -98,84 +101,171 @@ export const useDailyRoutine = (state, setMessages) => {
       // This is handled in App component
       return
     } else if (currentStep > 0 && currentStep < 7) {
-      // Handle exercise answers
-      await handleExerciseAnswer(command)
+      // Handle exercise answers - check if batch mode
+      if (isBatchMode) {
+        await handleBatchAnswer(command)
+      } else {
+        await handleSingleAnswer(command)
+      }
     } else {
       addSystemMessage(`I didn't understand that command. Available commands:
 - **"Today is a new day"** - Start your daily routine
 - **"Next Step"** - Skip to next exercise
 - **"clear all progress data"** - Reset all progress`)
     }
-  }, [currentStep, addSystemMessage])
+  }, [currentStep, addSystemMessage, isBatchMode])
 
   const startDailyRoutine = async () => {
+    // Check if review queue is empty
+    if (state.pools.reviewQueue.length === 0) {
+      // Skip directly to Step 2
+      await skipToNextStepFromStep(1)
+      return
+    }
+    
     setCurrentStep(1)
+    setIsBatchMode(false) // Ensure single question mode for Step 1
     
     // Generate review batch
     const reviewBatch = vocabManager.generateReviewBatch(state.pools.reviewQueue)
     setCurrentExercise(reviewBatch[0])
-    setBatchProgress({ completed: 0, total: reviewBatch.length })
+    setBatchProgress({ completed: 1, total: reviewBatch.length }) // Start with 1 since we're on question 1
     
+    const currentReview = reviewBatch[0]
     addSystemMessage(`# 🌅 Good morning! Let's start your German practice!
 
 ## Step 1: Review Previous Mistakes
 We'll review ${state.pools.reviewQueue.length} items from your review queue.
 
-**Batch 1 of 1** (${reviewBatch.length} items)
+**Question 1 of ${reviewBatch.length}: From ${currentReview?.originSection || 'Unknown'}**
 ---
-**Question:** ${reviewBatch[0]?.question || 'Loading question...'}
+${currentReview?.question || 'Loading question...'}
 Type your answer below:`)
+  }
+
+  const skipToNextStepFromStep = async (fromStep) => {
+    const nextStep = fromStep + 1
+    setCurrentStep(nextStep)
+    
+    const stepKey = STEPS[nextStep]
+    const config = STEP_CONFIG[stepKey]
+    
+    // Generate exercises for the specific step
+    let batch = []
+    let exercise = null
+    
+    switch (stepKey) {
+      case 'VOCABULARY':
+        batch = vocabManager.generateVocabularyBatch(state.pools.unselected)
+        setCurrentBatch(batch)
+        setIsBatchMode(true)
+        // Generate initial batch message
+        let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from the Goethe-Institut A1 list.
+
+***
+
+### **Step 1: Review Previous Mistakes**
+*Checking Review Queue...*
+> **Status:** Your Review Queue is currently empty! Great job.
+> **Action:** Moving immediately to Step 2.
+
+---
+
+### **Step 2: New Vocabulary (20 Nouns)**
+**[Step 2 | Batch 1 | Remaining: ${batch.length}]**
+
+Please translate the following **English nouns** into **German** (Article + Noun):
+*Example: 1. house -> das Haus*
+
+`
+        batch.forEach((item, index) => {
+          batchMessage += `${index + 1}. ${item.english}\n`
+        })
+        addSystemMessage(batchMessage)
+        return
+      case 'PLURAL':
+        batch = vocabManager.generatePluralBatch(state.pools.unselected)
+        setCurrentBatch(batch)
+        setIsBatchMode(true)
+        let pluralMessage = `### **Step 3: Plural Practice (20 Nouns)**
+**[Step 3 | Batch 1 | Remaining: ${batch.length}]**
+
+Please provide the **plural forms** for the following German nouns:
+*Example: 1. das Haus -> die Häuser*
+
+`
+        batch.forEach((item, index) => {
+          pluralMessage += `${index + 1}. ${item.singular}\n`
+        })
+        addSystemMessage(pluralMessage)
+        return
+      case 'ARTICLES':
+        batch = vocabManager.generateArticlesBatch()
+        setCurrentBatch(batch)
+        setIsBatchMode(true)
+        let articlesMessage = `### **Step 4: Articles in Context (30 Items)**
+**[Step 4 | Batch 1 | Remaining: ${batch.length}]**
+
+Please fill in the blanks with the **correct articles** (der, die, das, ein, eine):
+
+`
+        batch.forEach((item, index) => {
+          articlesMessage += `${index + 1}. ${item.german}\n`
+        })
+        addSystemMessage(articlesMessage)
+        return
+      case 'TRANSLATIONS':
+        batch = vocabManager.generateTranslationBatch()
+        setCurrentBatch(batch)
+        setIsBatchMode(true)
+        let translationsMessage = `### **Step 5: Case Translations (30 Items)**
+**[Step 5 | Batch 1 | Remaining: ${batch.length}]**
+
+Please translate the following **sentences from English to German**:
+
+`
+        batch.forEach((item, index) => {
+          translationsMessage += `${index + 1}. ${item.english}\n`
+        })
+        addSystemMessage(translationsMessage)
+        return
+      case 'VERBS':
+        batch = vocabManager.generateVerbBatch()
+        setCurrentBatch(batch)
+        setIsBatchMode(true)
+        let verbsMessage = `### **Step 6: Verb Conjugation (30 Items)**
+**[Step 6 | Batch 1 | Remaining: ${batch.length}]**
+
+Please conjugate the following **verbs for the given subjects**:
+
+`
+        batch.forEach((item, index) => {
+          verbsMessage += `${index + 1}. ${item.verb} (${item.subject})\n`
+        })
+        addSystemMessage(verbsMessage)
+        return
+      default:
+        batch = []
+        exercise = null
+    }
+    
+    setCurrentExercise(exercise)
+    setBatchProgress({ completed: 0, total: batch.length })
+    setIsBatchMode(false)
+    
+    let message = `# ⏭️ Skipping to Step ${nextStep}: ${config.name}\n\n`
+    message += await getStepInstructions(stepKey)
+    
+    if (exercise) {
+      message += `\n\n**Question:** ${exercise.question}\nType your answer below:`
+    }
+    
+    addSystemMessage(message)
   }
 
   const skipToNextStep = async () => {
     if (currentStep < 7) {
-      const nextStep = currentStep + 1
-      setCurrentStep(nextStep)
-      
-      const stepKey = STEPS[nextStep]
-      const config = STEP_CONFIG[stepKey]
-      
-      // Generate exercises for the specific step
-      let batch = []
-      let exercise = null
-      
-      switch (stepKey) {
-        case 'VOCABULARY':
-          batch = vocabManager.generateVocabularyBatch(state.pools.unselected)
-          exercise = batch[0]
-          break
-        case 'PLURAL':
-          batch = vocabManager.generatePluralBatch(state.pools.unselected)
-          exercise = batch[0]
-          break
-        case 'ARTICLES':
-          batch = vocabManager.generateArticlesBatch()
-          exercise = batch[0]
-          break
-        case 'TRANSLATIONS':
-          batch = vocabManager.generateTranslationBatch()
-          exercise = batch[0]
-          break
-        case 'VERBS':
-          batch = vocabManager.generateVerbBatch()
-          exercise = batch[0]
-          break
-        default:
-          batch = []
-          exercise = null
-      }
-      
-      setCurrentExercise(exercise)
-      setBatchProgress({ completed: 0, total: batch.length })
-      
-      let message = `# ⏭️ Skipping to Step ${nextStep}: ${config.name}\n\n`
-      message += await getStepInstructions(stepKey)
-      
-      if (exercise) {
-        message += `\n\n**Question:** ${exercise.question}\nType your answer below:`
-      }
-      
-      addSystemMessage(message)
+      await skipToNextStepFromStep(currentStep)
     } else {
       addSystemMessage("You've already completed all steps for today!")
     }
@@ -195,9 +285,9 @@ Type your answer below:`)
     return instructions[stepKey] || ''
   }
 
-  const handleExerciseAnswer = async (answer) => {
+  const handleSingleAnswer = async (answer) => {
     if (!currentExercise) {
-      addSystemMessage("Please wait for the exercise to load...")
+      addSystemMessage("Please wait for exercise to load...")
       return
     }
 
@@ -233,9 +323,6 @@ Type your answer below:`)
         feedback += `**English:** ${currentExercise.english}\n`
         feedback += `**Case:** ${currentExercise.caseType}\n`
       }
-      
-      feedback += `**Progress:** ${progress.current}/${progress.total} items completed\n\n`
-      feedback += `Type your next answer or **"Next Step"** to skip to next exercise.`
     } else {
       feedback += `❌ **Not quite right.**\n\n`
       
@@ -259,28 +346,126 @@ Type your answer below:`)
       // Add ChatGPT link for help
       const helpQuery = encodeURIComponent(`Why is "${answer}" wrong for "${currentExercise.english}" in German?`)
       feedback += `💡 **Need help?** [Ask ChatGPT for explanation](https://chatgpt.com/?q=${helpQuery})\n\n`
-      feedback += `**Progress:** ${progress.current}/${progress.total} items completed\n\n`
-      feedback += `Try again or type **"Next Step"** to skip to next exercise.`
     }
-    
-    addSystemMessage(feedback)
     
     // Move to next exercise in batch
     const nextExercise = vocabManager.moveToNext()
     setCurrentExercise(nextExercise)
     
-    // Update progress
+    // Update progress for review section
+    const nextQuestionNumber = progress.current + 1
     setBatchProgress(prev => ({
       ...prev,
       completed: Math.min(prev.completed + 1, prev.total)
     }))
     
-    // Check if batch is complete
+    // Update progress in state with section information
+    updateProgress(currentExercise.word, isCorrect, currentExercise.originSection)
+    
+    // Show next question or completion message
+    if (nextExercise && nextQuestionNumber <= progress.total) {
+      feedback += `**Progress:** ${nextQuestionNumber}/${progress.total} questions completed\n\n`
+      feedback += `**Question ${nextQuestionNumber} of ${progress.total}: From ${nextExercise?.originSection || 'Unknown'}**\n---\n${nextExercise?.question || 'Loading question...'}\nType your answer below:`
+    } else if (nextQuestionNumber >= progress.total) {
+      feedback += `**Progress:** ${progress.total}/${progress.total} questions completed\n\n`
+      feedback += `✅ Review section complete! Moving to next step...`
+    }
+    
+    addSystemMessage(feedback)
+    
+    // Check if review batch is complete and move to next step
     if (progress.isComplete) {
       await setTimeout(() => {
         completeStep()
       }, 2000)
     }
+  }
+
+  const handleBatchAnswer = async (answer) => {
+    // Parse batch answer (numbered list or line-by-line)
+    const lines = answer.split('\n').filter(line => line.trim())
+    const answers = []
+    
+    lines.forEach(line => {
+      const match = line.match(/^\d+\.\s*(.+)$/i)
+      if (match) {
+        answers.push(match[1].trim())
+      } else if (line.trim()) {
+        answers.push(line.trim())
+      }
+    })
+
+    // Grade batch answers
+    const feedback = generateBatchFeedback(answers)
+    addSystemMessage(feedback)
+    
+    // Update batch answers
+    const newBatchAnswers = {}
+    answers.forEach((ans, index) => {
+      if (currentBatch[index]) {
+        newBatchAnswers[index] = ans
+      }
+    })
+    setBatchAnswers(newBatchAnswers)
+    
+    // Update progress based on answered items
+    setBatchProgress(prev => ({
+      ...prev,
+      completed: Math.min(Object.keys(newBatchAnswers).length, prev.total)
+    }))
+  }
+
+  const generateBatchFeedback = (answers) => {
+    if (!currentBatch.length) return "No batch available for grading."
+    
+    let feedback = `**[Step 2 | Batch 1 | Grading Partial Response]**\n\n`
+    feedback += `Here is the feedback for items you submitted:\n\n`
+    
+    let remaining = currentBatch.length
+    
+    currentBatch.forEach((exercise, index) => {
+      const userAnswer = answers[index] || batchAnswers[index]
+      
+      if (userAnswer) {
+        const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type)
+        remaining--
+        
+        feedback += `${index + 1}. **${exercise.english}**\n`
+        feedback += `   * **Your Answer:** ${userAnswer}\n`
+        
+        if (isCorrect) {
+          feedback += `   * **Correction:** Correct!\n`
+        } else {
+          feedback += `   * **Correction:** **${exercise.answer}**\n`
+          
+          // Add specific explanations
+          if (exercise.type === 'vocabulary' && exercise.english.toLowerCase() === 'departure') {
+            feedback += `   * **Explanation:** *die Abfahrt* is also used, typically for trains/buses, while *der Abflug* is for planes.\n`
+          } else if (exercise.type === 'vocabulary' && exercise.english.toLowerCase() === 'sender') {
+            feedback += `   * **Explanation:** *Der Sender* typically refers to a TV/Radio station or transmitter. For person sending mail, A1 term is *der Absender*.\n`
+          }
+          
+          // Add ChatGPT help link
+          const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${exercise.english}" in German?`)
+          feedback += `   * 💡 **Need help?** [Ask ChatGPT for explanation](https://chatgpt.com/?q=${helpQuery})\n`
+        }
+        
+        feedback += '\n'
+      }
+    })
+    
+    feedback += `***\n\n`
+    feedback += `**[Step 2 | Batch 1 | Remaining: ${remaining}]**\n\n`
+    feedback += `Please continue with remaining nouns. Translate the following into **German** (Article + Noun):\n\n`
+    
+    // List remaining items
+    currentBatch.forEach((exercise, index) => {
+      if (!answers[index] && !batchAnswers[index]) {
+        feedback += `${index + 1}. ${exercise.english}\n`
+      }
+    })
+    
+    return feedback
   }
 
   const completeStep = async () => {
