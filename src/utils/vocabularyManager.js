@@ -1,39 +1,56 @@
-import { vocabularyData, getRandomNouns, getRandomVerbs, getSentencesByCase } from '../data/vocabulary.js'
+import { 
+  getRandomLetters, 
+  getNounsFromLetters, 
+  getVerbsFromLetters, 
+  getExamplesByTypeAndLetters,
+  initializeVocabularyPools,
+  getVocabularyByLetter
+} from '../data/vocabulary/index.js'
 
 export class VocabularyManager {
   constructor() {
-    this.vocabulary = vocabularyData
     this.currentBatch = []
     this.currentBatchIndex = 0
+    this.currentLetters = getRandomLetters(3) // Use 3 random letters for variety
+    this.excludeList = []
   }
 
   // Generate Step 1: Review Previous Mistakes
   generateReviewBatch(reviewQueue, batchSize = 10) {
-    // Get review items from vocabulary data with origin section tracking
+    if (!reviewQueue || reviewQueue.length === 0) {
+      console.warn('No review queue items available')
+      return []
+    }
+
+    // Get random letters for review variety
+    const reviewLetters = getRandomLetters(2)
+    
+    // Find matching words from our letters
     const reviewItems = reviewQueue.map(item => {
-      const { word, section } = item // Destructure word and section from review item
-      const noun = this.vocabulary.nouns.find(n => n.german === word)
-      const verb = this.vocabulary.verbs.find(v => v.german === word)
+      const { word, section } = item
+      const letterData = this.findWordInLetters(word, reviewLetters)
       
-      if (noun) {
-        return {
-          type: 'noun',
-          question: `What is German word for "${noun.english}"?`,
-          answer: noun.german,
-          word: noun.german,
-          english: noun.english,
-          gender: noun.gender,
-          article: noun.article,
-          originSection: section || 'Unknown'
-        }
-      } else if (verb) {
-        return {
-          type: 'verb',
-          question: `What is German word for "${verb.english}"?`,
-          answer: verb.german,
-          word: verb.german,
-          english: verb.english,
-          originSection: section || 'Unknown'
+      if (letterData) {
+        if (letterData.type === 'noun') {
+          return {
+            type: 'noun',
+            question: `What is German word for "${letterData.english}"?`,
+            answer: letterData.german,
+            word: letterData.german,
+            english: letterData.english,
+            gender: letterData.gender,
+            article: letterData.article,
+            originSection: section || 'Unknown'
+          }
+        } else if (letterData.type === 'verb') {
+          return {
+            type: 'verb',
+            question: `What is German word for "${letterData.english}"?`,
+            answer: letterData.german,
+            word: letterData.german,
+            english: letterData.english,
+            originSection: section || 'Unknown'
+          }
         }
       }
       return null
@@ -47,11 +64,17 @@ export class VocabularyManager {
 
   // Generate Step 2: New Vocabulary (20 nouns)
   generateVocabularyBatch(exclude = [], batchSize = 20) {
-    const nouns = getRandomNouns(batchSize, exclude)
+    const letters = getRandomLetters(4) // Use 4 letters for variety
+    const nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
     
+    if (!nouns || nouns.length === 0) {
+      console.error('No nouns available for vocabulary batch')
+      return []
+    }
+
     this.currentBatch = nouns.map(noun => ({
       type: 'vocabulary',
-      question: `Provide the German translation for "${noun.english}" (include article)`,
+      question: `Provide German translation for "${noun.english}" (include article)`,
       answer: noun.german,
       word: noun.german,
       english: noun.english,
@@ -61,16 +84,23 @@ export class VocabularyManager {
     }))
 
     this.currentBatchIndex = 0
+    this.addToExcludeList(nouns.map(n => n.german))
     return this.currentBatch
   }
 
   // Generate Step 3: Plural Practice (20 nouns)
   generatePluralBatch(exclude = [], batchSize = 20) {
-    const nouns = getRandomNouns(batchSize, exclude)
+    const letters = getRandomLetters(4) // Use 4 letters for variety
+    const nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
     
+    if (!nouns || nouns.length === 0) {
+      console.error('No nouns available for plural batch')
+      return []
+    }
+
     this.currentBatch = nouns.map(noun => ({
       type: 'plural',
-      question: `What is the plural form of "${noun.german}"?`,
+      question: `What is plural form of "${noun.german}"?`,
       answer: noun.plural,
       word: noun.german,
       singular: noun.german,
@@ -80,15 +110,22 @@ export class VocabularyManager {
     }))
 
     this.currentBatchIndex = 0
+    this.addToExcludeList(nouns.map(n => n.german))
     return this.currentBatch
   }
 
   // Generate Step 4: Articles in Context (30 sentences: 10 each case)
   generateArticlesBatch() {
-    const nominative = getSentencesByCase('nominative', 10)
-    const accusative = getSentencesByCase('accusative', 10)
-    const dative = getSentencesByCase('dative', 10)
+    const letters = getRandomLetters(3) // Use 3 letters for variety
+    const nominative = getExamplesByTypeAndLetters('nominative', letters, 10)
+    const accusative = getExamplesByTypeAndLetters('accusative', letters, 10)
+    const dative = getExamplesByTypeAndLetters('dative', letters, 10)
     
+    if (!nominative || !accusative || !dative) {
+      console.error('No examples available for articles batch')
+      return []
+    }
+
     this.currentBatch = [
       ...nominative.map(s => ({ ...s, type: 'article', caseType: 'nominative' })),
       ...accusative.map(s => ({ ...s, type: 'article', caseType: 'accusative' })),
@@ -101,87 +138,36 @@ export class VocabularyManager {
 
   // Generate Step 5: Case Translations (30 sentences: 10 each case)
   generateTranslationBatch() {
-    const translations = {
-      nominative: [
-        {
-          english: 'The man is tall.',
-          german: 'Der Mann ist groß.',
-          type: 'translation',
-          caseType: 'nominative'
-        },
-        {
-          english: 'The woman works here.',
-          german: 'Die Frau arbeitet hier.',
-          type: 'translation',
-          caseType: 'nominative'
-        },
-        {
-          english: 'The child plays in the garden.',
-          german: 'Das Kind spielt im Garten.',
-          type: 'translation',
-          caseType: 'nominative'
-        }
-      ],
-      accusative: [
-        {
-          english: 'I see the man.',
-          german: 'Ich sehe den Mann.',
-          type: 'translation',
-          caseType: 'accusative'
-        },
-        {
-          english: 'He reads the book.',
-          german: 'Er liest das Buch.',
-          type: 'translation',
-          caseType: 'accusative'
-        },
-        {
-          english: 'She visits the woman.',
-          german: 'Sie besucht die Frau.',
-          type: 'translation',
-          caseType: 'accusative'
-        }
-      ],
-      dative: [
-        {
-          english: 'I give the book to the man.',
-          german: 'Ich gebe dem Mann das Buch.',
-          type: 'translation',
-          caseType: 'dative'
-        },
-        {
-          english: 'He helps the woman.',
-          german: 'Er hilft der Frau.',
-          type: 'translation',
-          caseType: 'dative'
-        },
-        {
-          english: 'I thank the child.',
-          german: 'Ich danke dem Kind.',
-          type: 'translation',
-          caseType: 'dative'
-        }
-      ]
+    const letters = getRandomLetters(3) // Use 3 letters for variety
+    const translations = getExamplesByTypeAndLetters('translations', letters, 30)
+    
+    if (!translations || translations.length === 0) {
+      console.error('No translations available for translation batch')
+      return []
     }
 
-    const allTranslations = [
-      ...translations.nominative,
-      ...translations.accusative,
-      ...translations.dative
-    ]
+    this.currentBatch = translations.map(t => ({
+      ...t,
+      type: 'translation'
+    }))
 
-    this.currentBatch = allTranslations
     this.currentBatchIndex = 0
     return this.currentBatch
   }
 
   // Generate Step 6: Verb Conjugation (3 rounds of 10 items)
   generateVerbBatch(exclude = [], batchSize = 10) {
-    const verbs = getRandomVerbs(Math.ceil(batchSize / 2), exclude)
+    const letters = getRandomLetters(2) // Use 2 letters for variety
+    const verbs = getVerbsFromLetters(letters, Math.ceil(batchSize / 2), [...exclude, ...this.excludeList])
+    
+    if (!verbs || verbs.length === 0) {
+      console.error('No verbs available for conjugation batch')
+      return []
+    }
+
     const subjects = ['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'sie', 'Sie']
     
     this.currentBatch = []
-    
     for (let i = 0; i < batchSize; i++) {
       const verb = verbs[i % verbs.length]
       const subject = subjects[i % subjects.length]
@@ -198,7 +184,32 @@ export class VocabularyManager {
     }
 
     this.currentBatchIndex = 0
+    this.addToExcludeList(verbs.map(v => v.german))
     return this.currentBatch
+  }
+
+  // Helper methods
+  getLetterData(letter) {
+    // Use the actual alphabet-based vocabulary data
+    return getVocabularyByLetter(letter)
+  }
+
+  findWordInLetters(word, letters) {
+    for (const letter of letters) {
+      const letterData = this.getLetterData(letter)
+      if (letterData) {
+        const noun = (letterData.nouns || []).find(n => n.german === word)
+        if (noun) return { ...noun, type: 'noun' }
+        
+        const verb = (letterData.verbs || []).find(v => v.german === word)
+        if (verb) return { ...verb, type: 'verb' }
+      }
+    }
+    return null
+  }
+
+  addToExcludeList(words) {
+    this.excludeList = [...new Set([...this.excludeList, ...words])]
   }
 
   getCurrentItem() {

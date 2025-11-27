@@ -110,4 +110,13 @@
   .section-recap {
     @apply bg-gradient-to-r from-gray-500 to-gray-600;
   }
+
+  /* Animation classes for ChatInterface */
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
 }

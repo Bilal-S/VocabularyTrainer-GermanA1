@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { initializeVocabularyPools } from '../data/vocabulary'
+import { initializeVocabularyPools } from '../data/vocabulary/index.js'
 
 const STORAGE_KEY = 'a1-german-coach-state'
 
