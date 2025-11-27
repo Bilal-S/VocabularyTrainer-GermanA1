@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .chat-container {
+    @apply flex flex-col h-screen bg-gray-50;
+  }
+  
+  .message-bubble {
+    @apply max-w-3xl mx-auto px-4 py-3 rounded-lg animate-fade-in;
+  }
+  
+  .message-user {
+    @apply bg-blue-500 text-white ml-auto mr-8;
+  }
+  
+  .message-system {
+    @apply bg-white text-gray-800 border border-gray-200 shadow-sm mr-auto ml-8;
+  }
+  
+  .section-banner {
+    @apply sticky top-0 z-10 px-6 py-4 text-white font-semibold text-center shadow-lg transition-all duration-500;
+  }
+  
+  .input-container {
+    @apply border-t border-gray-200 bg-white p-4;
+  }
+  
+  .chat-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  
+  .progress-bar {
+    @apply h-2 bg-gray-200 rounded-full overflow-hidden;
+  }
+  
+  .progress-fill {
+    @apply h-full transition-all duration-300 ease-out;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500;
+  }
+  
+  .hamburger-menu {
+    @apply fixed top-4 left-4 z-20 p-2 rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow;
+  }
+  
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4;
+  }
+  
+  .modal-content {
+    @apply bg-white rounded-lg shadow-xl max-w-md w-full max-h-screen overflow-y-auto animate-slide-up;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+  }
+  
+  .section-intro {
+    @apply bg-gradient-to-r from-green-500 to-green-600;
+  }
+  
+  .section-review {
+    @apply bg-gradient-to-r from-amber-500 to-orange-600;
+  }
+  
+  .section-vocabulary {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600;
+  }
+  
+  .section-plural {
+    @apply bg-gradient-to-r from-purple-500 to-purple-600;
+  }
+  
+  .section-articles {
+    @apply bg-gradient-to-r from-pink-500 to-pink-600;
+  }
+  
+  .section-translations {
+    @apply bg-gradient-to-r from-cyan-500 to-cyan-600;
+  }
+  
+  .section-verbs {
+    @apply bg-gradient-to-r from-lime-500 to-lime-600;
+  }
+  
+  .section-recap {
+    @apply bg-gradient-to-r from-gray-500 to-gray-600;
+  }
+}
