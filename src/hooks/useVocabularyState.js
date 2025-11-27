@@ -8,7 +8,12 @@ const getInitialState = () => {
   return {
     userId: 'user-' + Math.random().toString(36).substr(2, 9),
     progress: {},
-    pools: vocabPools,
+    pools: {
+      unselected: [], // Start empty - words get moved here as they're used
+      mastered: [],   // Words with 3+ correct answers
+      reviewQueue: [], // Words with incorrect answers
+      available: vocabPools.unselected // All available words for selection
+    },
     currentStep: 0,
     batchProgress: {
       answered: [],

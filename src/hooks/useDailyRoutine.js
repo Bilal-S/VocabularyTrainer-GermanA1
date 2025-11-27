@@ -164,9 +164,29 @@ Type your answer below:`)
     
     switch (stepKey) {
       case 'VOCABULARY':
-        batch = vocabManager.generateVocabularyBatch(state.pools.unselected)
+        // Generate exclude list from mastered and review queue words
+        const excludeList = [
+          ...state.pools.mastered,
+          ...state.pools.reviewQueue.map(item => typeof item === 'string' ? item : item.word),
+          ...state.pools.unselected // Also exclude words already used in this session
+        ]
+        
+        // Generate vocabulary batch and ensure state synchronization
+        batch = vocabManager.generateVocabularyBatch(excludeList)
+        
+        // Validate that we have a proper batch
+        if (!batch || batch.length === 0) {
+          console.error('Failed to generate vocabulary batch')
+          addSystemMessage("⚠️ Error: Unable to generate vocabulary exercises. Please check vocabulary data.")
+          return
+        }
+        
+        // Synchronize states between VocabularyManager and hook
         setCurrentBatch(batch)
+        setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
+        setBatchAnswers({}) // Reset answers for new batch
+        
         // Generate initial batch message
         let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from the Goethe-Institut A1 list.
 
@@ -190,6 +210,12 @@ Please translate the following **English nouns** into **German** (Article + Noun
           batchMessage += `${index + 1}. ${item.english}\n`
         })
         addSystemMessage(batchMessage)
+        
+        console.log('Vocabulary batch generated:', {
+          batchLength: batch.length,
+          firstItem: batch[0],
+          vocabManagerBatch: vocabManager.currentBatch?.length
+        })
         return
       case 'PLURAL':
         batch = vocabManager.generatePluralBatch(state.pools.unselected)
@@ -353,7 +379,7 @@ Please conjugate the following **verbs for the given subjects**:
       
       // Add ChatGPT link for help
       const helpQuery = encodeURIComponent(`Why is "${answer}" wrong for "${currentExercise.english}" in German?`)
-      feedback += `💡 **Need help?** [Ask ChatGPT for explanation](https://chatgpt.com/?q=${helpQuery})\n\n`
+      feedback += `💡 **Need help?** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer">Ask ChatGPT for explanation</a>\n\n`
     }
     
     // Move to next exercise in batch
@@ -424,25 +450,39 @@ Please conjugate the following **verbs for the given subjects**:
   }
 
   const generateBatchFeedback = (answers) => {
-    if (!currentBatch.length) return "No batch available for grading."
+    // Enhanced error handling with fallback
+    if (!currentBatch || !currentBatch.length) {
+      console.error('No batch available for grading. Current batch:', currentBatch)
+      addSystemMessage("⚠️ Error: No exercise batch is currently available. Please try starting a new step with 'Next Step' command.")
+      return "No batch available for grading."
+    }
+    
+    if (!answers || !answers.length) {
+      addSystemMessage("Please provide your answers in the format:\n1. answer1\n2. answer2\n...")
+      return "No answers provided to grade."
+    }
     
     let feedback = `**[Step 2 | Batch 1 | Grading Partial Response]**\n\n`
-    feedback += `Here is the feedback for items you submitted:\n\n`
+    feedback += `Here is the feedback for the items you submitted:\n\n`
     
     let remaining = currentBatch.length
+    let processedAnswers = 0
     
     currentBatch.forEach((exercise, index) => {
       const userAnswer = answers[index] || batchAnswers[index]
       
-      if (userAnswer) {
+      if (userAnswer && userAnswer.trim()) {
         const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type)
         remaining--
+        processedAnswers++
         
         feedback += `${index + 1}. **${exercise.english}**\n`
         feedback += `   * **Your Answer:** ${userAnswer}\n`
         
         if (isCorrect) {
           feedback += `   * **Correction:** Correct!\n`
+          // Update progress for correct answers
+          updateProgress(exercise.word, true, 'Step2-Vocabulary')
         } else {
           feedback += `   * **Correction:** **${exercise.answer}**\n`
           
@@ -455,7 +495,10 @@ Please conjugate the following **verbs for the given subjects**:
           
           // Add ChatGPT help link
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${exercise.english}" in German?`)
-          feedback += `   * 💡 **Need help?** [Ask ChatGPT for explanation](https://chatgpt.com/?q=${helpQuery})\n`
+          feedback += `   * 💡 **Need help?** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer">Ask ChatGPT for explanation</a>\n`
+          
+          // Update progress for incorrect answers
+          updateProgress(exercise.word, false, 'Step2-Vocabulary')
         }
         
         feedback += '\n'
@@ -463,8 +506,26 @@ Please conjugate the following **verbs for the given subjects**:
     })
     
     feedback += `***\n\n`
+    
+    // Check if all items have been answered
+    if (remaining === 0) {
+      feedback += `🎉 **Step 2 Complete!** All 20 vocabulary items have been answered.\n\n`
+      feedback += `**Progress Summary:**\n`
+      feedback += `- **Items Processed:** ${processedAnswers}\n`
+      feedback += `- **Remaining:** 0\n\n`
+      feedback += `Moving to **Step 3: Plural Practice**...\n\n`
+      feedback += `Type **"Next Step"** to continue or wait for automatic progression.`
+      
+      // Auto-advance to next step after brief delay
+      setTimeout(() => {
+        completeStep()
+      }, 3000)
+      
+      return feedback
+    }
+    
     feedback += `**[Step 2 | Batch 1 | Remaining: ${remaining}]**\n\n`
-    feedback += `Please continue with remaining nouns. Translate the following into **German** (Article + Noun):\n\n`
+    feedback += `Please continue with the remaining nouns. Translate the following into **German** (Article + Noun):\n\n`
     
     // List remaining items
     currentBatch.forEach((exercise, index) => {

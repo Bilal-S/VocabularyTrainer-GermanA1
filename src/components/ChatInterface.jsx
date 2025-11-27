@@ -47,7 +47,8 @@ const ChatInterface = ({ messages, onCommand }) => {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    // Only submit on Ctrl+Enter, allow Enter for new lines
+    if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault()
       handleSubmit(e)
     }
@@ -107,16 +108,15 @@ const ChatInterface = ({ messages, onCommand }) => {
       <div className="input-container">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="flex space-x-2">
-            <input
+            <textarea
               ref={inputRef}
-              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your command or answer..."
-              className="chat-input flex-1"
+              placeholder="Type your command or answer... (Ctrl+Enter to send)"
+              className="chat-input flex-1 resize-none"
               disabled={isLoading}
-              autoComplete="off"
+              rows={3}
             />
             <button
               type="submit"

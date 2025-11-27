@@ -64,15 +64,45 @@ export class VocabularyManager {
 
   // Generate Step 2: New Vocabulary (20 nouns)
   generateVocabularyBatch(exclude = [], batchSize = 20) {
-    const letters = getRandomLetters(4) // Use 4 letters for variety
-    const nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
+    console.log('Generating vocabulary batch with:', { exclude: exclude.slice(0, 5), batchSize })
+    
+    // Try with increasing number of letters until we get enough nouns
+    let letters = getRandomLetters(4) // Use 4 letters for variety
+    let nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
+    
+    // Fallback: try with more letters if we don't have enough
+    if (!nouns || nouns.length < batchSize) {
+      console.warn(`Insufficient nouns with ${letters.length} letters, trying with all available letters`)
+      letters = getRandomLetters(10) // Try all available letters
+      nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
+    }
+    
+    // Final fallback: use available letters without randomization
+    if (!nouns || nouns.length === 0) {
+      console.error('No nouns available even with all letters, checking vocabulary database')
+      const availableLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+      nouns = getNounsFromLetters(availableLetters, batchSize, [...exclude, ...this.excludeList])
+    }
     
     if (!nouns || nouns.length === 0) {
-      console.error('No nouns available for vocabulary batch')
+      console.error('Vocabulary generation failed completely')
       return []
     }
 
-    this.currentBatch = nouns.map(noun => ({
+    // Ensure we have proper noun structure
+    const validNouns = nouns.filter(noun => 
+      noun && 
+      noun.german && 
+      noun.english && 
+      noun.article
+    )
+
+    if (validNouns.length === 0) {
+      console.error('No valid nouns found in generated batch')
+      return []
+    }
+
+    this.currentBatch = validNouns.map(noun => ({
       type: 'vocabulary',
       question: `Provide German translation for "${noun.english}" (include article)`,
       answer: noun.german,
@@ -84,7 +114,14 @@ export class VocabularyManager {
     }))
 
     this.currentBatchIndex = 0
-    this.addToExcludeList(nouns.map(n => n.german))
+    this.addToExcludeList(validNouns.map(n => n.german))
+    
+    console.log('Generated vocabulary batch:', {
+      batchSize: this.currentBatch.length,
+      firstItem: this.currentBatch[0],
+      letters: letters.join(',')
+    })
+    
     return this.currentBatch
   }
 
