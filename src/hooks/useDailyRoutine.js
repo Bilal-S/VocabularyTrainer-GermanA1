@@ -1,6 +1,14 @@
 import { useState, useCallback } from 'react'
 import VocabularyManager from '../utils/vocabularyManager'
 
+// Unique ID generator to avoid duplicate keys
+let messageIdCounter = 0
+const generateMessageId = () => {
+  const timestamp = Date.now()
+  const counter = ++messageIdCounter
+  return `${timestamp}-${counter}`
+}
+
 const STEPS = {
   0: 'INTRO',
   1: 'REVIEW',
@@ -82,7 +90,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress) => {
 
   const addSystemMessage = useCallback((content) => {
     const message = {
-      id: Date.now(),
+      id: generateMessageId(),
       type: 'system',
       content,
       timestamp: new Date().toISOString()

@@ -16,6 +16,15 @@ const ChatInterface = ({ messages, onCommand }) => {
     scrollToBottom()
   }, [messages])
 
+  // Focus input when component mounts or when messages change
+  useEffect(() => {
+    if (!isLoading) {
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }, [messages, isLoading])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!input.trim() || isLoading) return
@@ -30,7 +39,10 @@ const ChatInterface = ({ messages, onCommand }) => {
       console.error('Error processing command:', error)
     } finally {
       setIsLoading(false)
-      inputRef.current?.focus()
+      // Focus back to input after a short delay to ensure messages are rendered
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
     }
   }
 

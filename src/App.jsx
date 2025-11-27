@@ -6,6 +6,14 @@ import ImportExportModal from './components/ImportExportModal'
 import { useVocabularyState } from './hooks/useVocabularyState'
 import { useDailyRoutine } from './hooks/useDailyRoutine'
 
+// Unique ID generator to avoid duplicate keys
+let messageIdCounter = 0
+const generateMessageId = () => {
+  const timestamp = Date.now()
+  const counter = ++messageIdCounter
+  return `${timestamp}-${counter}`
+}
+
 const SECTIONS = {
   INTRO: { id: 'intro', name: 'Introduction', color: 'section-intro' },
   REVIEW: { id: 'review', name: 'Review Previous Mistakes', color: 'section-review' },
@@ -42,7 +50,7 @@ function App() {
   // Initialize with welcome message
   useEffect(() => {
     const welcomeMessage = {
-      id: Date.now(),
+      id: generateMessageId(),
       type: 'system',
       content: `# Welcome to A1 German Coach! 🇩🇪
 
@@ -67,7 +75,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
 
   const handleCommand = async (command) => {
     const userMessage = {
-      id: Date.now(),
+      id: generateMessageId(),
       type: 'user',
       content: command
     }
@@ -81,13 +89,13 @@ Type **"Today is a new day"** to begin your German learning journey!`
     const success = importState(jsonData)
     if (success) {
       setMessages([{
-        id: Date.now(),
+        id: generateMessageId(),
         type: 'system',
         content: '✅ Progress data imported successfully! You can continue where you left off.'
       }])
     } else {
       setMessages(prev => [...prev, {
-        id: Date.now(),
+        id: generateMessageId(),
         type: 'system',
         content: '❌ Failed to import data. Please check the file format and try again.'
       }])
@@ -102,7 +110,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
   const handleReset = () => {
     resetState()
     setMessages([{
-      id: Date.now(),
+      id: generateMessageId(),
       type: 'system',
       content: '✨ All progress data has been cleared. You can start fresh with "Today is a new day"!'
     }])
