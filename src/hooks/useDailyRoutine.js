@@ -418,38 +418,57 @@ Please conjugate the following **verbs for the given subjects**:
   const handleBatchAnswer = async (answer) => {
     // Parse batch answer (numbered list or line-by-line)
     const lines = answer.split('\n').filter(line => line.trim())
-    const answers = []
+    const newAnswers = []
     
     lines.forEach(line => {
-      const match = line.match(/^\d+\.\s*(.+)$/i)
+      const match = line.match(/^(\d+)\.\s*(.+)$/i)
       if (match) {
-        answers.push(match[1].trim())
+        newAnswers.push({ index: parseInt(match[1]) - 1, answer: match[2].trim() })
       } else if (line.trim()) {
-        answers.push(line.trim())
+        newAnswers.push({ index: newAnswers.length, answer: line.trim() })
       }
     })
 
+    // Update batch answers with new responses
+    const updatedBatchAnswers = { ...batchAnswers }
+    
+    // If this is a subsequent response, map answers to remaining items
+    const unansweredIndices = currentBatch
+      .map((_, index) => index)
+      .filter(index => !batchAnswers[index])
+    
+    if (unansweredIndices.length > 0 && newAnswers.length > 0) {
+      // Map new answers to remaining unanswered items
+      newAnswers.forEach((answerObj, i) => {
+        if (i < unansweredIndices.length) {
+          const actualIndex = unansweredIndices[i]
+          updatedBatchAnswers[actualIndex] = answerObj.answer
+        }
+      })
+    } else {
+      // First response - use direct indexing
+      newAnswers.forEach((answerObj) => {
+        if (answerObj.index < currentBatch.length) {
+          updatedBatchAnswers[answerObj.index] = answerObj.answer
+        }
+      })
+    }
+    
+    setBatchAnswers(updatedBatchAnswers)
+    
     // Grade batch answers
-    const feedback = generateBatchFeedback(answers)
+    const feedback = generateBatchFeedback(updatedBatchAnswers)
     addSystemMessage(feedback)
     
-    // Update batch answers
-    const newBatchAnswers = {}
-    answers.forEach((ans, index) => {
-      if (currentBatch[index]) {
-        newBatchAnswers[index] = ans
-      }
-    })
-    setBatchAnswers(newBatchAnswers)
-    
-    // Update progress based on answered items
+    // Update progress based on total answered items
+    const totalAnswered = Object.keys(updatedBatchAnswers).length
     setBatchProgress(prev => ({
       ...prev,
-      completed: Math.min(Object.keys(newBatchAnswers).length, prev.total)
+      completed: Math.min(totalAnswered, prev.total)
     }))
   }
 
-  const generateBatchFeedback = (answers) => {
+  const generateBatchFeedback = (allAnswers) => {
     // Enhanced error handling with fallback
     if (!currentBatch || !currentBatch.length) {
       console.error('No batch available for grading. Current batch:', currentBatch)
@@ -457,53 +476,47 @@ Please conjugate the following **verbs for the given subjects**:
       return "No batch available for grading."
     }
     
-    if (!answers || !answers.length) {
+    if (!allAnswers || Object.keys(allAnswers).length === 0) {
       addSystemMessage("Please provide your answers in the format:\n1. answer1\n2. answer2\n...")
       return "No answers provided to grade."
     }
     
     let feedback = `**[Step 2 | Batch 1 | Grading Partial Response]**\n\n`
-    feedback += `Here is the feedback for the items you submitted:\n\n`
     
-    let remaining = currentBatch.length
-    let processedAnswers = 0
+    // Count total answered and remaining
+    const totalAnswered = Object.keys(allAnswers).length
+    const remaining = currentBatch.length - totalAnswered
     
+    // Show feedback only for items that have answers
+    const answeredItems = []
     currentBatch.forEach((exercise, index) => {
-      const userAnswer = answers[index] || batchAnswers[index]
-      
+      const userAnswer = allAnswers[index]
       if (userAnswer && userAnswer.trim()) {
+        answeredItems.push({ exercise, index, userAnswer })
+      }
+    })
+    
+    if (answeredItems.length > 0) {
+      feedback += `**Feedback:**\n\n`
+      
+      answeredItems.forEach(({ exercise, index, userAnswer }) => {
         const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type)
-        remaining--
-        processedAnswers++
-        
-        feedback += `${index + 1}. **${exercise.english}**\n`
-        feedback += `   * **Your Answer:** ${userAnswer}\n`
         
         if (isCorrect) {
-          feedback += `   * **Correction:** Correct!\n`
+          feedback += `${index + 1}. **${exercise.english}**: Your answer: **${userAnswer}** ✅\n`
           // Update progress for correct answers
           updateProgress(exercise.word, true, 'Step2-Vocabulary')
         } else {
-          feedback += `   * **Correction:** **${exercise.answer}**\n`
-          
-          // Add specific explanations
-          if (exercise.type === 'vocabulary' && exercise.english.toLowerCase() === 'departure') {
-            feedback += `   * **Explanation:** *die Abfahrt* is also used, typically for trains/buses, while *der Abflug* is for planes.\n`
-          } else if (exercise.type === 'vocabulary' && exercise.english.toLowerCase() === 'sender') {
-            feedback += `   * **Explanation:** *Der Sender* typically refers to a TV/Radio station or transmitter. For person sending mail, A1 term is *der Absender*.\n`
-          }
-          
-          // Add ChatGPT help link
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${exercise.english}" in German?`)
-          feedback += `   * 💡 **Need help?** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer">Ask ChatGPT for explanation</a>\n`
+          feedback += `${index + 1}. **${exercise.english}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${exercise.answer}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
           // Update progress for incorrect answers
           updateProgress(exercise.word, false, 'Step2-Vocabulary')
         }
-        
-        feedback += '\n'
-      }
-    })
+      })
+      
+      feedback += `\n`
+    }
     
     feedback += `***\n\n`
     
@@ -511,7 +524,7 @@ Please conjugate the following **verbs for the given subjects**:
     if (remaining === 0) {
       feedback += `🎉 **Step 2 Complete!** All 20 vocabulary items have been answered.\n\n`
       feedback += `**Progress Summary:**\n`
-      feedback += `- **Items Processed:** ${processedAnswers}\n`
+      feedback += `- **Items Processed:** ${totalAnswered}\n`
       feedback += `- **Remaining:** 0\n\n`
       feedback += `Moving to **Step 3: Plural Practice**...\n\n`
       feedback += `Type **"Next Step"** to continue or wait for automatic progression.`
@@ -527,9 +540,9 @@ Please conjugate the following **verbs for the given subjects**:
     feedback += `**[Step 2 | Batch 1 | Remaining: ${remaining}]**\n\n`
     feedback += `Please continue with the remaining nouns. Translate the following into **German** (Article + Noun):\n\n`
     
-    // List remaining items
+    // List remaining items (only unanswered ones)
     currentBatch.forEach((exercise, index) => {
-      if (!answers[index] && !batchAnswers[index]) {
+      if (!allAnswers[index]) {
         feedback += `${index + 1}. ${exercise.english}\n`
       }
     })
