@@ -119,4 +119,58 @@
   .animation-delay-400 {
     animation-delay: 400ms;
   }
+
+  /* Force list numbering to be visible in system messages */
+  .message-system ol {
+    color: #1f2937 !important;
+    list-style: decimal !important;
+    padding-left: 1.5rem !important;
+  }
+  
+  .message-system ol li {
+    color: #1f2937 !important;
+  }
+  
+  .message-system ol li::marker {
+    color: #1f2937 !important;
+  }
+  
+  .message-system ul {
+    color: #1f2937 !important;
+  }
+  
+  .message-system ul li {
+    color: #1f2937 !important;
+  }
+  
+  .message-system ul li::marker {
+    color: #1f2937 !important;
+  }
+
+  /* Additional overrides for any prose classes */
+  .prose ol {
+    color: #1f2937 !important;
+    list-style: decimal !important;
+    padding-left: 1.5rem !important;
+  }
+  
+  .prose ol li {
+    color: #1f2937 !important;
+  }
+  
+  .prose ol li::marker {
+    color: #1f2937 !important;
+  }
+  
+  .prose ul {
+    color: #1f2937 !important;
+  }
+  
+  .prose ul li {
+    color: #1f2937 !important;
+  }
+  
+  .prose ul li::marker {
+    color: #1f2937 !important;
+  }
 }

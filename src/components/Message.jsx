@@ -36,7 +36,7 @@ const Message = ({ message }) => {
       >
         {isSystemMessage ? (
           <div
-            className="prose prose-sm max-w-none prose-headings:text-white prose-p:text-white prose-ul:text-white prose-ol:text-white prose-li:text-white prose-strong:text-white prose-code:text-yellow-200 prose-pre:bg-gray-800 prose-pre:text-gray-100"
+            className="prose prose-sm max-w-none prose-headings:text-gray-800 prose-p:text-gray-800 prose-ul:text-gray-800 prose-ol:text-gray-800 prose-li:text-gray-800 prose-strong:text-gray-800 prose-code:text-blue-600 prose-pre:bg-gray-800 prose-pre:text-gray-100 [&_ol]:text-gray-800 [&_ol_li::marker]:text-gray-800 [&_ul]:text-gray-800 [&_ul_li::marker]:text-gray-800"
             dangerouslySetInnerHTML={renderContent(message.content)}
           />
         ) : (
