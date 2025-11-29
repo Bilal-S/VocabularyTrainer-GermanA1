@@ -1,145 +1,20 @@
 export const letterJ = {
   nouns: [
-    {
-      german: 'der Januar',
-      english: 'January',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Januare',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Juni',
-      english: 'June',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Junis',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Juli',
-      english: 'July',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'the Julis',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Jahr',
-      english: 'year',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Jahre',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Jäger',
-      english: 'hunter',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Jäger',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Junge',
-      english: 'boy',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Jungen',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Jacke',
-      english: 'jacket',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Jacken',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Journal',
-      english: 'journal, diary',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Journale',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Job',
-      english: 'job',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Jobs',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Saft',
-      english: 'juice',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Säfte',
-      article: 'der',
-      pluralArticle: 'die'
-    }
+    {"January": ["Januar", "Januare", "der", "die", "m"]},
+    {"June": ["Juni", "Junis", "der", "die", "m"]},
+    {"July": ["Juli", "the Julis", "der", "die", "m"]},
+    {"year": ["Jahr", "Jahre", "das", "die", "n"]},
+    {"hunter": ["Jäger", "Jäger", "der", "die", "m"]},
+    {"boy": ["Junge", "Jungen", "der", "die", "m"]},
+    {"jacket": ["Jacke", "Jacken", "die", "die", "f"]},
+    {"journal, diary": ["Journal", "Journale", "das", "die", "n"]},
+    {"job": ["Job", "Jobs", "der", "die", "m"]},
+    {"juice": ["Saft", "Säfte", "der", "die", "m"]}
   ],
   verbs: [
-    {
-      german: 'jagen',
-      english: 'to hunt',
-      type: 'verb',
-      conjugations: {
-        ich: 'jage',
-        du: 'jagst',
-        er: 'jagt',
-        sie: 'jagt',
-        es: 'jagt',
-        wir: 'jagen',
-        ihr: 'jagt',
-        sie: 'jagen',
-        Sie: 'jagen'
-      }
-    },
-    {
-      german: 'joinen',
-      english: 'to join',
-      type: 'verb',
-      conjugations: {
-        ich: 'joine',
-        du: 'joinst',
-        er: 'joint',
-        sie: 'joint',
-        es: 'joint',
-        wir: 'joinen',
-        ihr: 'joint',
-        sie: 'joinen',
-        Sie: 'joinen'
-      }
-    },
-    {
-      german: 'jubeln',
-      english: 'to celebrate',
-      type: 'verb',
-      conjugations: {
-        ich: 'jubele',
-        du: 'jubelst',
-        er: 'jubelt',
-        sie: 'jubelt',
-        es: 'jubelt',
-        wir: 'jubeln',
-        ihr: 'jubelt',
-        sie: 'jubeln',
-        Sie: 'jubeln'
-      }
-    }
+    {"to hunt": ["jagen", "jage", "jagst", "jagt", "jagt", "jagt", "jagen", "jagt", "jagen", "jagen"]},
+    {"to join": ["joinen", "joine", "joinst", "joint", "joint", "joint", "joinen", "joint", "joinen", "joinen"]},
+    {"to celebrate": ["jubeln", "jubele", "jubelst", "jubelt", "jubelt", "jubelt", "jubeln", "jubelt", "jubeln", "jubeln"]}
   ],
   examples: {
     nominative: [

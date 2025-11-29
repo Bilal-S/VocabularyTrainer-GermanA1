@@ -1,129 +1,19 @@
 export const letterC = {
   nouns: [
-    {
-      german: 'der Chef',
-      english: 'boss',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Chefs',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Café',
-      english: 'café',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Cafés',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Computer',
-      english: 'computer',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Computer',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Chance',
-      english: 'chance',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Chancen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Cola',
-      english: 'cola',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Colas',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Kultur',
-      english: 'culture',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Kulturen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Konto',
-      english: 'account (bank)',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Konten',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Cousin',
-      english: 'cousin (male)',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Cousins',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Cousine',
-      english: 'cousin (female)',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Cousinen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Konzert',
-      english: 'concert',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Konzerte',
-      article: 'das',
-      pluralArticle: 'die'
-    }
+    {"boss": ["Chef", "Chefs", "der", "die", "m"]},
+    {"café": ["Café", "Cafés", "das", "die", "n"]},
+    {"computer": ["Computer", "Computer", "der", "die", "m"]},
+    {"chance": ["Chance", "Chancen", "die", "die", "f"]},
+    {"cola": ["Cola", "Colas", "das", "die", "n"]},
+    {"culture": ["Kultur", "Kulturen", "die", "die", "f"]},
+    {"account (bank)": ["Konto", "Konten", "das", "die", "n"]},
+    {"cousin (male)": ["Cousin", "Cousins", "der", "die", "m"]},
+    {"cousin (female)": ["Cousine", "Cousinen", "die", "die", "f"]},
+    {"concert": ["Konzert", "Konzerte", "das", "die", "n"]}
   ],
   verbs: [
-    {
-      german: 'kommen',
-      english: 'to come',
-      type: 'verb',
-      conjugations: {
-        ich: 'komme',
-        du: 'kommst',
-        er: 'kommt',
-        sie: 'kommt',
-        es: 'kommt',
-        wir: 'kommen',
-        ihr: 'kommt',
-        sie: 'kommen',
-        Sie: 'kommen'
-      }
-    },
-    {
-      german: 'kaufen',
-      english: 'to buy',
-      type: 'verb',
-      conjugations: {
-        ich: 'kaufe',
-        du: 'kaufst',
-        er: 'kauft',
-        sie: 'kauft',
-        es: 'kauft',
-        wir: 'kaufen',
-        ihr: 'kauft',
-        sie: 'kaufen',
-        Sie: 'kaufen'
-      }
-    }
+    {"to come": ["kommen", "komme", "kommst", "kommt", "kommt", "kommt", "kommen", "kommt", "kommen", "kommen"]},
+    {"to buy": ["kaufen", "kaufe", "kaufst", "kauft", "kauft", "kauft", "kaufen", "kauft", "kaufen", "kaufen"]}
   ],
   examples: {
     nominative: [

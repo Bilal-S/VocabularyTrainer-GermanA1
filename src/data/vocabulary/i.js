@@ -1,161 +1,21 @@
 export const letterI = {
   nouns: [
-    {
-      german: 'der Insel',
-      english: 'island',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Inseln',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Markt',
-      english: 'market',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Märkte',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Park',
-      english: 'park',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Parke',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Garten',
-      english: 'garden',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Gärten',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Schreibtisch',
-      english: 'desk',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Schreibtische',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Bild',
-      english: 'picture, image',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Bilder',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Kind',
-      english: 'child',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Kinder',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Büro',
-      english: 'office',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Büros',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Koffer',
-      english: 'suitcase',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Koffer',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Café',
-      english: 'café',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Cafés',
-      article: 'das',
-      pluralArticle: 'die'
-    }
+    {"island": ["Insel", "Inseln", "die", "die", "f"]},
+    {"market": ["Markt", "Märkte", "der", "die", "m"]},
+    {"park": ["Park", "Parke", "der", "die", "m"]},
+    {"garden": ["Garten", "Gärten", "der", "die", "m"]},
+    {"desk": ["Schreibtisch", "Schreibtische", "der", "die", "m"]},
+    {"picture, image": ["Bild", "Bilder", "das", "die", "n"]},
+    {"child": ["Kind", "Kinder", "das", "die", "n"]},
+    {"office": ["Büro", "Büros", "das", "die", "n"]},
+    {"suitcase": ["Koffer", "Koffer", "der", "die", "m"]},
+    {"café": ["Café", "Cafés", "das", "die", "n"]}
   ],
   verbs: [
-    {
-      german: 'ignorieren',
-      english: 'to ignore',
-      type: 'verb',
-      conjugations: {
-        ich: 'ignoriere',
-        du: 'ignorierst',
-        er: 'ignoriert',
-        sie: 'ignoriert',
-        es: 'ignoriert',
-        wir: 'ignorieren',
-        ihr: 'ignoriert',
-        sie: 'ignorieren',
-        Sie: 'ignorieren'
-      }
-    },
-    {
-      german: 'importieren',
-      english: 'to import',
-      type: 'verb',
-      conjugations: {
-        ich: 'importiere',
-        du: 'importierst',
-        er: 'importiert',
-        sie: 'importiert',
-        es: 'importiert',
-        wir: 'importieren',
-        ihr: 'importiert',
-        sie: 'importieren',
-        Sie: 'importieren'
-      }
-    },
-    {
-      german: 'informieren',
-      english: 'to inform',
-      type: 'verb',
-      conjugations: {
-        ich: 'informiere',
-        du: 'informierst',
-        er: 'informiert',
-        sie: 'informiert',
-        es: 'informiert',
-        wir: 'informieren',
-        ihr: 'informiert',
-        sie: 'informieren',
-        Sie: 'informieren'
-      }
-    },
-    {
-      german: 'interessieren',
-      english: 'to interest',
-      type: 'verb',
-      conjugations: {
-        ich: 'interessiere',
-        du: 'interessierst',
-        er: 'interessiert',
-        sie: 'interessiert',
-        es: 'interessiert',
-        wir: 'interessieren',
-        ihr: 'interessiert',
-        sie: 'interessieren',
-        Sie: 'interessieren'
-      }
-    }
+    {"to ignore": ["ignorieren", "ignoriere", "ignorierst", "ignoriert", "ignoriert", "ignoriert", "ignorieren", "ignoriert", "ignorieren", "ignorieren"]},
+    {"to import": ["importieren", "importiere", "importierst", "importiert", "importiert", "importiert", "importieren", "importiert", "importieren", "importieren"]},
+    {"to inform": ["informieren", "informiere", "informierst", "informiert", "informiert", "informiert", "informieren", "informiert", "informieren", "informieren"]},
+    {"to interest": ["interessieren", "interessiere", "interessierst", "interessiert", "interessiert", "interessiert", "interessieren", "interessiert", "interessieren", "interessieren"]}
   ],
   examples: {
     nominative: [

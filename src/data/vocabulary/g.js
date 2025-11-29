@@ -1,161 +1,21 @@
 export const letterG = {
   nouns: [
-    {
-      german: 'der Gast',
-      english: 'guest',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Gäste',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Geld',
-      english: 'money',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Gelder',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Garten',
-      english: 'garden',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Gärten',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Geschenk',
-      english: 'gift, present',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Geschenke',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Geburtstag',
-      english: 'birthday',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Geburtstage',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Grund',
-      english: 'reason',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Gründe',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Glas',
-      english: 'glass',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Gläser',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Gruppe',
-      english: 'group',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Gruppen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Geschenk',
-      english: 'gift',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Geschenke',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Gott',
-      english: 'god',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Götter',
-      article: 'der',
-      pluralArticle: 'die'
-    }
+    {"guest": ["Gast", "Gäste", "der", "die", "m"]},
+    {"money": ["Geld", "Gelder", "das", "die", "n"]},
+    {"garden": ["Garten", "Gärten", "der", "die", "m"]},
+    {"gift, present": ["Geschenk", "Geschenke", "das", "die", "n"]},
+    {"birthday": ["Geburtstag", "Geburtstage", "der", "die", "m"]},
+    {"reason": ["Grund", "Gründe", "der", "die", "m"]},
+    {"glass": ["Glas", "Gläser", "das", "die", "n"]},
+    {"group": ["Gruppe", "Gruppen", "die", "die", "f"]},
+    {"gift": ["Geschenk", "Geschenke", "das", "die", "n"]},
+    {"god": ["Gott", "Götter", "der", "die", "m"]}
   ],
   verbs: [
-    {
-      german: 'geben',
-      english: 'to give',
-      type: 'verb',
-      conjugations: {
-        ich: 'gebe',
-        du: 'gibst',
-        er: 'gibt',
-        sie: 'gibt',
-        es: 'gibt',
-        wir: 'geben',
-        ihr: 'gebt',
-        sie: 'geben',
-        Sie: 'geben'
-      }
-    },
-    {
-      german: 'gehen',
-      english: 'to go',
-      type: 'verb',
-      conjugations: {
-        ich: 'gehe',
-        du: 'gehst',
-        er: 'geht',
-        sie: 'geht',
-        es: 'geht',
-        wir: 'gehen',
-        ihr: 'geht',
-        sie: 'gehen',
-        Sie: 'gehen'
-      }
-    },
-    {
-      german: 'glauben',
-      english: 'to believe',
-      type: 'verb',
-      conjugations: {
-        ich: 'glaube',
-        du: 'glaubst',
-        er: 'glaubt',
-        sie: 'glaubt',
-        es: 'glaubt',
-        wir: 'glauben',
-        ihr: 'glaubt',
-        sie: 'glauben',
-        Sie: 'glauben'
-      }
-    },
-    {
-      german: 'grüßen',
-      english: 'to greet',
-      type: 'verb',
-      conjugations: {
-        ich: 'grüße',
-        du: 'grüßt',
-        er: 'grüßt',
-        sie: 'grüßt',
-        es: 'grüßt',
-        wir: 'grüßen',
-        ihr: 'grüßt',
-        sie: 'grüßen',
-        Sie: 'grüßen'
-      }
-    }
+    {"to give": ["geben", "gebe", "gibst", "gibt", "gibt", "gibt", "geben", "gebt", "geben", "geben"]},
+    {"to go": ["gehen", "gehe", "gehst", "geht", "geht", "geht", "gehen", "geht", "gehen", "gehen"]},
+    {"to believe": ["glauben", "glaube", "glaubst", "glaubt", "glaubt", "glaubt", "glauben", "glaubt", "glauben", "glauben"]},
+    {"to greet": ["grüßen", "grüße", "grüßt", "grüßt", "grüßt", "grüßt", "grüßen", "grüßt", "grüßen", "grüßen"]}
   ],
   examples: {
     nominative: [

@@ -31,6 +31,63 @@ const vocabularyDatabase = {
   // ... all the way to z: letterZ
 }
 
+const genderMap = {
+  m: 'masculine',
+  f: 'feminine',
+  n: 'neuter',
+  p: 'plural'
+}
+
+// Hydrate compact format into full object structure
+const transformData = (letterData) => {
+  if (!letterData) return { nouns: [], verbs: [], examples: {} }
+
+  const nouns = (letterData.nouns || []).map(item => {
+    const english = Object.keys(item)[0]
+    const values = item[english]
+    return {
+      german: `${values[2]} ${values[0]}`, // Reconstruct full string like "der Abend"
+      word: values[0], // Store raw word if needed
+      english: english,
+      type: 'noun',
+      plural: values[1],
+      article: values[2],
+      pluralArticle: values[3],
+      gender: genderMap[values[4]] || values[4]
+    }
+  })
+
+  const verbs = (letterData.verbs || []).map(item => {
+    const english = Object.keys(item)[0]
+    const values = item[english]
+    return {
+      german: values[0], // Infinitive
+      english: english,
+      type: 'verb',
+      conjugations: {
+        ich: values[1],
+        du: values[2],
+        er: values[3],
+        // Note: 'sie' (singular) and 'sie' (plural) map to the same key in JS objects.
+        // Standard behavior overwrites the first with the second.
+        // We explicitly map the plural form to 'sie' to match typical overwriting behavior,
+        // but be aware this makes 'sie' (she) lookups potentially incorrect if logic doesn't distinguish.
+        sie: values[8], 
+        es: values[5],
+        wir: values[6],
+        ihr: values[7],
+        Sie: values[9]
+      }
+    }
+  })
+
+  return {
+    nouns,
+    verbs,
+    examples: letterData.examples || {}
+  }
+}
+
 // Get all available letters
 export const getAvailableLetters = () => {
   return Object.keys(vocabularyDatabase)
@@ -38,7 +95,8 @@ export const getAvailableLetters = () => {
 
 // Get vocabulary by letter
 export const getVocabularyByLetter = (letter) => {
-  return vocabularyDatabase[letter.toLowerCase()] || { nouns: [], verbs: [], examples: {} }
+  const rawData = vocabularyDatabase[letter.toLowerCase()]
+  return transformData(rawData)
 }
 
 // Get random letters for variety

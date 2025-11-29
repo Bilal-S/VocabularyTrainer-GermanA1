@@ -1,161 +1,21 @@
 export const letterH = {
   nouns: [
-    {
-      german: 'der Haus',
-      english: 'house',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Häuser',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Hafen',
-      english: 'harbor, port',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Häfen',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Kopf',
-      english: 'head',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Köpfe',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Handy',
-      english: 'mobile phone',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Handys',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Hunger',
-      english: 'hunger',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Hunge',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Herr',
-      english: 'Mr., gentleman',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Herren',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Hobby',
-      english: 'hobby',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Hobbys',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Herz',
-      english: 'heart',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Herzen',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Hand',
-      english: 'hand',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Hände',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Hotel',
-      english: 'hotel',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Hotels',
-      article: 'das',
-      pluralArticle: 'die'
-    }
+    {"house": ["Haus", "Häuser", "das", "die", "n"]},
+    {"harbor, port": ["Hafen", "Häfen", "der", "die", "m"]},
+    {"head": ["Kopf", "Köpfe", "der", "die", "m"]},
+    {"mobile phone": ["Handy", "Handys", "das", "die", "n"]},
+    {"hunger": ["Hunger", "Hunge", "der", "die", "m"]},
+    {"Mr., gentleman": ["Herr", "Herren", "der", "die", "m"]},
+    {"hobby": ["Hobby", "Hobbys", "das", "die", "n"]},
+    {"heart": ["Herz", "Herzen", "das", "die", "n"]},
+    {"hand": ["Hand", "Hände", "die", "die", "f"]},
+    {"hotel": ["Hotel", "Hotels", "das", "die", "n"]}
   ],
   verbs: [
-    {
-      german: 'haben',
-      english: 'to have',
-      type: 'verb',
-      conjugations: {
-        ich: 'habe',
-        du: 'hast',
-        er: 'hat',
-        sie: 'hat',
-        es: 'hat',
-        wir: 'haben',
-        ihr: 'habt',
-        sie: 'haben',
-        Sie: 'haben'
-      }
-    },
-    {
-      german: 'heißen',
-      english: 'to be called, to be named',
-      type: 'verb',
-      conjugations: {
-        ich: 'heiße',
-        du: 'heißt',
-        er: 'heißt',
-        sie: 'heißt',
-        es: 'heißt',
-        wir: 'heißen',
-        ihr: 'heißt',
-        sie: 'heißen',
-        Sie: 'heißen'
-      }
-    },
-    {
-      german: 'helfen',
-      english: 'to help',
-      type: 'verb',
-      conjugations: {
-        ich: 'helfe',
-        du: 'hilfst',
-        er: 'hilft',
-        sie: 'hilft',
-        es: 'hilft',
-        wir: 'helfen',
-        ihr: 'helft',
-        sie: 'helfen',
-        Sie: 'helfen'
-      }
-    },
-    {
-      german: 'holen',
-      english: 'to get, to fetch',
-      type: 'verb',
-      conjugations: {
-        ich: 'hole',
-        du: 'holst',
-        er: 'holt',
-        sie: 'holt',
-        es: 'holt',
-        wir: 'holen',
-        ihr: 'holt',
-        sie: 'holen',
-        Sie: 'holen'
-      }
-    }
+    {"to have": ["haben", "habe", "hast", "hat", "hat", "hat", "haben", "habt", "haben", "haben"]},
+    {"to be called, to be named": ["heißen", "heiße", "heißt", "heißt", "heißt", "heißt", "heißen", "heißt", "heißen", "heißen"]},
+    {"to help": ["helfen", "helfe", "hilfst", "hilft", "hilft", "hilft", "helfen", "helft", "helfen", "helfen"]},
+    {"to get, to fetch": ["holen", "hole", "holst", "holt", "holt", "holt", "holen", "holt", "holen", "holen"]}
   ],
   examples: {
     nominative: [

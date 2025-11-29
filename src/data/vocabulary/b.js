@@ -1,161 +1,21 @@
 export const letterB = {
   nouns: [
-    {
-      german: 'der Bahnhof',
-      english: 'train station',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Bahnhöfe',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Bad',
-      english: 'bath',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Bäder',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Baum',
-      english: 'tree',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Bäume',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Beispiel',
-      english: 'example',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Beispiele',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Berg',
-      english: 'mountain',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Berge',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Blume',
-      english: 'flower',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Blumen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Buch',
-      english: 'book',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Bücher',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Bruder',
-      english: 'brother',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Brüder',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Bank',
-      english: 'bank; bench',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Banken',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Beruf',
-      english: 'profession',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Berufe',
-      article: 'der',
-      pluralArticle: 'die'
-    }
+    {"train station": ["Bahnhof", "Bahnhöfe", "der", "die", "m"]},
+    {"bath": ["Bad", "Bäder", "das", "die", "n"]},
+    {"tree": ["Baum", "Bäume", "der", "die", "m"]},
+    {"example": ["Beispiel", "Beispiele", "das", "die", "n"]},
+    {"mountain": ["Berg", "Berge", "der", "die", "m"]},
+    {"flower": ["Blume", "Blumen", "die", "die", "f"]},
+    {"book": ["Buch", "Bücher", "das", "die", "n"]},
+    {"brother": ["Bruder", "Brüder", "der", "die", "m"]},
+    {"bank; bench": ["Bank", "Banken", "die", "die", "f"]},
+    {"profession": ["Beruf", "Berufe", "der", "die", "m"]}
   ],
   verbs: [
-    {
-      german: 'beginnen',
-      english: 'to begin',
-      type: 'verb',
-      conjugations: {
-        ich: 'beginne',
-        du: 'beginnst',
-        er: 'beginnt',
-        sie: 'beginnt',
-        es: 'beginnt',
-        wir: 'beginnen',
-        ihr: 'beginnt',
-        sie: 'beginnen',
-        Sie: 'beginnen'
-      }
-    },
-    {
-      german: 'brauchen',
-      english: 'to need',
-      type: 'verb',
-      conjugations: {
-        ich: 'brauche',
-        du: 'brauchst',
-        er: 'braucht',
-        sie: 'braucht',
-        es: 'braucht',
-        wir: 'brauchen',
-        ihr: 'braucht',
-        sie: 'brauchen',
-        Sie: 'brauchen'
-      }
-    },
-    {
-      german: 'besuchen',
-      english: 'to visit',
-      type: 'verb',
-      conjugations: {
-        ich: 'besuche',
-        du: 'besuchst',
-        er: 'besucht',
-        sie: 'besucht',
-        es: 'besucht',
-        wir: 'besuchen',
-        ihr: 'besucht',
-        sie: 'besuchen',
-        Sie: 'besuchen'
-      }
-    },
-    {
-      german: 'bekommen',
-      english: 'to get, to receive',
-      type: 'verb',
-      conjugations: {
-        ich: 'bekomme',
-        du: 'bekommst',
-        er: 'bekommt',
-        sie: 'bekommt',
-        es: 'bekommt',
-        wir: 'bekommen',
-        ihr: 'bekommt',
-        sie: 'bekommen',
-        Sie: 'bekommen'
-      }
-    }
+    {"to begin": ["beginnen", "beginne", "beginnst", "beginnt", "beginnt", "beginnt", "beginnen", "beginnt", "beginnen", "beginnen"]},
+    {"to need": ["brauchen", "brauche", "brauchst", "braucht", "braucht", "braucht", "brauchen", "braucht", "brauchen", "brauchen"]},
+    {"to visit": ["besuchen", "besuche", "besuchst", "besucht", "besucht", "besucht", "besuchen", "besucht", "besuchen", "besuchen"]},
+    {"to get, to receive": ["bekommen", "bekomme", "bekommst", "bekommt", "bekommt", "bekommt", "bekommen", "bekommt", "bekommen", "bekommen"]}
   ],
   examples: {
     nominative: [

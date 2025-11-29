@@ -1,161 +1,21 @@
 export const letterD = {
   nouns: [
-    {
-      german: 'der Tag',
-      english: 'day',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Tage',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Datum',
-      english: 'date',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Daten',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Tochter',
-      english: 'daughter',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Töchter',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Deutschland',
-      english: 'Germany',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Deutschlande',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Dezember',
-      english: 'December',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Dezembers',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Diskothek',
-      english: 'discotheque',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Diskotheken',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Dom',
-      english: 'cathedral',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Dome',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Drucker',
-      english: 'printer',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Drucker',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Dorf',
-      english: 'village',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Dörfer',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Dienstag',
-      english: 'Tuesday',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Dienstage',
-      article: 'der',
-      pluralArticle: 'die'
-    }
+    {"day": ["Tag", "Tage", "der", "die", "m"]},
+    {"date": ["Datum", "Daten", "das", "die", "n"]},
+    {"daughter": ["Tochter", "Töchter", "die", "die", "f"]},
+    {"Germany": ["Deutschland", "Deutschlande", "das", "die", "n"]},
+    {"December": ["Dezember", "Dezembers", "der", "die", "m"]},
+    {"discotheque": ["Diskothek", "Diskotheken", "die", "die", "f"]},
+    {"cathedral": ["Dom", "Dome", "der", "die", "m"]},
+    {"printer": ["Drucker", "Drucker", "der", "die", "m"]},
+    {"village": ["Dorf", "Dörfer", "das", "die", "n"]},
+    {"Tuesday": ["Dienstag", "Dienstage", "der", "die", "m"]}
   ],
   verbs: [
-    {
-      german: 'danken',
-      english: 'to thank',
-      type: 'verb',
-      conjugations: {
-        ich: 'danke',
-        du: 'dankst',
-        er: 'dankt',
-        sie: 'dankt',
-        es: 'dankt',
-        wir: 'danken',
-        ihr: 'dankt',
-        sie: 'danken',
-        Sie: 'danken'
-      }
-    },
-    {
-      german: 'denken',
-      english: 'to think',
-      type: 'verb',
-      conjugations: {
-        ich: 'denke',
-        du: 'denkst',
-        er: 'denkt',
-        sie: 'denkt',
-        es: 'denkt',
-        wir: 'denken',
-        ihr: 'denkt',
-        sie: 'denken',
-        Sie: 'denken'
-      }
-    },
-    {
-      german: 'dienen',
-      english: 'to serve',
-      type: 'verb',
-      conjugations: {
-        ich: 'diene',
-        du: 'dienst',
-        er: 'dient',
-        sie: 'dient',
-        es: 'dient',
-        wir: 'dienen',
-        ihr: 'dient',
-        sie: 'dienen',
-        Sie: 'dienen'
-      }
-    },
-    {
-      german: 'dürfen',
-      english: 'to be allowed to',
-      type: 'verb',
-      conjugations: {
-        ich: 'darf',
-        du: 'darfst',
-        er: 'darf',
-        sie: 'darf',
-        es: 'darf',
-        wir: 'dürfen',
-        ihr: 'dürft',
-        sie: 'dürfen',
-        Sie: 'dürfen'
-      }
-    }
+    {"to thank": ["danken", "danke", "dankst", "dankt", "dankt", "dankt", "danken", "dankt", "danken", "danken"]},
+    {"to think": ["denken", "denke", "denkst", "denkt", "denkt", "denkt", "denken", "denkt", "denken", "denken"]},
+    {"to serve": ["dienen", "diene", "dienst", "dient", "dient", "dient", "dienen", "dient", "dienen", "dienen"]},
+    {"to be allowed to": ["dürfen", "darf", "darfst", "darf", "darf", "darf", "dürfen", "dürft", "dürfen", "dürfen"]}
   ],
   examples: {
     nominative: [

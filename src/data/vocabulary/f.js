@@ -1,161 +1,21 @@
 export const letterF = {
   nouns: [
-    {
-      german: 'der Freund',
-      english: 'friend (male)',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Freunde',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Freundin',
-      english: 'friend (female)',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Freundinnen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Fenster',
-      english: 'window',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Fenster',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Februar',
-      english: 'February',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Februare',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Fahrrad',
-      english: 'bicycle',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Fahrräder',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Familie',
-      english: 'family',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Familien',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Frau',
-      english: 'woman, wife',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Frauen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Foto',
-      english: 'photo',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Fotos',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Fußball',
-      english: 'football, soccer',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Fußbälle',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Film',
-      english: 'film, movie',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Filme',
-      article: 'der',
-      pluralArticle: 'die'
-    }
+    {"friend (male)": ["Freund", "Freunde", "der", "die", "m"]},
+    {"friend (female)": ["Freundin", "Freundinnen", "die", "die", "f"]},
+    {"window": ["Fenster", "Fenster", "das", "die", "n"]},
+    {"February": ["Februar", "Februare", "der", "die", "m"]},
+    {"bicycle": ["Fahrrad", "Fahrräder", "das", "die", "n"]},
+    {"family": ["Familie", "Familien", "die", "die", "f"]},
+    {"woman, wife": ["Frau", "Frauen", "die", "die", "f"]},
+    {"photo": ["Foto", "Fotos", "das", "die", "n"]},
+    {"football, soccer": ["Fußball", "Fußbälle", "der", "die", "m"]},
+    {"film, movie": ["Film", "Filme", "der", "die", "m"]}
   ],
   verbs: [
-    {
-      german: 'finden',
-      english: 'to find',
-      type: 'verb',
-      conjugations: {
-        ich: 'finde',
-        du: 'findest',
-        er: 'findet',
-        sie: 'findet',
-        es: 'findet',
-        wir: 'finden',
-        ihr: 'findet',
-        sie: 'finden',
-        Sie: 'finden'
-      }
-    },
-    {
-      german: 'fragen',
-      english: 'to ask',
-      type: 'verb',
-      conjugations: {
-        ich: 'frage',
-        du: 'fragst',
-        er: 'fragt',
-        sie: 'fragt',
-        es: 'fragt',
-        wir: 'fragen',
-        ihr: 'fragt',
-        sie: 'fragen',
-        Sie: 'fragen'
-      }
-    },
-    {
-      german: 'fahren',
-      english: 'to drive, to travel',
-      type: 'verb',
-      conjugations: {
-        ich: 'fahre',
-        du: 'fährst',
-        er: 'fährt',
-        sie: 'fährt',
-        es: 'fährt',
-        wir: 'fahren',
-        ihr: 'fahrt',
-        sie: 'fahren',
-        Sie: 'fahren'
-      }
-    },
-    {
-      german: 'fallen',
-      english: 'to fall',
-      type: 'verb',
-      conjugations: {
-        ich: 'falle',
-        du: 'fällst',
-        er: 'fällt',
-        sie: 'fällt',
-        es: 'fällt',
-        wir: 'fallen',
-        ihr: 'fallt',
-        sie: 'fallen',
-        Sie: 'fallen'
-      }
-    }
+    {"to find": ["finden", "finde", "findest", "findet", "findet", "findet", "finden", "findet", "finden", "finden"]},
+    {"to ask": ["fragen", "frage", "fragst", "fragt", "fragt", "fragt", "fragen", "fragt", "fragen", "fragen"]},
+    {"to drive, to travel": ["fahren", "fahre", "fährst", "fährt", "fährt", "fährt", "fahren", "fahrt", "fahren", "fahren"]},
+    {"to fall": ["fallen", "falle", "fällst", "fällt", "fällt", "fällt", "fallen", "fallt", "fallen", "fallen"]}
   ],
   examples: {
     nominative: [

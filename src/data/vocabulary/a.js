@@ -1,161 +1,21 @@
 export const letterA = {
   nouns: [
-    {
-      german: 'der Abend',
-      english: 'evening',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Abende',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Adresse',
-      english: 'address',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Adressen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Alter',
-      english: 'age',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Alter',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Ankunft',
-      english: 'arrival',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Ankünfte',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Antwort',
-      english: 'answer',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Antworten',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Apfel',
-      english: 'apple',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Äpfel',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Arbeit',
-      english: 'work',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Arbeiten',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'der Arzt',
-      english: 'doctor',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Ärzte',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Auto',
-      english: 'car',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Autos',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Auge',
-      english: 'eye',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Augen',
-      article: 'das',
-      pluralArticle: 'die'
-    }
+    {"evening": ["Abend", "Abende", "der", "die", "m"]},
+    {"address": ["Adresse", "Adressen", "die", "die", "f"]},
+    {"age": ["Alter", "Alter", "das", "die", "n"]},
+    {"arrival": ["Ankunft", "Ankünfte", "der", "die", "m"]},
+    {"answer": ["Antwort", "Antworten", "die", "die", "f"]},
+    {"apple": ["Apfel", "Äpfel", "der", "die", "m"]},
+    {"work": ["Arbeit", "Arbeiten", "die", "die", "f"]},
+    {"doctor": ["Arzt", "Ärzte", "der", "die", "m"]},
+    {"car": ["Auto", "Autos", "das", "die", "n"]},
+    {"eye": ["Auge", "Augen", "das", "die", "n"]}
   ],
   verbs: [
-    {
-      german: 'antworten',
-      english: 'to answer',
-      type: 'verb',
-      conjugations: {
-        ich: 'antworte',
-        du: 'antwortest',
-        er: 'antwortet',
-        sie: 'antwortet',
-        es: 'antwortet',
-        wir: 'antworten',
-        ihr: 'antwortet',
-        sie: 'antworten',
-        Sie: 'antworten'
-      }
-    },
-    {
-      german: 'arbeiten',
-      english: 'to work',
-      type: 'verb',
-      conjugations: {
-        ich: 'arbeite',
-        du: 'arbeitest',
-        er: 'arbeitet',
-        sie: 'arbeitet',
-        es: 'arbeitet',
-        wir: 'arbeiten',
-        ihr: 'arbeitet',
-        sie: 'arbeiten',
-        Sie: 'arbeiten'
-      }
-    },
-    {
-      german: 'anfangen',
-      english: 'to begin',
-      type: 'verb',
-      conjugations: {
-        ich: 'fange an',
-        du: 'fängst an',
-        er: 'fängt an',
-        sie: 'fängt an',
-        es: 'fängt an',
-        wir: 'fangen an',
-        ihr: 'fangt an',
-        sie: 'fangen an',
-        Sie: 'fangen an'
-      }
-    },
-    {
-      german: 'ankommen',
-      english: 'to arrive',
-      type: 'verb',
-      conjugations: {
-        ich: 'komme an',
-        du: 'kommst an',
-        er: 'kommt an',
-        sie: 'kommt an',
-        es: 'kommt an',
-        wir: 'kommen an',
-        ihr: 'kommt an',
-        sie: 'kommen an',
-        Sie: 'kommen an'
-      }
-    }
+    {"to answer": ["antworten", "antworte", "antwortest", "antwortet", "antwortet", "antwortet", "antworten", "antwortet", "antworten", "antworten"]},
+    {"to work": ["arbeiten", "arbeite", "arbeitest", "arbeitet", "arbeitet", "arbeitet", "arbeiten", "arbeitet", "arbeiten", "arbeiten"]},
+    {"to begin": ["anfangen", "fange an", "fängst an", "fängt an", "fängt an", "fängt an", "fangen an", "fangt an", "fangen an", "fangen an"]},
+    {"to arrive": ["ankommen", "komme an", "kommst an", "kommt an", "kommt an", "kommt an", "kommen an", "kommt an", "kommen an", "kommen an"]}
   ],
   examples: {
     nominative: [

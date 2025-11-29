@@ -1,161 +1,21 @@
 export const letterE = {
   nouns: [
-    {
-      german: 'das Essen',
-      english: 'meal, food',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Essen',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die E-Mail',
-      english: 'email',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die E-Mails',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Entschuldigung',
-      english: 'apology',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Entschuldigungen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Erfahrung',
-      english: 'experience',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Erfahrungen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Ehepaar',
-      english: 'married couple',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Ehepaare',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Einkauf',
-      english: 'purchase, shopping',
-      type: 'noun',
-      gender: 'masculine',
-      plural: 'die Einkäufe',
-      article: 'der',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'das Einladung',
-      english: 'invitation',
-      type: 'noun',
-      gender: 'neuter',
-      plural: 'die Einladungen',
-      article: 'das',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Eltern',
-      english: 'parents',
-      type: 'noun',
-      gender: 'plural',
-      plural: 'die Eltern',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Enkelin',
-      english: 'granddaughter',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Enkelinnen',
-      article: 'die',
-      pluralArticle: 'die'
-    },
-    {
-      german: 'die Erdbeere',
-      english: 'strawberry',
-      type: 'noun',
-      gender: 'feminine',
-      plural: 'die Erdbeeren',
-      article: 'die',
-      pluralArticle: 'die'
-    }
+    {"meal, food": ["Essen", "Essen", "das", "die", "n"]},
+    {"email": ["E-Mail", "E-Mails", "die", "die", "f"]},
+    {"apology": ["Entschuldigung", "Entschuldigungen", "die", "die", "f"]},
+    {"experience": ["Erfahrung", "Erfahrungen", "die", "die", "f"]},
+    {"married couple": ["Ehepaar", "Ehepaare", "das", "die", "n"]},
+    {"purchase, shopping": ["Einkauf", "Einkäufe", "der", "die", "m"]},
+    {"invitation": ["Einladung", "Einladungen", "das", "die", "n"]},
+    {"parents": ["Eltern", "Eltern", "die", "die", "p"]},
+    {"granddaughter": ["Enkelin", "Enkelinnen", "die", "die", "f"]},
+    {"strawberry": ["Erdbeere", "Erdbeeren", "die", "die", "f"]}
   ],
   verbs: [
-    {
-      german: 'erzählen',
-      english: 'to tell, to count',
-      type: 'verb',
-      conjugations: {
-        ich: 'erzähle',
-        du: 'erzählst',
-        er: 'erzählt',
-        sie: 'erzählt',
-        es: 'erzählt',
-        wir: 'erzählen',
-        ihr: 'erzählt',
-        sie: 'erzählen',
-        Sie: 'erzählen'
-      }
-    },
-    {
-      german: 'erinnern',
-      english: 'to remember',
-      type: 'verb',
-      conjugations: {
-        ich: 'erinnere',
-        du: 'erinnerst',
-        er: 'erinnert',
-        sie: 'erinnert',
-        es: 'erinnert',
-        wir: 'erinnern',
-        ihr: 'erinnert',
-        sie: 'erinnern',
-        Sie: 'erinnern'
-      }
-    },
-    {
-      german: 'erlauben',
-      english: 'to allow',
-      type: 'verb',
-      conjugations: {
-        ich: 'erlaube',
-        du: 'erlaubst',
-        er: 'erlaubt',
-        sie: 'erlaubt',
-        es: 'erlaubt',
-        wir: 'erlauben',
-        ihr: 'erlaubt',
-        sie: 'erlauben',
-        Sie: 'erlauben'
-      }
-    },
-    {
-      german: 'essen',
-      english: 'to eat',
-      type: 'verb',
-      conjugations: {
-        ich: 'esse',
-        du: 'isst',
-        er: 'isst',
-        sie: 'isst',
-        es: 'isst',
-        wir: 'essen',
-        ihr: 'esst',
-        sie: 'essen',
-        Sie: 'essen'
-      }
-    }
+    {"to tell, to count": ["erzählen", "erzähle", "erzählst", "erzählt", "erzählt", "erzählt", "erzählen", "erzählt", "erzählen", "erzählen"]},
+    {"to remember": ["erinnern", "erinnere", "erinnerst", "erinnert", "erinnert", "erinnert", "erinnern", "erinnert", "erinnern", "erinnern"]},
+    {"to allow": ["erlauben", "erlaube", "erlaubst", "erlaubt", "erlaubt", "erlaubt", "erlauben", "erlaubt", "erlauben", "erlauben"]},
+    {"to eat": ["essen", "esse", "isst", "isst", "isst", "isst", "essen", "esst", "essen", "essen"]}
   ],
   examples: {
     nominative: [
