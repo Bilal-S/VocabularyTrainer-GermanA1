@@ -536,19 +536,28 @@ Please conjugate the following **verbs for the given subjects**:
       }
     })
     
+    // Helper to get the appropriate display prompt based on exercise type
+    const getPrompt = (exercise) => {
+      if (exercise.type === 'article') return exercise.german
+      if (exercise.type === 'plural') return exercise.singular
+      if (exercise.type === 'conjugation') return `${exercise.verb} (${exercise.subject})`
+      return exercise.english || exercise.question || exercise.german
+    }
+
     if (newlyAnsweredItems.length > 0) {
       feedback += `**Feedback for this round:**\n\n`
       
       newlyAnsweredItems.forEach(({ exercise, index, userAnswer }) => {
         const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type)
+        const prompt = getPrompt(exercise)
         
         if (isCorrect) {
-          feedback += `${index + 1}. **${exercise.english}**: Your answer: **${userAnswer}** ✅\n`
+          feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** ✅\n`
           // Update progress for correct answers
           updateProgress(exercise.word, true, `${stepName}`)
         } else {
-          const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${exercise.english}" in German?`)
-          feedback += `${index + 1}. **${exercise.english}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${exercise.answer}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
+          const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${prompt}" in German?`)
+          feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${exercise.answer}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
           // Update progress for incorrect answers
           updateProgress(exercise.word, false, `${stepName}`)
@@ -570,11 +579,13 @@ Please conjugate the following **verbs for the given subjects**:
       answeredItems.forEach(({ index, exercise, answer }) => {
         // Validation logic for summary list
         const isCorrect = vocabManager.validateAnswer(answer, exercise.answer, exercise.type)
+        const prompt = getPrompt(exercise)
+        
         if (isCorrect) {
-          feedback += `${index + 1}. **${exercise.english}**: **${answer}** ✅\n`
+          feedback += `${index + 1}. **${prompt}**: **${answer}** ✅\n`
         } else {
-          const helpQuery = encodeURIComponent(`Why is "${answer}" wrong for "${exercise.english}" in German?`)
-          feedback += `${index + 1}. **${exercise.english}**: **${answer}** <span style="color: red;">❌ Correction: **${exercise.answer}**</span> <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
+          const helpQuery = encodeURIComponent(`Why is "${answer}" wrong for "${prompt}" in German?`)
+          feedback += `${index + 1}. **${prompt}**: **${answer}** <span style="color: red;">❌ Correction: **${exercise.answer}**</span> <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
         }
       });
       feedback += `\n***\n\n`
@@ -613,8 +624,7 @@ Please conjugate the following **verbs for the given subjects**:
     // List remaining items (only unanswered ones) with original numbering
     currentBatch.forEach((exercise, actualIndex) => {
       if (!allAnswers[actualIndex]) {
-        // Use generic prompt based on exercise type if possible, or just print english/question
-        const prompt = exercise.english || exercise.question || exercise.singular || exercise.german
+        const prompt = getPrompt(exercise)
         feedback += `${actualIndex + 1}. ${prompt}\n`
       }
     })

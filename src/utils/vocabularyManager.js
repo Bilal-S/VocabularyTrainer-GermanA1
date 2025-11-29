@@ -185,6 +185,7 @@ export class VocabularyManager {
 
     this.currentBatch = translations.map(t => ({
       ...t,
+      answer: t.german, // Ensure answer property exists
       type: 'translation'
     }))
 
@@ -274,8 +275,13 @@ export class VocabularyManager {
 
   // Validate user answers
   validateAnswer(userAnswer, correctAnswer, type) {
-    const normalizedUser = userAnswer.trim().toLowerCase()
-    const normalizedCorrect = correctAnswer.trim().toLowerCase()
+    if (userAnswer === undefined || userAnswer === null || correctAnswer === undefined || correctAnswer === null) {
+      console.warn('validateAnswer called with missing arguments', { userAnswer, correctAnswer, type })
+      return false
+    }
+
+    const normalizedUser = String(userAnswer).trim().toLowerCase()
+    const normalizedCorrect = String(correctAnswer).trim().toLowerCase()
 
     switch (type) {
       case 'noun':
