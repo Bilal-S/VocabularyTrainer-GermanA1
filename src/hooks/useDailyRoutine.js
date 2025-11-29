@@ -98,7 +98,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress) => {
     setMessages(prev => [...prev, message])
   }, [setMessages])
 
-  const processCommand = useCallback(async (command) => {
+  const processCommand = async (command) => {
     const normalizedCommand = command.trim().toLowerCase()
 
     if (normalizedCommand === 'today is a new day') {
@@ -121,9 +121,12 @@ export const useDailyRoutine = (state, setMessages, updateProgress) => {
 - **"Next Step"** - Skip to next exercise
 - **"clear all progress data"** - Reset all progress`)
     }
-  }, [currentStep, addSystemMessage, isBatchMode])
+  }
 
   const startDailyRoutine = async () => {
+    // Reset batch answers when starting a new day
+    setBatchAnswers({})
+    
     // Check if review queue is empty
     if (state.pools.reviewQueue.length === 0) {
       // Skip directly to Step 2
@@ -185,7 +188,7 @@ Type your answer below:`)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        setBatchAnswers({}) // Reset answers for new batch
+        setBatchAnswers({}) // Reset answers when starting a new batch
         
         // Generate initial batch message
         let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from the Goethe-Institut A1 list.
@@ -206,6 +209,7 @@ Please translate the following **English nouns** into **German** (Article + Noun
 *Example: 1. house -> das Haus*
 
 `
+        // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
           batchMessage += `${index + 1}. ${item.english}\n`
         })
@@ -220,7 +224,10 @@ Please translate the following **English nouns** into **German** (Article + Noun
       case 'PLURAL':
         batch = vocabManager.generatePluralBatch(state.pools.unselected)
         setCurrentBatch(batch)
+        setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
+        setBatchAnswers({}) // Reset answers when starting a new batch
+        
         let pluralMessage = `### **Step 3: Plural Practice (20 Nouns)**
 **[Step 3 | Batch 1 | Remaining: ${batch.length}]**
 
@@ -228,6 +235,7 @@ Please provide the **plural forms** for the following German nouns:
 *Example: 1. das Haus -> die Häuser*
 
 `
+        // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
           pluralMessage += `${index + 1}. ${item.singular}\n`
         })
@@ -236,13 +244,17 @@ Please provide the **plural forms** for the following German nouns:
       case 'ARTICLES':
         batch = vocabManager.generateArticlesBatch()
         setCurrentBatch(batch)
+        setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
+        setBatchAnswers({}) // Reset answers when starting a new batch
+        
         let articlesMessage = `### **Step 4: Articles in Context (30 Items)**
 **[Step 4 | Batch 1 | Remaining: ${batch.length}]**
 
 Please fill in the blanks with the **correct articles** (der, die, das, ein, eine):
 
 `
+        // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
           articlesMessage += `${index + 1}. ${item.german}\n`
         })
@@ -251,13 +263,17 @@ Please fill in the blanks with the **correct articles** (der, die, das, ein, ein
       case 'TRANSLATIONS':
         batch = vocabManager.generateTranslationBatch()
         setCurrentBatch(batch)
+        setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
+        // Don't reset batchAnswers here - it should only be reset when starting a new batch
+        
         let translationsMessage = `### **Step 5: Case Translations (30 Items)**
 **[Step 5 | Batch 1 | Remaining: ${batch.length}]**
 
 Please translate the following **sentences from English to German**:
 
 `
+        // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
           translationsMessage += `${index + 1}. ${item.english}\n`
         })
@@ -266,13 +282,17 @@ Please translate the following **sentences from English to German**:
       case 'VERBS':
         batch = vocabManager.generateVerbBatch()
         setCurrentBatch(batch)
+        setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
+        // Don't reset batchAnswers here - it should only be reset when starting a new batch
+        
         let verbsMessage = `### **Step 6: Verb Conjugation (30 Items)**
 **[Step 6 | Batch 1 | Remaining: ${batch.length}]**
 
 Please conjugate the following **verbs for the given subjects**:
 
 `
+        // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
           verbsMessage += `${index + 1}. ${item.verb} (${item.subject})\n`
         })
@@ -418,46 +438,60 @@ Please conjugate the following **verbs for the given subjects**:
   const handleBatchAnswer = async (answer) => {
     // Parse batch answer (numbered list or line-by-line)
     const lines = answer.split('\n').filter(line => line.trim())
-    const newAnswers = []
+    const numberedAnswers = []
+    const sequentialAnswers = []
     
     lines.forEach(line => {
       const match = line.match(/^(\d+)\.\s*(.+)$/i)
       if (match) {
-        newAnswers.push({ index: parseInt(match[1]) - 1, answer: match[2].trim() })
+        numberedAnswers.push({ index: parseInt(match[1]) - 1, answer: match[2].trim() })
       } else if (line.trim()) {
-        newAnswers.push({ index: newAnswers.length, answer: line.trim() })
+        // For non-numbered lines, treat as sequential answers for remaining items
+        sequentialAnswers.push({ index: null, answer: line.trim() })
       }
     })
 
-    // Update batch answers with new responses
-    const updatedBatchAnswers = { ...batchAnswers }
-    
-    // If this is a subsequent response, map answers to remaining items
+    // Check for mixed numbered and sequential answers
+    if (numberedAnswers.length > 0 && sequentialAnswers.length > 0) {
+      addSystemMessage("⚠️ Error: Please provide either all numbered answers (e.g., '1. answer') or all sequential answers (one per line). Mixed formats are not supported.");
+      return;
+    }
+
+    // Get current unanswered items (based on current batchAnswers state)
     const unansweredIndices = currentBatch
       .map((_, index) => index)
       .filter(index => !batchAnswers[index])
+
+    // Update batch answers with new responses
+    const updatedBatchAnswers = { ...batchAnswers }
+    const newlyAnsweredIndices = []
     
-    if (unansweredIndices.length > 0 && newAnswers.length > 0) {
-      // Map new answers to remaining unanswered items
-      newAnswers.forEach((answerObj, i) => {
-        if (i < unansweredIndices.length) {
-          const actualIndex = unansweredIndices[i]
-          updatedBatchAnswers[actualIndex] = answerObj.answer
+    if (numberedAnswers.length > 0) {
+      // Handle numbered answers
+      numberedAnswers.forEach(answerObj => {
+        if (answerObj.index !== null && answerObj.index < currentBatch.length) {
+          // Direct numbered answer - use the specified index (if not already answered)
+          if (!batchAnswers[answerObj.index]) {
+            updatedBatchAnswers[answerObj.index] = answerObj.answer
+            newlyAnsweredIndices.push(answerObj.index)
+          }
         }
       })
     } else {
-      // First response - use direct indexing
-      newAnswers.forEach((answerObj) => {
-        if (answerObj.index < currentBatch.length) {
-          updatedBatchAnswers[answerObj.index] = answerObj.answer
+      // Handle sequential answers - map to remaining unanswered items in order
+      sequentialAnswers.forEach((answerObj, i) => {
+        if (i < unansweredIndices.length) {
+          const targetIndex = unansweredIndices[i]
+          updatedBatchAnswers[targetIndex] = answerObj.answer
+          newlyAnsweredIndices.push(targetIndex)
         }
       })
     }
     
     setBatchAnswers(updatedBatchAnswers)
     
-    // Grade batch answers
-    const feedback = generateBatchFeedback(updatedBatchAnswers)
+    // Grade batch answers - only provide feedback for newly answered items
+    const feedback = generateBatchFeedback(updatedBatchAnswers, newlyAnsweredIndices)
     addSystemMessage(feedback)
     
     // Update progress based on total answered items
@@ -468,7 +502,8 @@ Please conjugate the following **verbs for the given subjects**:
     }))
   }
 
-  const generateBatchFeedback = (allAnswers) => {
+
+  const generateBatchFeedback = (allAnswers, newlyAnsweredIndices) => {
     // Enhanced error handling with fallback
     if (!currentBatch || !currentBatch.length) {
       console.error('No batch available for grading. Current batch:', currentBatch)
@@ -487,19 +522,20 @@ Please conjugate the following **verbs for the given subjects**:
     const totalAnswered = Object.keys(allAnswers).length
     const remaining = currentBatch.length - totalAnswered
     
-    // Show feedback only for items that have answers
-    const answeredItems = []
-    currentBatch.forEach((exercise, index) => {
+    // Show feedback only for newly answered items in this round
+    const newlyAnsweredItems = []
+    newlyAnsweredIndices.forEach(index => {
+      const exercise = currentBatch[index]
       const userAnswer = allAnswers[index]
-      if (userAnswer && userAnswer.trim()) {
-        answeredItems.push({ exercise, index, userAnswer })
+      if (exercise && userAnswer) {
+        newlyAnsweredItems.push({ exercise, index, userAnswer })
       }
     })
     
-    if (answeredItems.length > 0) {
-      feedback += `**Feedback:**\n\n`
+    if (newlyAnsweredItems.length > 0) {
+      feedback += `**Feedback for this round:**\n\n`
       
-      answeredItems.forEach(({ exercise, index, userAnswer }) => {
+      newlyAnsweredItems.forEach(({ exercise, index, userAnswer }) => {
         const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type)
         
         if (isCorrect) {
@@ -518,7 +554,20 @@ Please conjugate the following **verbs for the given subjects**:
       feedback += `\n`
     }
     
-    feedback += `***\n\n`
+    // Display summary of all answers received so far
+    const answeredItems = Object.keys(allAnswers).map(index => ({
+      index: parseInt(index),
+      exercise: currentBatch[parseInt(index)],
+      answer: allAnswers[index]
+    })).sort((a, b) => a.index - b.index);
+    
+    if (answeredItems.length > 0) {
+      feedback += `**All answers submitted so far (${answeredItems.length}/${currentBatch.length}):**\n\n`
+      answeredItems.forEach(({ index, exercise, answer }) => {
+        feedback += `${index + 1}. **${exercise.english}**: **${answer}**\n`
+      });
+      feedback += `\n***\n\n`
+    }
     
     // Check if all items have been answered
     if (remaining === 0) {
@@ -540,15 +589,16 @@ Please conjugate the following **verbs for the given subjects**:
     feedback += `**[Step 2 | Batch 1 | Remaining: ${remaining}]**\n\n`
     feedback += `Please continue with the remaining nouns. Translate the following into **German** (Article + Noun):\n\n`
     
-    // List remaining items (only unanswered ones)
-    currentBatch.forEach((exercise, index) => {
-      if (!allAnswers[index]) {
-        feedback += `${index + 1}. ${exercise.english}\n`
+    // List remaining items (only unanswered ones) with original numbering
+    currentBatch.forEach((exercise, actualIndex) => {
+      if (!allAnswers[actualIndex]) {
+        feedback += `${actualIndex + 1}. ${exercise.english}\n`
       }
     })
     
     return feedback
   }
+
 
   const completeStep = async () => {
     if (currentStep < 7) {
@@ -558,6 +608,7 @@ Please conjugate the following **verbs for the given subjects**:
       const stepKey = STEPS[nextStep]
       const config = STEP_CONFIG[stepKey]
       setBatchProgress({ completed: 0, total: config.totalItems })
+      setBatchAnswers({}) // Reset answers when moving to a new step/batch
       
       addSystemMessage(`# ✅ Step ${currentStep} Complete!
 

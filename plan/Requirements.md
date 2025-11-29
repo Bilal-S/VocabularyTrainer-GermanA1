@@ -1,4 +1,4 @@
-Here’s a **Product Requirement Document (PRD)** for your single-page web application based on the detailed behavior you provided:
+Here's a **Product Requirement Document (PRD)** for your single-page web application based on the detailed behavior you provided:
 
 ***
 
@@ -23,9 +23,9 @@ It should use modern web standards with response behavior and attractive designs
 
 *   Conversational UI for interaction.
 *   Commands:
-    *   **“Today is a new day”** → triggers full daily routine.
-    *   **“Next Step”** → skips current step and moves to next.
-    *   **“clear all progress data”** → resets user progress.
+    *   **"Today is a new day"** → triggers full daily routine.
+    *   **"Next Step"** → skips current step and moves to next.
+    *   **"clear all progress data"** → resets user progress.
 *   Static Section Headers banners. As you move to next section the section header description, colors should update to reflect the new section. The banner should display progress inside the current section.
 *   Start with `Introduction` section that describes this application and basic commands.
 
@@ -182,4 +182,64 @@ It should use modern web standards with response behavior and attractive designs
 *   No alphabetical order in exercises.
 *   Must handle partial responses gracefully by re-prompting for remaining answers for the section.
 
+***
 
+## **8. Batch Grading Patterns**
+
+### **8.1 Multiple Submissions Handling**
+
+The application supports cumulative partial responses for batch exercises. When users submit partial answers:
+
+*   **State Preservation**: All previously submitted and graded answers are preserved in the system state.
+*   **Progressive Feedback**: Only feedback for newly submitted items is shown in each response.
+*   **Running Summary**: the section header maintain and displays a cumulative progress bar of the number of answers submitted and questions vs total questions.
+*   **Remaining Items**: The system re-prompts with only the remaining unanswered items, maintaining original numbering.
+
+### **8.2 Numbered vs Sequential Answer Formats**
+
+#### **Numbered Format (Preferred)**
+Users can submit answers with original question numbers:
+```
+1. der Abflug
+3. das Angebot
+5. die Antwort
+```
+
+*   Answers are mapped to their exact question positions
+*   System validates that numbers correspond to unanswered items
+*   Provides targeted feedback for specified items
+
+#### **Sequential Format**
+Users can submit answers without numbers:
+```
+der Abflug
+das Angebot
+die Antwort
+```
+
+*   Answers are mapped sequentially to remaining unanswered items
+*   System maintains internal tracking of which items remain
+*   Provides feedback in order of submission
+
+### **8.3 Error Handling**
+
+*   **Mixed Format Detection**: System rejects responses that mix numbered and sequential formats
+*   **Duplicate Prevention**: Previously answered items cannot be re-submitted
+*   **Validation Feedback**: Clear error messages for malformed responses
+*   **Retry Guidance**: Specific instructions on correct response format
+
+### **8.4 Feedback Structure**
+
+Each partial response follows this pattern:
+
+1. **Header**: `[Step X | Batch Y | Grading Partial Response]`
+2. **New Feedback**: Feedback only for items in current submission
+3. **Running Summary**: All answers submitted so far with original numbering
+4. **Remaining Prompt**: Updated list of remaining items with original numbers
+5. **Progress Indicators**: Clear count of completed vs remaining items
+
+### **8.5 Completion Handling**
+
+*   **Auto-advancement**: When all items in a batch are answered, system automatically moves to next step
+*   **Final Summary**: Completion message shows progress statistics
+*   **Transition Message**: Clear indication of next step with instructions
