@@ -243,3 +243,55 @@ Each partial response follows this pattern:
 *   **Auto-advancement**: When all items in a batch are answered, system automatically moves to next step
 *   **Final Summary**: Completion message shows progress statistics
 *   **Transition Message**: Clear indication of next step with instructions
+
+***
+
+## **9. Vocabulary Data Structure**
+
+To optimize file size and maintenance, vocabulary files (`src/data/vocabulary/[letter].js`) use a compact, position-based array format. The application hydrates this data into standard objects at runtime.
+
+### **9.1 Compact Storage Format**
+
+#### **Nouns**
+Stored as an object where the key is the English meaning and value is an array:
+```json
+{
+  "English Word": ["German Singular", "German Plural", "Singular Article", "Plural Article", "Gender Code"]
+}
+```
+*   **Gender Codes**: `m` (masculine), `f` (feminine), `n` (neuter)
+
+#### **Verbs**
+Stored as an object where the key is the English meaning and value is an array of 10 items:
+```json
+{
+  "English Meaning": [
+    "Infinitive",
+    "ich form",
+    "du form",
+    "er form",
+    "sie (she) form",
+    "es form",
+    "wir form",
+    "ihr form",
+    "sie (they) form",
+    "Sie (formal) form"
+  ]
+}
+```
+
+### **9.2 Runtime Hydration**
+
+The `src/data/vocabulary/index.js` loader transforms this compact data into usable objects:
+
+*   **Noun Object**:
+    *   `german`: Reconstructed as "Article + Word" (e.g., "der Abend")
+    *   `plural`: Reconstructed as "Plural Article + Plural Word" (e.g., "die Abende")
+    *   `gender`: Mapped from code to full string (e.g., 'm' -> 'masculine')
+
+*   **Verb Object**:
+    *   `german`: Infinitive form.
+    *   `conjugations`: An object with explicit keys to avoid ambiguity:
+        *   `ich`, `du`, `er`, `es`, `wir`, `ihr`, `Sie` (standard)
+        *   `sie (she)`: Mapped from index 4
+        *   `sie (they)`: Mapped from index 8
