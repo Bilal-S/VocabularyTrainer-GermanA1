@@ -1,21 +1,34 @@
 export const letterH = {
   nouns: [
-    {"house": ["Haus", "Häuser", "das", "die", "n"]},
-    {"harbor, port": ["Hafen", "Häfen", "der", "die", "m"]},
-    {"head": ["Kopf", "Köpfe", "der", "die", "m"]},
-    {"mobile phone": ["Handy", "Handys", "das", "die", "n"]},
-    {"hunger": ["Hunger", "Hunge", "der", "die", "m"]},
-    {"Mr., gentleman": ["Herr", "Herren", "der", "die", "m"]},
-    {"hobby": ["Hobby", "Hobbys", "das", "die", "n"]},
-    {"heart": ["Herz", "Herzen", "das", "die", "n"]},
+    {"hair": ["Haar", "Haare", "das", "die", "n"]},
+    {"chicken": ["Hähnchen", "Hähnchen", "das", "die", "n"]},
+    {"half board": ["Halbpension", "Halbpensionen", "die", "die", "f"]},
+    {"hall": ["Halle", "Hallen", "die", "die", "f"]},
+    {"bus stop": ["Haltestelle", "Haltestellen", "die", "die", "f"]},
     {"hand": ["Hand", "Hände", "die", "die", "f"]},
-    {"hotel": ["Hotel", "Hotels", "das", "die", "n"]}
+    {"mobile phone": ["Handy", "Handys", "das", "die", "n"]},
+    {"house": ["Haus", "Häuser", "das", "die", "n"]},
+    {"homework": ["Hausaufgabe", "Hausaufgaben", "die", "die", "f"]},
+    {"housewife": ["Hausfrau", "Hausfrauen", "die", "die", "f"]},
+    {"houseman": ["Hausmann", "Hausmänner", "der", "die", "m"]},
+    {"homeland": ["Heimat", "Heimaten", "die", "die", "f"]},
+    {"stove": ["Herd", "Herde", "der", "die", "m"]},
+    {"Mr., gentleman": ["Herr", "Herren", "der", "die", "m"]},
+    {"help": ["Hilfe", "Hilfen", "die", "die", "f"]},
+    {"hobby": ["Hobby", "Hobbys", "das", "die", "n"]},
+    {"wedding": ["Hochzeit", "Hochzeiten", "die", "die", "f"]},
+    {"hotel": ["Hotel", "Hotels", "das", "die", "n"]},
+    {"dog": ["Hund", "Hunde", "der", "die", "m"]},
+    {"hunger": ["Hunger", "Hunger", "der", "die", "m"]}
   ],
   verbs: [
     {"to have": ["haben", "habe", "hast", "hat", "hat", "hat", "haben", "habt", "haben", "haben"]},
+    {"to hold": ["halten", "halte", "hälst", "hält", "hält", "hält", "halten", "haltet", "halten", "halten"]},
+    {"to marry": ["heiraten", "heirate", "heiratest", "heiratet", "heiratet", "heiratet", "heiraten", "heiratet", "heiraten", "heiraten"]},
     {"to be called, to be named": ["heißen", "heiße", "heißt", "heißt", "heißt", "heißt", "heißen", "heißt", "heißen", "heißen"]},
     {"to help": ["helfen", "helfe", "hilfst", "hilft", "hilft", "hilft", "helfen", "helft", "helfen", "helfen"]},
-    {"to get, to fetch": ["holen", "hole", "holst", "holt", "holt", "holt", "holen", "holt", "holen", "holen"]}
+    {"to get, to fetch": ["holen", "hole", "holst", "holt", "holt", "holt", "holen", "holt", "holen", "holen"]},
+    {"to hear": ["hören", "höre", "hörst", "hört", "hört", "hört", "hören", "hört", "hören", "hören"]}
   ],
   examples: {
     nominative: [

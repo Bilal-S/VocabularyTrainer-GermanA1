@@ -306,10 +306,10 @@
 
 ## nouns
 * die Information 
-* das Internet 
+* das Internet
 
 ## verbs
-* (Keine Verben mit I in der Liste enthalten)
+* 
 
 
 # J
@@ -321,7 +321,7 @@
 * der Junge 
 
 ## verbs
-* (Keine Verben mit J in der Liste enthalten)
+* 
 
 
 # K
@@ -462,16 +462,16 @@
 * die Prüfung 
 
 ## verbs
-* (Keine Verben mit P in der Liste enthalten)
+* 
 
 
 # Q
 
 ## nouns
-* (Keine Nomen mit Q in der Liste enthalten)
+* 
 
 ## verbs
-* (Keine Verben mit Q in der Liste enthalten)
+* 
 
 
 # R
@@ -641,19 +641,19 @@
 # X
 
 ## nouns
-* (Keine Nomen mit X in der Liste enthalten)
+* 
 
 ## verbs
-* (Keine Verben mit X in der Liste enthalten)
+* 
 
 
 # Y
 
 ## nouns
-* (Keine Nomen mit Y in der Liste enthalten)
+* 
 
 ## verbs
-* (Keine Verben mit Y in der Liste enthalten)
+* 
 
 
 # Z
@@ -669,3 +669,76 @@
 ## verbs
 * zahlen
 
+
+# Other Words
+These words can be used in examples
+
+
+**A**
+ab, aber, all-, allein, also, alt, an, ander-, arbeitslos, auch, auf, aus, ausländisch, automatisch
+
+**B**
+bald, bar, bei, beide, bekannt, besetzt, besser, best-, bis, bisschen, bitter, böse, breit
+
+**C**
+circa/ca.
+
+**D**
+dich, dies-, dir, dort, draußen, durch, dein-, denn, der, die, das
+
+**E**
+eilig, ein-, einfach, einmal, er, es, euer
+
+**F**
+falsch, Feier-, fertig, frei, fremd, früher, für
+
+**G**
+gerade, geradeaus, gern(e), gegen, gleich, groß, gültig, günstig, gut
+
+**H**
+hell, herzlich, heute, hier, hinten, hoch
+
+**I**
+ich, ihr/ihm/ihn, immer, in, international
+
+**J**
+ja, jed-, jetzt, jung
+
+**K**
+kaputt, kein, klar, klein, krank, kulturell, kurz
+
+**L**
+lang, lange, langsam, laut, leicht, leider, leise, letzt-, lieb-, lieber, links, lustig
+
+**M**
+männlich, mehr, mein, meist-, möglich, müde
+
+**N**
+nach, nächst-, nein, neu, nicht, nichts, nie, noch, normal, nur
+
+**O**
+oben, oder, oft, ohne
+
+**P**
+pünktlich
+
+**R**
+rechts, richtig, ruhig
+
+**S**
+seit, selbstständig, sehr, schön, schon, schwer, sich, sie, Sie, so, sofort, spät, später
+
+**T**
+tot, tschüss
+
+**U**
+über, um, unser-, unten, unter
+
+**V**
+verboten, viel, vielleicht, von, vor
+
+**W**
+wann, warum, was, was für ein, weiblich, weit, weiter, welch-, wenig, wer, wie, wo, woher, wohin, wichtig, wunderbar
+
+**Z**
+zu, zurück, zusammen, zwischen, zufrieden

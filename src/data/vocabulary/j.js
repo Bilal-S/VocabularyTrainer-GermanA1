@@ -1,19 +1,12 @@
 export const letterJ = {
   nouns: [
-    {"January": ["Januar", "Januare", "der", "die", "m"]},
-    {"June": ["Juni", "Junis", "der", "die", "m"]},
-    {"July": ["Juli", "the Julis", "der", "die", "m"]},
-    {"year": ["Jahr", "Jahre", "das", "die", "n"]},
-    {"hunter": ["Jäger", "Jäger", "der", "die", "m"]},
-    {"boy": ["Junge", "Jungen", "der", "die", "m"]},
     {"jacket": ["Jacke", "Jacken", "die", "die", "f"]},
-    {"journal, diary": ["Journal", "Journale", "das", "die", "n"]},
     {"job": ["Job", "Jobs", "der", "die", "m"]},
-    {"juice": ["Saft", "Säfte", "der", "die", "m"]}
+    {"youth": ["Jugendliche", "Jugendliche", "der", "die", "m"]},
+    {"boy": ["Junge", "Jungen", "der", "die", "m"]}
   ],
   verbs: [
     {"to hunt": ["jagen", "jage", "jagst", "jagt", "jagt", "jagt", "jagen", "jagt", "jagen", "jagen"]},
-    {"to join": ["joinen", "joine", "joinst", "joint", "joint", "joint", "joinen", "joint", "joinen", "joinen"]},
     {"to celebrate": ["jubeln", "jubele", "jubelst", "jubelt", "jubelt", "jubelt", "jubeln", "jubelt", "jubeln", "jubeln"]}
   ],
   examples: {

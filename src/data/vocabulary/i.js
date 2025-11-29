@@ -1,21 +1,9 @@
 export const letterI = {
   nouns: [
-    {"island": ["Insel", "Inseln", "die", "die", "f"]},
-    {"market": ["Markt", "Märkte", "der", "die", "m"]},
-    {"park": ["Park", "Parke", "der", "die", "m"]},
-    {"garden": ["Garten", "Gärten", "der", "die", "m"]},
-    {"desk": ["Schreibtisch", "Schreibtische", "der", "die", "m"]},
-    {"picture, image": ["Bild", "Bilder", "das", "die", "n"]},
-    {"child": ["Kind", "Kinder", "das", "die", "n"]},
-    {"office": ["Büro", "Büros", "das", "die", "n"]},
-    {"suitcase": ["Koffer", "Koffer", "der", "die", "m"]},
-    {"café": ["Café", "Cafés", "das", "die", "n"]}
+    {"information": ["Information", "Informationen", "die", "die", "f"]},
+    {"internet": ["Internet", "Internet", "das", "die", "n"]}
   ],
   verbs: [
-    {"to ignore": ["ignorieren", "ignoriere", "ignorierst", "ignoriert", "ignoriert", "ignoriert", "ignorieren", "ignoriert", "ignorieren", "ignorieren"]},
-    {"to import": ["importieren", "importiere", "importierst", "importiert", "importiert", "importiert", "importieren", "importiert", "importieren", "importieren"]},
-    {"to inform": ["informieren", "informiere", "informierst", "informiert", "informiert", "informiert", "informieren", "informiert", "informieren", "informieren"]},
-    {"to interest": ["interessieren", "interessiere", "interessierst", "interessiert", "interessiert", "interessiert", "interessieren", "interessiert", "interessieren", "interessieren"]}
   ],
   examples: {
     nominative: [

@@ -1,34 +1,52 @@
 export const letterF = {
   nouns: [
-    {"friend (male)": ["Freund", "Freunde", "der", "die", "m"]},
-    {"friend (female)": ["Freundin", "Freundinnen", "die", "die", "f"]},
-    {"window": ["Fenster", "Fenster", "das", "die", "n"]},
-    {"February": ["Februar", "Februare", "der", "die", "m"]},
+    {"driver": ["Fahrer", "Fahrer", "der", "die", "m"]},
+    {"ticket": ["Fahrkarte", "Fahrkarten", "die", "die", "f"]},
     {"bicycle": ["Fahrrad", "Fahrräder", "das", "die", "n"]},
     {"family": ["Familie", "Familien", "die", "die", "f"]},
-    {"woman, wife": ["Frau", "Frauen", "die", "die", "f"]},
+    {"family name": ["Familienname", "Familiennamen", "der", "die", "m"]},
+    {"marital status": ["Familienstand", "Familienstände", "der", "die", "m"]},
+    {"color": ["Farbe", "Farben", "die", "die", "f"]},
+    {"fax": ["Fax", "Faxe", "das", "die", "n"]},
+    {"fire": ["Feuer", "Feuer", "das", "die", "n"]},
+    {"fever": ["Fieber", "Fieber", "das", "die", "n"]},
+    {"film": ["Film", "Filme", "der", "die", "m"]},
+    {"company": ["Firma", "Firmen", "die", "die", "f"]},
+    {"fish": ["Fisch", "Fische", "der", "die", "m"]},
+    {"bottle": ["Flasche", "Flaschen", "die", "die", "f"]},
+    {"meat": ["Fleisch", "Fleisch", "das", "die", "n"]},
+    {"flight": ["Abflug", "Abflüge", "der", "die", "m"]},
+    {"airport": ["Flughafen", "Flughäfen", "der", "die", "m"]},
+    {"airplane": ["Flugzeug", "Flugzeuge", "das", "die", "n"]},
+    {"form": ["Formular", "Formulare", "das", "die", "n"]},
     {"photo": ["Foto", "Fotos", "das", "die", "n"]},
-    {"football, soccer": ["Fußball", "Fußbälle", "der", "die", "m"]},
-    {"film, movie": ["Film", "Filme", "der", "die", "m"]}
+    {"question": ["Frage", "Fragen", "die", "die", "f"]},
+    {"woman": ["Frau", "Frauen", "die", "die", "f"]},
+    {"free time": ["Freizeit", "Freizeiten", "die", "die", "f"]},
+    {"friend": ["Freund", "Freunde", "der", "die", "m"]},
+    {"breakfast": ["Frühstück", "Frühstücke", "das", "die", "n"]},
+    {"tour": ["Führung", "Führungen", "die", "die", "f"]},
+    {"foot": ["Fuß", "Füße", "der", "die", "m"]},
+    {"soccer": ["Fußball", "Fußbälle", "der", "die", "m"]}
   ],
   verbs: [
+    {"to drive": ["fahren", "fahre", "fährst", "fährt", "fährt", "fährt", "fahren", "fahrt", "fahren", "fahren"]},
+    {"to celebrate": ["feiern", "feiere", "feierst", "feiert", "feiert", "feiert", "feiern", "feiert", "feiern", "feiern"]},
+    {"to miss": ["fehlen", "fehle", "fehlst", "fehlt", "fehlt", "fehlt", "fehlen", "fehlt", "fehlen", "fehlen"]},
+    {"to watch TV": ["fernsehen", "sehe fern", "siehst fern", "sieht fern", "sieht fern", "sieht fern", "sehen fern", "seht fern", "sehen fern", "sehen"]},
     {"to find": ["finden", "finde", "findest", "findet", "findet", "findet", "finden", "findet", "finden", "finden"]},
+    {"to fly": ["fliegen", "fliege", "fliegst", "fliegt", "fliegt", "fliegt", "fliegen", "fliegt", "fliegen", "fliegen"]},
+    {"to take off": ["abfliegen", "fliege ab", "fliegst ab", "fliegt ab", "fliegt ab", "fliegt ab", "fliegen ab", "fliegt ab", "fliegen ab"]},
     {"to ask": ["fragen", "frage", "fragst", "fragt", "fragt", "fragt", "fragen", "fragt", "fragen", "fragen"]},
-    {"to drive, to travel": ["fahren", "fahre", "fährst", "fährt", "fährt", "fährt", "fahren", "fahrt", "fahren", "fahren"]},
-    {"to fall": ["fallen", "falle", "fällst", "fällt", "fällt", "fällt", "fallen", "fallt", "fallen", "fallen"]}
+    {"to be happy": ["freuen", "freue mich", "freust dich", "freut sich", "freut sich", "freut sich", "freuen uns", "freut euch", "freuen sich", "freuen sich"]},
+    {"to have breakfast": ["frühstücken", "frühstücke", "frühstückst", "frühstückt", "frühstückt", "frühstückt", "frühstücken", "frühstückt", "frühstücken", "frühstücken"]}
   ],
   examples: {
     nominative: [
       {
-        german: '___ Freund kommt.',
-        english: 'The friend comes.',
+        german: '___ Fahrer kommt.',
+        english: 'The driver comes.',
         answer: 'Der',
-        case: 'nominative'
-      },
-      {
-        german: '___ Fenster ist offen.',
-        english: 'The window is open.',
-        answer: 'Das',
         case: 'nominative'
       },
       {
@@ -38,72 +56,78 @@ export const letterF = {
         case: 'nominative'
       },
       {
+        german: '___ Feuer ist heiß.',
+        english: 'The fire is hot.',
+        answer: 'Das',
+        case: 'nominative'
+      },
+      {
         german: '___ Frau arbeitet.',
         english: 'The woman works.',
         answer: 'Die',
         case: 'nominative'
       },
       {
-        german: '___ Film ist gut.',
-        english: 'The film is good.',
+        german: '___ Freund spielt.',
+        english: 'The friend plays.',
         answer: 'Der',
         case: 'nominative'
       }
     ],
     accusative: [
       {
-        german: 'Ich sehe ___ Freund.',
-        english: 'I see the friend.',
+        german: 'Ich sehe ___ Fahrer.',
+        english: 'I see the driver.',
         answer: 'den',
         case: 'accusative'
       },
       {
-        german: 'Er öffnet ___ Fenster.',
-        english: 'He opens the window.',
-        answer: 'das',
-        case: 'accusative'
-      },
-      {
-        german: 'Sie besucht ___ Familie.',
-        english: 'She visits the family.',
+        german: 'Er kauft ___ Fahrkarte.',
+        english: 'He buys the ticket.',
         answer: 'die',
         case: 'accusative'
       },
       {
-        german: 'Wir machen ___ Foto.',
-        english: 'We take a photo.',
+        german: 'Sie braucht ___ Formular.',
+        english: 'She needs the form.',
         answer: 'das',
         case: 'accusative'
       },
       {
-        german: 'Du kaufst ___ Film.',
-        english: 'You buy the film.',
-        answer: 'den',
+        german: 'Wir haben ___ Frage.',
+        english: 'We have a question.',
+        answer: 'die',
+        case: 'accusative'
+      },
+      {
+        german: 'Du liest ___ Buch.',
+        english: 'You read the book.',
+        answer: 'das',
         case: 'accusative'
       }
     ],
     dative: [
       {
-        german: 'Ich helfe ___ Freund.',
-        english: 'I help the friend.',
+        german: 'Ich helfe ___ Fahrer.',
+        english: 'I help the driver.',
         answer: 'dem',
         case: 'dative'
       },
       {
-        german: 'Sie gibt ___ Kind ___ Fahrrad.',
-        english: 'She gives the child the bicycle.',
+        german: 'Sie gibt ___ Freund ___ Foto.',
+        english: 'She gives the friend the photo.',
         answer: 'dem',
         case: 'dative'
       },
       {
-        german: 'Er spricht mit ___ Familie.',
-        english: 'He speaks with the family.',
+        german: 'Er spricht mit ___ Frau.',
+        english: 'He speaks with the woman.',
         answer: 'der',
         case: 'dative'
       },
       {
-        german: 'Wir danken ___ Frau.',
-        english: 'We thank the woman.',
+        german: 'Wir danken ___ Familie.',
+        english: 'We thank the family.',
         answer: 'der',
         case: 'dative'
       },
@@ -116,76 +140,76 @@ export const letterF = {
     ],
     translations: [
       {
-        english: 'The friend comes.',
-        german: 'Der Freund kommt.',
+        english: 'The driver comes.',
+        german: 'Der Fahrer kommt.',
         type: 'translation',
         caseType: 'nominative'
-      },
-      {
-        english: 'The window is open.',
-        german: 'Das Fenster ist offen.',
-        type: 'translation',
-        caseType: 'nominative'
-      },
-      {
-        english: 'I see the friend.',
-        german: 'Ich sehe den Freund.',
-        type: 'translation',
-        caseType: 'accusative'
-      },
-      {
-        english: 'She gives the child the bicycle.',
-        german: 'Sie gibt dem Kind das Fahrrad.',
-        type: 'translation',
-        caseType: 'dative'
       },
       {
         english: 'The family is big.',
         german: 'Die Familie ist groß.',
         type: 'translation',
         caseType: 'nominative'
+      },
+      {
+        english: 'I see the driver.',
+        german: 'Ich sehe den Fahrer.',
+        type: 'translation',
+        caseType: 'accusative'
+      },
+      {
+        english: 'She gives the friend the photo.',
+        german: 'Sie gibt dem Freund das Foto.',
+        type: 'translation',
+        caseType: 'dative'
+      },
+      {
+        english: 'The woman works.',
+        german: 'Die Frau arbeitet.',
+        type: 'translation',
+        caseType: 'nominative'
       }
     ],
     conjugations: [
       {
-        question: 'How do you conjugate "to find" for "I"?',
-        answer: 'finde',
-        verb: 'finden',
-        verbEnglish: 'to find',
+        question: 'How do you conjugate "to drive" for "I"?',
+        answer: 'fahre',
+        verb: 'fahren',
+        verbEnglish: 'to drive',
         subject: 'ich',
-        conjugation: 'finde'
+        conjugation: 'fahre'
       },
       {
-        question: 'How do you conjugate "to ask" for "you" (informal)?',
-        answer: 'fragst',
+        question: 'How do you conjugate "to celebrate" for "you" (informal)?',
+        answer: 'feierst',
+        verb: 'feiern',
+        verbEnglish: 'to celebrate',
+        subject: 'du',
+        conjugation: 'feierst'
+      },
+      {
+        question: 'How do you conjugate "to find" for "he"?',
+        answer: 'findet',
+        verb: 'finden',
+        verbEnglish: 'to find',
+        subject: 'er',
+        conjugation: 'findet'
+      },
+      {
+        question: 'How do you conjugate "to ask" for "we"?',
+        answer: 'fragen',
         verb: 'fragen',
         verbEnglish: 'to ask',
-        subject: 'du',
-        conjugation: 'fragst'
-      },
-      {
-        question: 'How do you conjugate "to drive" for "he"?',
-        answer: 'fährt',
-        verb: 'fahren',
-        verbEnglish: 'to drive, to travel',
-        subject: 'er',
-        conjugation: 'fährt'
-      },
-      {
-        question: 'How do you conjugate "to fall" for "we"?',
-        answer: 'fallen',
-        verb: 'fallen',
-        verbEnglish: 'to fall',
         subject: 'wir',
-        conjugation: 'fallen'
+        conjugation: 'fragen'
       },
       {
-        question: 'How do you conjugate "to find" for "they" (formal)?',
-        answer: 'finden',
-        verb: 'finden',
-        verbEnglish: 'to find',
+        question: 'How do you conjugate "to fly" for "they" (formal)?',
+        answer: 'fliegen',
+        verb: 'fliegen',
+        verbEnglish: 'to fly',
         subject: 'Sie',
-        conjugation: 'finden'
+        conjugation: 'fliegen'
       }
     ]
   }
