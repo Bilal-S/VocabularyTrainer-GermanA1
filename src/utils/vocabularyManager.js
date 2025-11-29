@@ -203,7 +203,8 @@ export class VocabularyManager {
       return []
     }
 
-    const subjects = ['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'sie', 'Sie']
+    // Use explicit subjects to distinguish between singular "she" and plural "they"
+    const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
     
     this.currentBatch = []
     for (let i = 0; i < batchSize; i++) {
