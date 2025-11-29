@@ -79,11 +79,14 @@ export const useDailyRoutine = (state, setMessages, updateProgress) => {
     const stepKey = STEPS[currentStep]
     const config = STEP_CONFIG[stepKey]
     
+    // Use batchProgress.total if available (corrects count for variable-length batches like Review)
+    const total = batchProgress.total > 0 ? batchProgress.total : config.totalItems
+    
     return {
       completed: batchProgress.completed,
-      total: config.totalItems,
-      percentage: config.totalItems > 0 
-        ? Math.round((batchProgress.completed / config.totalItems) * 100)
+      total: total,
+      percentage: total > 0 
+        ? Math.round((batchProgress.completed / total) * 100)
         : 100
     }
   }, [currentStep, batchProgress])
@@ -516,7 +519,8 @@ Please conjugate the following **verbs for the given subjects**:
       return "No answers provided to grade."
     }
     
-    let feedback = `**[Step 2 | Batch 1 | Grading Partial Response]**\n\n`
+    const stepName = STEPS[currentStep] || `Step ${currentStep}`
+    let feedback = `**[Step ${currentStep} | Batch 1 | Grading Partial Response]**\n\n`
     
     // Count total answered and remaining
     const totalAnswered = Object.keys(allAnswers).length
@@ -541,13 +545,13 @@ Please conjugate the following **verbs for the given subjects**:
         if (isCorrect) {
           feedback += `${index + 1}. **${exercise.english}**: Your answer: **${userAnswer}** ✅\n`
           // Update progress for correct answers
-          updateProgress(exercise.word, true, 'Step2-Vocabulary')
+          updateProgress(exercise.word, true, `${stepName}`)
         } else {
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${exercise.english}" in German?`)
           feedback += `${index + 1}. **${exercise.english}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${exercise.answer}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
           // Update progress for incorrect answers
-          updateProgress(exercise.word, false, 'Step2-Vocabulary')
+          updateProgress(exercise.word, false, `${stepName}`)
         }
       })
       
@@ -564,18 +568,35 @@ Please conjugate the following **verbs for the given subjects**:
     if (answeredItems.length > 0) {
       feedback += `**All answers submitted so far (${answeredItems.length}/${currentBatch.length}):**\n\n`
       answeredItems.forEach(({ index, exercise, answer }) => {
-        feedback += `${index + 1}. **${exercise.english}**: **${answer}**\n`
+        // Validation logic for summary list
+        const isCorrect = vocabManager.validateAnswer(answer, exercise.answer, exercise.type)
+        if (isCorrect) {
+          feedback += `${index + 1}. **${exercise.english}**: **${answer}** ✅\n`
+        } else {
+          const helpQuery = encodeURIComponent(`Why is "${answer}" wrong for "${exercise.english}" in German?`)
+          feedback += `${index + 1}. **${exercise.english}**: **${answer}** <span style="color: red;">❌ Correction: **${exercise.answer}**</span> <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
+        }
       });
       feedback += `\n***\n\n`
     }
     
     // Check if all items have been answered
     if (remaining === 0) {
-      feedback += `🎉 **Step 2 Complete!** All 20 vocabulary items have been answered.\n\n`
+      feedback += `🎉 **Step ${currentStep} Complete!** All ${currentBatch.length} items have been answered.\n\n`
       feedback += `**Progress Summary:**\n`
       feedback += `- **Items Processed:** ${totalAnswered}\n`
       feedback += `- **Remaining:** 0\n\n`
-      feedback += `Moving to **Step 3: Plural Practice**...\n\n`
+      
+      let nextStepInfo = ""
+      if (currentStep < 7) {
+        const nextStepKey = STEPS[currentStep + 1]
+        const nextConfig = STEP_CONFIG[nextStepKey]
+        nextStepInfo = `Moving to **Step ${currentStep + 1}: ${nextConfig.name}**...`
+      } else {
+        nextStepInfo = `Moving to **Daily Recap**...`
+      }
+      
+      feedback += `${nextStepInfo}\n\n`
       feedback += `Type **"Next Step"** to continue or wait for automatic progression.`
       
       // Auto-advance to next step after brief delay
@@ -586,13 +607,15 @@ Please conjugate the following **verbs for the given subjects**:
       return feedback
     }
     
-    feedback += `**[Step 2 | Batch 1 | Remaining: ${remaining}]**\n\n`
-    feedback += `Please continue with the remaining nouns. Translate the following into **German** (Article + Noun):\n\n`
+    feedback += `**[Step ${currentStep} | Batch 1 | Remaining: ${remaining}]**\n\n`
+    feedback += `Please continue with the remaining items:\n\n`
     
     // List remaining items (only unanswered ones) with original numbering
     currentBatch.forEach((exercise, actualIndex) => {
       if (!allAnswers[actualIndex]) {
-        feedback += `${actualIndex + 1}. ${exercise.english}\n`
+        // Use generic prompt based on exercise type if possible, or just print english/question
+        const prompt = exercise.english || exercise.question || exercise.singular || exercise.german
+        feedback += `${actualIndex + 1}. ${prompt}\n`
       }
     })
     
@@ -602,19 +625,8 @@ Please conjugate the following **verbs for the given subjects**:
 
   const completeStep = async () => {
     if (currentStep < 7) {
-      const nextStep = currentStep + 1
-      setCurrentStep(nextStep)
-      
-      const stepKey = STEPS[nextStep]
-      const config = STEP_CONFIG[stepKey]
-      setBatchProgress({ completed: 0, total: config.totalItems })
-      setBatchAnswers({}) // Reset answers when moving to a new step/batch
-      
-      addSystemMessage(`# ✅ Step ${currentStep} Complete!
-
-Moving to **Step ${nextStep}: ${config.name}**
-
-${await getStepInstructions(stepKey)}`)
+      // Automatically proceed to generate and display the next step's batch
+      await skipToNextStepFromStep(currentStep)
     } else {
       await generateDailyRecap()
     }
