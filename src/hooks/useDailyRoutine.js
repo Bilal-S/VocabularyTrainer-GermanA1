@@ -55,7 +55,7 @@ const STEP_CONFIG = {
   }
 }
 
-export const useDailyRoutine = (state, setMessages, updateProgress) => {
+export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [batchProgress, setBatchProgress] = useState({
     completed: 0,
@@ -127,7 +127,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress) => {
   }
 
   const startDailyRoutine = async () => {
-    // Reset batch answers when starting a new day
+    // CRITICAL FIX: Reset batch answers when starting a new day
     setBatchAnswers({})
     
     // Check if review queue is empty
@@ -187,11 +187,15 @@ Type your answer below:`)
           return
         }
         
+        // Track session learning for nouns
+        trackSessionLearning('nouns', batch.length)
+        
         // Synchronize states between VocabularyManager and hook
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        setBatchAnswers({}) // Reset answers when starting a new batch
+        // CRITICAL FIX: Reset answers when starting a new batch
+        setBatchAnswers({})
         
         // Generate initial batch message
         let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from the Goethe-Institut A1 list.
@@ -229,7 +233,8 @@ Please translate the following **English nouns** into **German** (Article + Noun
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        setBatchAnswers({}) // Reset answers when starting a new batch
+        // CRITICAL FIX: Reset answers when starting a new batch
+        setBatchAnswers({})
         
         let pluralMessage = `### **Step 3: Plural Practice (20 Nouns)**
 **[Step 3 | Batch 1 | Remaining: ${batch.length}]**
@@ -249,7 +254,8 @@ Please provide the **plural forms** for the following German nouns:
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        setBatchAnswers({}) // Reset answers when starting a new batch
+        // CRITICAL FIX: Reset answers when starting a new batch
+        setBatchAnswers({})
         
         let articlesMessage = `### **Step 4: Articles in Context (30 Items)**
 **[Step 4 | Batch 1 | Remaining: ${batch.length}]**
@@ -268,7 +274,8 @@ Please fill in the blanks with the **correct articles** (der, die, das, ein, ein
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        // Don't reset batchAnswers here - it should only be reset when starting a new batch
+        // CRITICAL FIX: Reset answers when starting a new batch
+        setBatchAnswers({})
         
         let translationsMessage = `### **Step 5: Case Translations (30 Items)**
 **[Step 5 | Batch 1 | Remaining: ${batch.length}]**
@@ -287,7 +294,13 @@ Please translate the following **sentences from English to German**:
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        // Don't reset batchAnswers here - it should only be reset when starting a new batch
+        
+        // Track session learning for verbs
+        const uniqueVerbs = [...new Set(batch.map(item => item.word))]
+        trackSessionLearning('verbs', uniqueVerbs.length)
+        
+        // CRITICAL FIX: Reset answers when starting a new batch
+        setBatchAnswers({})
         
         let verbsMessage = `### **Step 6: Verb Conjugation (30 Items)**
 **[Step 6 | Batch 1 | Remaining: ${batch.length}]**
@@ -300,6 +313,10 @@ Please conjugate the following **verbs for the given subjects**:
           verbsMessage += `${index + 1}. ${item.verb} (${item.subject})\n`
         })
         addSystemMessage(verbsMessage)
+        return
+      case 'RECAP':
+        // CRITICAL FIX: Handle Step 7 recap directly
+        await generateDailyRecap()
         return
       default:
         batch = []
@@ -439,7 +456,9 @@ Please conjugate the following **verbs for the given subjects**:
   }
 
   const handleBatchAnswer = async (answer) => {
-    // Parse batch answer (numbered list or line-by-line)
+    // CRITICAL FIX: Parse batch answer with proper handling
+    console.log('handleBatchAnswer called with:', { answer, currentStep, currentBatchLength: currentBatch.length })
+    
     const lines = answer.split('\n').filter(line => line.trim())
     const numberedAnswers = []
     const sequentialAnswers = []
@@ -456,8 +475,8 @@ Please conjugate the following **verbs for the given subjects**:
 
     // Check for mixed numbered and sequential answers
     if (numberedAnswers.length > 0 && sequentialAnswers.length > 0) {
-      addSystemMessage("⚠️ Error: Please provide either all numbered answers (e.g., '1. answer') or all sequential answers (one per line). Mixed formats are not supported.");
-      return;
+      addSystemMessage("⚠️ Error: Please provide either all numbered answers (e.g., '1. answer') or all sequential answers (one per line). Mixed formats are not supported.")
+      return
     }
 
     // Get current unanswered items (based on current batchAnswers state)
@@ -465,18 +484,24 @@ Please conjugate the following **verbs for the given subjects**:
       .map((_, index) => index)
       .filter(index => !batchAnswers[index])
 
-    // Update batch answers with new responses
+    console.log('Current batchAnswers:', batchAnswers)
+    console.log('Unanswered indices:', unansweredIndices)
+    console.log('Numbered answers:', numberedAnswers)
+    console.log('Sequential answers:', sequentialAnswers)
+
+    // CRITICAL FIX: Update batch answers with proper validation
     const updatedBatchAnswers = { ...batchAnswers }
     const newlyAnsweredIndices = []
     
     if (numberedAnswers.length > 0) {
       // Handle numbered answers
       numberedAnswers.forEach(answerObj => {
-        if (answerObj.index !== null && answerObj.index < currentBatch.length) {
+        if (answerObj.index !== null && answerObj.index >= 0 && answerObj.index < currentBatch.length) {
           // Direct numbered answer - use the specified index (if not already answered)
           if (!batchAnswers[answerObj.index]) {
             updatedBatchAnswers[answerObj.index] = answerObj.answer
             newlyAnsweredIndices.push(answerObj.index)
+            console.log(`Added numbered answer at index ${answerObj.index}: "${answerObj.answer}"`)
           }
         }
       })
@@ -487,9 +512,13 @@ Please conjugate the following **verbs for the given subjects**:
           const targetIndex = unansweredIndices[i]
           updatedBatchAnswers[targetIndex] = answerObj.answer
           newlyAnsweredIndices.push(targetIndex)
+          console.log(`Added sequential answer at index ${targetIndex}: "${answerObj.answer}"`)
         }
       })
     }
+    
+    console.log('Updated batchAnswers:', updatedBatchAnswers)
+    console.log('Newly answered indices:', newlyAnsweredIndices)
     
     setBatchAnswers(updatedBatchAnswers)
     
@@ -504,7 +533,6 @@ Please conjugate the following **verbs for the given subjects**:
       completed: Math.min(totalAnswered, prev.total)
     }))
   }
-
 
   const generateBatchFeedback = (allAnswers, newlyAnsweredIndices) => {
     // Enhanced error handling with fallback
@@ -632,7 +660,6 @@ Please conjugate the following **verbs for the given subjects**:
     return feedback
   }
 
-
   const completeStep = async () => {
     if (currentStep < 7) {
       // Automatically proceed to generate and display the next step's batch
@@ -643,19 +670,25 @@ Please conjugate the following **verbs for the given subjects**:
   }
 
   const generateDailyRecap = async () => {
+    console.log('Generating daily recap...')
+    const sessionStats = getCurrentSessionStats()
+    console.log('Session stats for recap:', sessionStats)
+    
     addSystemMessage(`# 🎉 Daily Routine Complete!
 
-## Today's Summary:
-- **Nouns Learned:** ${state.sessionStats.nounsLearned}
-- **Verbs Introduced:** ${state.sessionStats.verbsIntroduced}
-- **Items in Review Queue:** ${state.pools.reviewQueue.length}
-- **Mistakes Made:** ${state.sessionStats.mistakesMade}
+## Today's Summary in English:
+- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Verbs introduced:** ${sessionStats.verbsIntroduced}
+- **Items added to review queue:** ${sessionStats.itemsAddedToReview}
+- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
 
-## Progress:
-- **Mastered Words:** ${state.pools.mastered.length}
-- **Remaining A1 Words:** ${state.pools.unselected.length}
+## Progress Overview:
+- **Total mastered words:** ${sessionStats.totalMastered}
+- **Remaining A1 words:** ${sessionStats.totalRemaining}
+- **Initial review queue size:** ${sessionStats.initialReviewQueueSize}
+- **Mistakes made today:** ${sessionStats.mistakesMade}
 
-Great job today! Come back tomorrow for more practice. 
+Great job today! You've made excellent progress with your German learning. 
 
 Type **"Today is a new day"** tomorrow to continue your learning journey!`)
     

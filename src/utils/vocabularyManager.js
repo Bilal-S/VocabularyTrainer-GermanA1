@@ -213,15 +213,17 @@ export class VocabularyManager {
     for (let i = 0; i < batchSize; i++) {
       const verb = verbs[i % verbs.length]
       const subject = subjects[i % subjects.length]
+      const conjugation = verb.conjugations[subject]
       
       this.currentBatch.push({
         type: 'conjugation',
-        question: `How do you conjugate "${verb.english}" for "${subject}"?`,
-        answer: verb.conjugations[subject],
+        question: `Conjugate "${verb.english}" for "${subject}" (e.g., "ich bin"):`,
+        answer: `${subject} ${conjugation}`, // Expect full "subject + verb" format
         verb: verb.german,
         verbEnglish: verb.english,
         subject: subject,
-        conjugation: verb.conjugations[subject]
+        conjugation: conjugation,
+        word: verb.german // For progress tracking
       })
     }
 
@@ -277,39 +279,104 @@ export class VocabularyManager {
     this.currentBatchIndex = 0
   }
 
-  // Validate user answers
+  // CRITICAL FIX: Implement case-sensitive validation for German answers
   validateAnswer(userAnswer, correctAnswer, type) {
     if (userAnswer === undefined || userAnswer === null || correctAnswer === undefined || correctAnswer === null) {
       console.warn('validateAnswer called with missing arguments', { userAnswer, correctAnswer, type })
       return false
     }
 
-    const normalizedUser = String(userAnswer).trim().toLowerCase()
-    const normalizedCorrect = String(correctAnswer).trim().toLowerCase()
+    // Use case-sensitive comparison for German answers
+    const normalizedUser = String(userAnswer).trim()
+    const normalizedCorrect = String(correctAnswer).trim()
+
+    console.log('Validating answer:', { userAnswer: normalizedUser, correctAnswer: normalizedCorrect, type })
 
     switch (type) {
       case 'noun':
       case 'verb':
       case 'plural':
+        // Case-sensitive comparison for German words
+        return this.caseSensitiveMatch(normalizedUser, normalizedCorrect)
+      
       case 'conjugation':
-        return normalizedUser === normalizedCorrect
+        // Special handling for conjugation - expect "subject + verb" format
+        return this.validateConjugationAnswer(normalizedUser, normalizedCorrect)
       
       case 'article':
-        // Accept multiple valid articles
+        // Case-sensitive for German articles but allow case variations
         const validArticles = ['der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem', 'eines']
-        return validArticles.includes(normalizedUser) && normalizedUser === normalizedCorrect
+        return validArticles.includes(normalizedUser.toLowerCase()) && this.caseSensitiveMatch(normalizedUser, normalizedCorrect)
       
       case 'translation':
-        // More flexible checking for translations
+        // Case-sensitive for German translations with some flexibility
         return this.fuzzyMatch(normalizedUser, normalizedCorrect)
       
       default:
-        return normalizedUser === normalizedCorrect
+        return this.caseSensitiveMatch(normalizedUser, normalizedCorrect)
     }
   }
 
+  // CRITICAL FIX: Case-sensitive matching for German answers
+  caseSensitiveMatch(answer, correct) {
+    // Exact match first (preserves case)
+    if (answer === correct) {
+      return true
+    }
+    
+    // For German nouns and proper nouns, case matters
+    // Allow case-insensitive comparison only for simple articles, prepositions, etc.
+    const isSimpleWord = /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines|und|oder|aber|in|an|auf|unter|über|mit|zu|bei|von|nach|vor|für|durch|gegen|ohne|während|bis|seit|wegen)$/.test(correct.toLowerCase())
+    
+    if (isSimpleWord) {
+      return answer.toLowerCase() === correct.toLowerCase()
+    }
+    
+    // For compound words and nouns, check case-sensitive
+    // Allow minor case differences in articles at the beginning
+    if (answer.length > 3 && correct.length > 3) {
+      // Check if difference is just in the first word (article case)
+      const answerWords = answer.split(' ')
+      const correctWords = correct.split(' ')
+      
+      if (answerWords.length === correctWords.length) {
+        for (let i = 0; i < answerWords.length; i++) {
+          if (i === 0 && answerWords[i].toLowerCase() === correctWords[i].toLowerCase()) {
+            // First word is a case variation of article - allow
+            continue
+          }
+          if (answerWords[i] !== correctWords[i]) {
+            return false
+          }
+        }
+        return true
+      }
+    }
+    
+    return false
+  }
+
+  validateConjugationAnswer(userAnswer, correctAnswer) {
+    // Parse user input to separate subject and verb
+    const userParts = userAnswer.split(' ')
+    const correctParts = correctAnswer.split(' ')
+    
+    if (userParts.length !== 2 || correctParts.length !== 2) {
+      return false
+    }
+    
+    const [userSubject, userVerb] = userParts
+    const [correctSubject, correctVerb] = correctParts
+    
+    // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
+    const subjectMatch = userSubject.toLowerCase() === correctSubject.toLowerCase()
+    const verbMatch = userVerb === correctVerb
+    
+    return subjectMatch && verbMatch
+  }
+
   fuzzyMatch(answer, correct) {
-    // Simple fuzzy matching for translations
+    // Simple fuzzy matching for translations with case sensitivity
     const answerWords = answer.split(' ')
     const correctWords = correct.split(' ')
     
@@ -317,8 +384,23 @@ export class VocabularyManager {
     
     let matches = 0
     for (let i = 0; i < answerWords.length; i++) {
-      if (answerWords[i] === correctWords[i] || 
-          this.levenshteinDistance(answerWords[i], correctWords[i]) <= 1) {
+      const answerWord = answerWords[i]
+      const correctWord = correctWords[i]
+      
+      // Try exact match first (case-sensitive)
+      if (answerWord === correctWord) {
+        matches++
+      } else if (answerWord.toLowerCase() === correctWord.toLowerCase()) {
+        // Allow case-insensitive for simple words
+        const isSimpleWord = /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines|und|oder|aber|in|an|auf|unter|über|mit|zu|bei|von|nach|vor|für|durch|gegen|ohne|während|bis|seit|wegen)$/.test(correctWord.toLowerCase())
+        if (isSimpleWord) {
+          matches++
+        } else if (this.levenshteinDistance(answerWord.toLowerCase(), correctWord.toLowerCase()) <= 1) {
+          // Allow one character difference for more complex words
+          matches++
+        }
+      } else if (this.levenshteinDistance(answerWord.toLowerCase(), correctWord.toLowerCase()) <= 1) {
+        // Allow one character difference for typos
         matches++
       }
     }

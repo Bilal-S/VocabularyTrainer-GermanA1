@@ -36,7 +36,9 @@ function App() {
     resetState,
     importState,
     exportState,
-    updateProgress
+    updateProgress,
+    trackSessionLearning,
+    getCurrentSessionStats
   } = useVocabularyState()
 
   const {
@@ -45,7 +47,7 @@ function App() {
     processCommand,
     getCurrentSection,
     getSectionProgress
-  } = useDailyRoutine(state, setMessages, updateProgress)
+  } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats)
 
   // Initialize with welcome message
   useEffect(() => {

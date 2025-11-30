@@ -22,9 +22,17 @@ const getInitialState = () => {
     sessionStats: {
       nounsLearned: 0,
       verbsIntroduced: 0,
-      mistakesMade: 0
+      mistakesMade: 0,
+      itemsAddedToReview: 0
     },
-    lastSessionDate: null
+    lastSessionDate: null,
+    currentSessionStats: {
+      nounsLearnedToday: 0,
+      verbsIntroducedToday: 0,
+      mistakesMadeToday: 0,
+      itemsAddedToReviewToday: 0,
+      initialReviewQueueSize: 0
+    }
   }
 }
 
@@ -41,8 +49,19 @@ export const useVocabularyState = () => {
       const savedState = localStorage.getItem(STORAGE_KEY)
       if (savedState) {
         const parsedState = JSON.parse(savedState)
-        setState(parsedState)
-        return parsedState
+        // Initialize current session stats when loading
+        const stateWithSession = {
+          ...parsedState,
+          currentSessionStats: {
+            nounsLearnedToday: 0,
+            verbsIntroducedToday: 0,
+            mistakesMadeToday: 0,
+            itemsAddedToReviewToday: 0,
+            initialReviewQueueSize: parsedState.pools.reviewQueue.length
+          }
+        }
+        setState(stateWithSession)
+        return stateWithSession
       }
     } catch (error) {
       console.error('Error loading state from localStorage:', error)
@@ -100,7 +119,16 @@ export const useVocabularyState = () => {
         sessionStats: jsonData.sessionStats || {
           nounsLearned: 0,
           verbsIntroduced: 0,
-          mistakesMade: 0
+          mistakesMade: 0,
+          itemsAddedToReview: 0
+        },
+        // Initialize current session stats
+        currentSessionStats: {
+          nounsLearnedToday: 0,
+          verbsIntroducedToday: 0,
+          mistakesMadeToday: 0,
+          itemsAddedToReviewToday: 0,
+          initialReviewQueueSize: jsonData.pools?.reviewQueue?.length || 0
         }
       }
 
@@ -141,6 +169,9 @@ export const useVocabularyState = () => {
       }
     }
 
+    let wasAddedToReview = false
+    let wasMovedToMastered = false
+
     if (isCorrect) {
       newState.progress[word].correctCount++
       
@@ -160,6 +191,7 @@ export const useVocabularyState = () => {
         
         if (!newState.pools.mastered.includes(word)) {
           newState.pools.mastered.push(word)
+          wasMovedToMastered = true
         }
       }
     } else {
@@ -171,9 +203,38 @@ export const useVocabularyState = () => {
       )
       if (existsInReview === -1) {
         newState.pools.reviewQueue.push({ word, section })
+        wasAddedToReview = true
       }
+
+      // Update current session stats for mistakes
+      newState.currentSessionStats.mistakesMadeToday++
+      newState.sessionStats.mistakesMade++
     }
 
+    // Update current session stats for review queue changes
+    if (wasAddedToReview) {
+      newState.currentSessionStats.itemsAddedToReviewToday++
+      newState.sessionStats.itemsAddedToReview++
+    }
+
+    saveState(newState)
+    return newState
+  }
+
+  const trackSessionLearning = (type, count = 1) => {
+    const newState = { ...state }
+    
+    switch (type) {
+      case 'nouns':
+        newState.currentSessionStats.nounsLearnedToday += count
+        newState.sessionStats.nounsLearned += count
+        break
+      case 'verbs':
+        newState.currentSessionStats.verbsIntroducedToday += count
+        newState.sessionStats.verbsIntroduced += count
+        break
+    }
+    
     saveState(newState)
     return newState
   }
@@ -200,6 +261,19 @@ export const useVocabularyState = () => {
     return newState
   }
 
+  const getCurrentSessionStats = () => {
+    return {
+      nounsLearned: state.currentSessionStats.nounsLearnedToday,
+      verbsIntroduced: state.currentSessionStats.verbsIntroducedToday,
+      mistakesMade: state.currentSessionStats.mistakesMadeToday,
+      itemsAddedToReview: state.currentSessionStats.itemsAddedToReviewToday,
+      itemsRemainingInReview: state.pools.reviewQueue.length,
+      initialReviewQueueSize: state.currentSessionStats.initialReviewQueueSize,
+      totalMastered: state.pools.mastered.length,
+      totalRemaining: state.pools.unselected.length
+    }
+  }
+
   return {
     state,
     loadState,
@@ -208,7 +282,9 @@ export const useVocabularyState = () => {
     importState,
     exportState,
     updateProgress,
+    trackSessionLearning,
     isNewDay,
-    updateSessionStats
+    updateSessionStats,
+    getCurrentSessionStats
   }
 }
