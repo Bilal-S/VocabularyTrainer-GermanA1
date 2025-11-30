@@ -12,10 +12,24 @@ import { letterG } from './g.js'
 import { letterH } from './h.js'
 import { letterI } from './i.js'
 import { letterJ } from './j.js'
-// Note: This will be expanded to include all letters A-Z
+import { letterK } from './k.js'
+import { letterL } from './l.js'
+import { letterM } from './m.js'
+import { letterN } from './n.js'
+import { letterO } from './o.js'
+import { letterP } from './p.js'
+import { letterQ } from './q.js'
+import { letterR } from './r.js'
+import { letterS } from './s.js'
+import { letterT } from './t.js'
+import { letterU } from './u.js'
+import { letterV } from './v.js'
+import { letterW } from './w.js'
+import { letterX } from './x.js'
+import { letterY } from './y.js'
+import { letterZ } from './z.js'
 
-// For now, we'll create a partial implementation with A, B, C, D, E, F, G, H, I, J
-// In a full implementation, this would import all 26 letters
+// Full alphabet implementation
 const vocabularyDatabase = {
   a: letterA,
   b: letterB,
@@ -27,8 +41,22 @@ const vocabularyDatabase = {
   h: letterH,
   i: letterI,
   j: letterJ,
-  // k: letterK,
-  // ... all the way to z: letterZ
+  k: letterK,
+  l: letterL,
+  m: letterM,
+  n: letterN,
+  o: letterO,
+  p: letterP,
+  q: letterQ,
+  r: letterR,
+  s: letterS,
+  t: letterT,
+  u: letterU,
+  v: letterV,
+  w: letterW,
+  x: letterX,
+  y: letterY,
+  z: letterZ
 }
 
 const genderMap = {

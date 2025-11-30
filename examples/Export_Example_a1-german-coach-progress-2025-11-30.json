@@ -1,0 +1,352 @@
+{
+  "userId": "user-z9lk9159a",
+  "progress": {
+    "die Tochter": {
+      "correctCount": 1,
+      "incorrectCount": 0,
+      "section": "VOCABULARY"
+    },
+    "der Dienstag": {
+      "correctCount": 1,
+      "incorrectCount": 0,
+      "section": "VOCABULARY"
+    },
+    "der Jäger": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Garten": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "das Jahr": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "das Geld": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Gast": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Januar": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Dom": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "die Eltern": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "die Erdbeere": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Juni": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Saft": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Junge": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Einkauf": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "die Entschuldigung": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "das Ehepaar": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "das Glas": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "das Journal": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "die Jacke": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "VOCABULARY"
+    },
+    "der Dezember": {
+      "correctCount": 0,
+      "incorrectCount": 1,
+      "section": "PLURAL"
+    },
+    "undefined": {
+      "correctCount": 7,
+      "incorrectCount": 23,
+      "section": "ARTICLES"
+    }
+  },
+  "pools": {
+    "unselected": [],
+    "mastered": [
+      null
+    ],
+    "reviewQueue": [
+      {
+        "word": "der Jäger",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Garten",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "das Jahr",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "das Geld",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Gast",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Januar",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Dom",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "die Eltern",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "die Erdbeere",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Juni",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Saft",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Junge",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Einkauf",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "die Entschuldigung",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "das Ehepaar",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "das Glas",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "das Journal",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "die Jacke",
+        "section": "VOCABULARY"
+      },
+      {
+        "word": "der Dezember",
+        "section": "PLURAL"
+      },
+      {
+        "section": "ARTICLES"
+      }
+    ],
+    "available": [
+      "der Abend",
+      "die Adresse",
+      "das Alter",
+      "der Ankunft",
+      "die Antwort",
+      "der Apfel",
+      "die Arbeit",
+      "der Arzt",
+      "das Auto",
+      "das Auge",
+      "antworten",
+      "arbeiten",
+      "anfangen",
+      "ankommen",
+      "der Bahnhof",
+      "das Bad",
+      "der Baum",
+      "das Beispiel",
+      "der Berg",
+      "die Blume",
+      "das Buch",
+      "der Bruder",
+      "die Bank",
+      "der Beruf",
+      "beginnen",
+      "brauchen",
+      "besuchen",
+      "bekommen",
+      "der Chef",
+      "das Café",
+      "der Computer",
+      "die Chance",
+      "das Cola",
+      "die Kultur",
+      "das Konto",
+      "der Cousin",
+      "die Cousine",
+      "das Konzert",
+      "kommen",
+      "kaufen",
+      "der Tag",
+      "das Datum",
+      "die Tochter",
+      "das Deutschland",
+      "der Dezember",
+      "die Diskothek",
+      "der Dom",
+      "der Drucker",
+      "das Dorf",
+      "der Dienstag",
+      "danken",
+      "denken",
+      "dienen",
+      "dürfen",
+      "das Essen",
+      "die E-Mail",
+      "die Entschuldigung",
+      "die Erfahrung",
+      "das Ehepaar",
+      "der Einkauf",
+      "das Einladung",
+      "die Eltern",
+      "die Enkelin",
+      "die Erdbeere",
+      "erzählen",
+      "erinnern",
+      "erlauben",
+      "essen",
+      "der Freund",
+      "die Freundin",
+      "das Fenster",
+      "der Februar",
+      "das Fahrrad",
+      "die Familie",
+      "die Frau",
+      "das Foto",
+      "der Fußball",
+      "der Film",
+      "finden",
+      "fragen",
+      "fahren",
+      "fallen",
+      "der Gast",
+      "das Geld",
+      "der Garten",
+      "das Geschenk",
+      "der Geburtstag",
+      "der Grund",
+      "das Glas",
+      "die Gruppe",
+      "das Geschenk",
+      "der Gott",
+      "geben",
+      "gehen",
+      "glauben",
+      "grüßen",
+      "das Haus",
+      "der Hafen",
+      "der Kopf",
+      "das Handy",
+      "der Hunger",
+      "der Herr",
+      "das Hobby",
+      "das Herz",
+      "die Hand",
+      "das Hotel",
+      "haben",
+      "heißen",
+      "helfen",
+      "holen",
+      "die Insel",
+      "der Markt",
+      "der Park",
+      "der Garten",
+      "der Schreibtisch",
+      "das Bild",
+      "das Kind",
+      "das Büro",
+      "der Koffer",
+      "das Café",
+      "ignorieren",
+      "importieren",
+      "informieren",
+      "interessieren",
+      "der Januar",
+      "der Juni",
+      "der Juli",
+      "das Jahr",
+      "der Jäger",
+      "der Junge",
+      "die Jacke",
+      "das Journal",
+      "der Job",
+      "der Saft",
+      "jagen",
+      "joinen",
+      "jubeln"
+    ]
+  },
+  "currentStep": 0,
+  "batchProgress": {
+    "answered": [],
+    "remaining": []
+  },
+  "sessionStats": {
+    "nounsLearned": 0,
+    "verbsIntroduced": 0,
+    "mistakesMade": 0
+  },
+  "lastSessionDate": null
+}

@@ -4,7 +4,8 @@ import {
   getVerbsFromLetters, 
   getExamplesByTypeAndLetters,
   initializeVocabularyPools,
-  getVocabularyByLetter
+  getVocabularyByLetter,
+  getAvailableLetters
 } from '../data/vocabulary/index.js'
 
 export class VocabularyManager {
@@ -22,13 +23,15 @@ export class VocabularyManager {
       return []
     }
 
-    // Get random letters for review variety
-    const reviewLetters = getRandomLetters(2)
+    // Use all available letters to search for review items
+    const allLetters = getAvailableLetters()
     
-    // Find matching words from our letters
+    // Find matching words from all letters
     const reviewItems = reviewQueue.map(item => {
-      const { word, section } = item
-      const letterData = this.findWordInLetters(word, reviewLetters)
+      const itemWord = typeof item === 'string' ? item : item.word
+      const section = typeof item === 'string' ? 'Unknown' : item.section
+      
+      const letterData = this.findWordInLetters(itemWord, allLetters)
       
       if (letterData) {
         if (letterData.type === 'noun') {
