@@ -12,8 +12,25 @@ Here's a **Product Requirement Document (PRD)** for your single-page web applica
 
 ## **1. Overview**
 
-The application provides a **chat-based interface** for learners to follow a structured daily routine for German learning at A1 level. It uses only vocabulary from the official Goethe-Institut A1 Wortliste (`A1_SD1_Wortliste_02.pdf`) and excludes mastered words from a user-provided list. The system tracks progress, supports JSON-based state import/export, and ensures strict adherence to A1 vocabulary.
+The application provides a **chat-based interface** for learners to follow a structured daily routine for German learning at A1 level. It uses only vocabulary from the official Goethe-Institut A1 Wortliste (`a1_word-list.md`) and excludes mastered words that can be imported. The system tracks progress, supports JSON-based state import/export, and ensures strict adherence to A1 vocabulary.
 It should use modern web standards with response behavior and attractive designs with easy to read prompts and visuals.
+
+* In the hamburger menu there should be a mastering frequency option.
+    * An input box will be presented to enter an integer value between 1 and 9
+    * The Mastering Count determines how many times the user has to answer a question for it to be considered mastered and moved to the `mastered` pool. 
+    By default the `masteringCount` is set to one and an item is considered as `mastered` and should be moved to the mastered pool if it has been answered correctly one time, i.e. `correctCount = 1`.
+
+* In the hamburger menu there should be a review count and review batch option.
+    * An input box will be presented to enter an integer value between 1 and 9.
+    * An input box will be presented to enter integer for `maxReviewBatchSize` size with value from 10 to 99. Default value is 50.
+    * The Review Count will determine how many times an item has be answered correctly before it can be moved from `reviewQueue` to `mastered` pool.
+    * All items to be reviewed will be presented once a day and need to be completed before moving on to step 2. If we have 17 items in the queue we will present 17 items one at time for user to answer.
+    * By default the `maxReviewCount` is set to `3`
+
+All the entered values should be exported in Export and Imported in JSON format in the `settings` key.
+Once an item is in the mastered pool it should not be used in any of the questions.
+
+
 
 ***
 
@@ -40,20 +57,27 @@ It should use modern web standards with response behavior and attractive designs
 *   Allow user to upload/download JSON before/after sessions.
 *   There should be buttons on the UI that allow import (upload) and export(download) of the current relevant browser local storage in JSON format with the state of the user.
 *   The import export should be available via Hamburger Menu or via typed command in chat and go to separate Import/Export screen.
+*   The Mastering Count should be available in Hamburger Menu and provide a popup to change the count which defaults to one.
 
 ### **2.3 Vocabulary Boundary**
 
-*   Use only words from `A1_SD1_Wortliste_02.pdf`.
-*   Exclude mastered words from `GPT mastered list.docx`.
+*   Use only words from `a1_word-list.md` or German A1 levels.
+*   Exclude mastered words from your memory `progress.mastered.nouns` and `progress.mastered.verbs`
 *   Random selection from unselected pool (never alphabetical).
 
 ### **2.4 Daily Routine Steps**
 
 #### **Step 1: Review Previous Mistakes**
 
-*   Pull items from `reviewQueue`.
-*   Batch of 10 items.
-*   Prompt: English → user responds in German.
+*   Pull review items RANDOMLY from `reviewQueue`.
+*   Present up to `maxReviewBatchSize` from available review items to user. Presented one item at a time. 
+*   If no items to review queue move to next step automatically.
+*   Prompt variable based on section the item originates and correct inputs: 
+    *   Sections 2 and 5: English → user responds in German.
+    *   Sections 3: German singular → user provides plural
+    *   Section 4: Fill in the blank sentence
+    *   Section 6: German subject verb conjugated
+*   Ensure you are using the correct pattern to evaluate the answer based on section it originates from.
 *   Feedback: Correct German + English explanation.
 
 #### **Step 2: New Vocabulary (20 Nouns)**
@@ -92,7 +116,14 @@ It should use modern web standards with response behavior and attractive designs
 *   Summary in English:
     *   Nouns learned.
     *   Verbs introduced.
+    *   Items added to review queue.
     *   Items remaining in review queue.
+
+
+### **2.5 Adding Mistakes to Review Pool **
+
+* any question that has been wrongly answered in Step 2 through 6 should be added to the review queue
+* 
 
 ***
 
@@ -115,7 +146,7 @@ It should use modern web standards with response behavior and attractive designs
     *   None required (logic runs client-side).
     *   Vocabulary loaded from static JSON (parsed from PDF).
 *   **Data:**
-    *   From `A1_SD1_Wortliste_02.pdf` instructions parse and pregenerate a large number of questions and examples, each section should use its own JSON files that can be expanded.
+    *   From `a1_word-list.md`  parse and pregenerate a large number of questions and examples as shown in a.js, each letter of the alphabet should  use its own JSON files that can be expanded.
         *   Fields: `word`, `type` (noun/verb/etc.), `plural`, `examples`.
     *   Keep state memory in local browser storage about progress, mistakes, selected pool
 
@@ -153,6 +184,7 @@ It should use modern web standards with response behavior and attractive designs
 ```json
 {
   "userId": "string",
+  "settings": {"masteringCount":1,"maxReviewBatchSize":50, "maxReviewCount":3},
   "progress": {
     "items": {
       "word": {
@@ -163,8 +195,8 @@ It should use modern web standards with response behavior and attractive designs
   },
   "pools": {
     "unselected": ["word1", "word2"],
-    "mastered": ["word3"],
-    "reviewQueue": ["word4"]
+    "mastered": {"nouns":["word3"],"verbs":["word5"]},
+    "reviewQueue": ["word5"]
   },
   "currentStep": 1,
   "batchProgress": {
