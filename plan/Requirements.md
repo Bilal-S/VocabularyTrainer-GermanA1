@@ -103,7 +103,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
 
 *   English → German translations.
 *   10 per case (Nom, Acc, Dat).
-*   Batch of 10 at a time.
+*   Batch of 10 or 30 at a time.
 
 #### **Step 6: Verb Conjugation (3 Rounds)**
 
@@ -122,8 +122,17 @@ Once an item is in the mastered pool it should not be used in any of the questio
 
 ### **2.5 Adding Mistakes to Review Pool **
 
-* any question that has been wrongly answered in Step 2 through 6 should be added to the review queue
-* 
+* any question that has been wrongly answered in Step 2 through 6 should be added to the review queue 
+
+### **2.6 Adding to Mastered Pool **
+* any question that has been correctly answered in Step 2 throigh 6 based on the `correctCount` >= `masteringCount` should be added to the mastered pool in the right section `nouns`, `verbs`, or `words`
+  
+### **2.7 Startup Display **
+
+* When user enters `Today is a new day` the screen should be cleared before drawing the instructions text box and and a new text box starting the exercises either step 1 or step 2
+* If the user enters the app again and we have old data, we should display previous day's summary in text box followed by text box with the initial instructions
+* If we do not have old data, display instructions text box
+  
 
 ***
 
@@ -168,7 +177,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
 
 ***
 
-## **56. Non-Functional Requirements**
+## **6. Non-Functional Requirements**
 
 *   **Performance:**
     *   Load entire vocabulary in memory for fast access.
@@ -179,7 +188,9 @@ Once an item is in the mastered pool it should not be used in any of the questio
 
 ***
 
-## **6. JSON State Structure**
+## **7. JSON State Structure**
+
+This is the export/import JSON structure that needs to be exported from local storage and merged into local storage.
 
 ```json
 {
@@ -216,7 +227,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
 
 ***
 
-## **7. Constraints**
+## **8. Constraints**
 
 *   No AI-generated during processing. Pregenerate from the wordlist a database of questions and sentences to be used that is extensive enough to have 
 *   No alphabetical order in exercises.
@@ -224,9 +235,9 @@ Once an item is in the mastered pool it should not be used in any of the questio
 
 ***
 
-## **8. Batch Grading Patterns**
+## **9. Batch Grading Patterns**
 
-### **8.1 Multiple Submissions Handling**
+### **9.1 Multiple Submissions Handling**
 
 The application supports cumulative partial responses for batch exercises. When users submit partial answers:
 
@@ -235,7 +246,7 @@ The application supports cumulative partial responses for batch exercises. When 
 *   **Running Summary**: the section header maintain and displays a cumulative progress bar of the number of answers submitted and questions vs total questions.
 *   **Remaining Items**: The system re-prompts with only the remaining unanswered items, maintaining original numbering.
 
-### **8.2 Numbered vs Sequential Answer Formats**
+### **9.2 Numbered vs Sequential Answer Formats**
 
 #### **Numbered Format (Preferred)**
 Users can submit answers with original question numbers:
@@ -261,14 +272,14 @@ die Antwort
 *   System maintains internal tracking of which items remain
 *   Provides feedback in order of submission
 
-### **8.3 Error Handling**
+### **9.3 Error Handling**
 
 *   **Mixed Format Detection**: System rejects responses that mix numbered and sequential formats
 *   **Duplicate Prevention**: Previously answered items cannot be re-submitted
 *   **Validation Feedback**: Clear error messages for malformed responses
 *   **Retry Guidance**: Specific instructions on correct response format
 
-### **8.4 Feedback Structure**
+### **9.4 Feedback Structure**
 
 Each partial response follows this pattern:
 
@@ -278,7 +289,7 @@ Each partial response follows this pattern:
 4. **Remaining Prompt**: Updated list of remaining items with original numbers
 5. **Progress Indicators**: Clear count of completed vs remaining items
 
-### **8.5 Completion Handling**
+### **9.5 Completion Handling**
 
 *   **Auto-advancement**: When all items in a batch are answered, system automatically moves to next step
 *   **Final Summary**: Completion message shows progress statistics
@@ -286,11 +297,11 @@ Each partial response follows this pattern:
 
 ***
 
-## **9. Vocabulary Data Structure**
+## **10. Vocabulary Data Structure**
 
 To optimize file size and maintenance, vocabulary files (`src/data/vocabulary/[letter].js`) use a compact, position-based array format. The application hydrates this data into standard objects at runtime.
 
-### **9.1 Compact Storage Format**
+### **10.1 Compact Storage Format**
 
 #### **Nouns**
 Stored as an object where the key is the English meaning and value is an array:
@@ -320,7 +331,7 @@ Stored as an object where the key is the English meaning and value is an array o
 }
 ```
 
-### **9.2 Runtime Hydration**
+### **10.2 Runtime Hydration**
 
 The `src/data/vocabulary/index.js` loader transforms this compact data into usable objects:
 
