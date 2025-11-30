@@ -19,6 +19,8 @@ It should use modern web standards with response behavior and attractive designs
     * An input box will be presented to enter an integer value between 1 and 9
     * The Mastering Count determines how many times the user has to answer a question for it to be considered mastered and moved to the `mastered` pool. 
     By default the `masteringCount` is set to one and an item is considered as `mastered` and should be moved to the mastered pool if it has been answered correctly one time, i.e. `correctCount = 1`.
+    * important: track answers to both singular and plural form of a noun separately; both forms need to be answered correctly in order for the noun to be considered mastered. Both need to be answered >=`masteringCount` consider the noun mastered.
+
 
 * In the hamburger menu there should be a review count and review batch option.
     * An input box will be presented to enter an integer value between 1 and 9.

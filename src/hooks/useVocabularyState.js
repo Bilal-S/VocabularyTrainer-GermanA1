@@ -14,14 +14,15 @@ const getInitialState = () => {
     },
     progress: {},
     pools: {
-      unselected: [], // Start empty - words get moved here as they're used
+      unselected: [], // Start empty - words get moved here as they're used (internal only)
       mastered: {
         nouns: [],
         verbs: [],
         words: []
       },   // Words with correctCount >= masteringCount
-      reviewQueue: [], // Words with incorrect answers
-      available: vocabPools.unselected // All available words for selection
+      reviewQueue: [] // Words with incorrect answers
+      // available: REMOVED - redundant with database data
+      // Note: unselected is not exported (session-specific data)
     },
     currentStep: 0,
     batchProgress: {
@@ -117,15 +118,16 @@ export const useVocabularyState = () => {
           maxReviewBatchSize: jsonData.settings?.maxReviewBatchSize || 50,
           maxReviewCount: jsonData.settings?.maxReviewCount || 3
         },
-        // Ensure pools exist - handle both old and new formats
+        // Ensure pools exist - only import permanent data, reset session-specific data
         pools: {
-          unselected: jsonData.pools?.unselected || [],
+          unselected: [], // Always start fresh - session-specific data not imported
           mastered: jsonData.pools?.mastered || {
             nouns: [],
             verbs: [],
             words: []
           },
           reviewQueue: jsonData.pools?.reviewQueue || []
+          // Note: 'available' field is ignored - redundant database data
         },
         // Ensure progress exists
         progress: jsonData.progress || {},
@@ -161,7 +163,24 @@ export const useVocabularyState = () => {
 
   const exportState = () => {
     try {
-      const dataStr = JSON.stringify(state, null, 2)
+      // Create export data without session-specific fields
+      const exportData = {
+        ...state,
+        pools: {
+          mastered: state.pools.mastered,
+          reviewQueue: state.pools.reviewQueue
+          // unselected excluded - session-specific data
+        }
+        // Note: currentSessionStats is session-specific and will be excluded by the replacer
+      }
+      
+      // Custom replacer to exclude session-specific fields
+      const replacer = (key, value) => {
+        const excludeKeys = ['currentSessionStats', 'unselected', 'available']
+        return excludeKeys.includes(key) ? undefined : value
+      }
+      
+      const dataStr = JSON.stringify(exportData, replacer, 2)
       const dataBlob = new Blob([dataStr], { type: 'application/json' })
       const url = URL.createObjectURL(dataBlob)
       
