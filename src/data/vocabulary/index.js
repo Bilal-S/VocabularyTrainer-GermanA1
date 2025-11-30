@@ -189,6 +189,63 @@ export const initializeVocabularyPools = () => {
   }
 }
 
+// Get all nouns from ALL letters (for true randomization)
+export const getAllNounsFromAllLetters = (exclude = []) => {
+  const availableLetters = getAvailableLetters()
+  const allNouns = availableLetters.reduce((acc, letter) => {
+    const letterData = getVocabularyByLetter(letter)
+    return acc.concat(letterData.nouns || [])
+  }, [])
+
+  const available = allNouns.filter(noun => 
+    !exclude.includes(noun.german)
+  )
+  
+  // CRITICAL FIX: Use Fisher-Yates shuffle for better randomization
+  const shuffled = fisherYatesShuffle([...available])
+  return shuffled
+}
+
+// CRITICAL FIX: Implement Fisher-Yates shuffle algorithm for true randomization
+const fisherYatesShuffle = (array) => {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
+// Get all verbs from ALL letters (for true randomization)
+export const getAllVerbsFromAllLetters = (exclude = []) => {
+  const availableLetters = getAvailableLetters()
+  const allVerbs = availableLetters.reduce((acc, letter) => {
+    const letterData = getVocabularyByLetter(letter)
+    return acc.concat(letterData.verbs || [])
+  }, [])
+
+  const available = allVerbs.filter(verb => 
+    !exclude.includes(verb.german)
+  )
+  
+  // CRITICAL FIX: Use Fisher-Yates shuffle for better randomization
+  const shuffled = fisherYatesShuffle([...available])
+  return shuffled
+}
+
+// Get all examples by type from ALL letters (for true randomization)
+export const getAllExamplesFromAllLetters = (type) => {
+  const availableLetters = getAvailableLetters()
+  const allExamples = availableLetters.reduce((acc, letter) => {
+    const letterData = getVocabularyByLetter(letter)
+    return acc.concat(letterData.examples?.[type] || [])
+  }, [])
+
+  // CRITICAL FIX: Use Fisher-Yates shuffle for better randomization
+  const shuffled = fisherYatesShuffle([...allExamples])
+  return shuffled
+}
+
 // Get total count of all vocabulary words in the database
 export const getTotalVocabularyCount = () => {
   const availableLetters = getAvailableLetters()

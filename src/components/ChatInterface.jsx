@@ -5,6 +5,8 @@ import Message from './Message'
 const ChatInterface = ({ messages, onCommand }) => {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [loadingMessage, setLoadingMessage] = useState('Processing...')
+  const [loadingStage, setLoadingStage] = useState('command')
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -33,14 +35,34 @@ const ChatInterface = ({ messages, onCommand }) => {
     setInput('')
     setIsLoading(true)
 
+    // Set context-aware loading messages
+    const normalizedCommand = command.toLowerCase()
+    if (normalizedCommand.includes('today is a new day')) {
+      setLoadingMessage('Starting your daily routine...')
+      setLoadingStage('starting-routine')
+    } else if (normalizedCommand === 'next step') {
+      setLoadingMessage('Skipping to next step...')
+      setLoadingStage('next-step')
+    } else if (normalizedCommand === 'clear all progress data') {
+      setLoadingMessage('Clearing all progress data...')
+      setLoadingStage('clearing-data')
+    } else {
+      setLoadingMessage('Processing your answer...')
+      setLoadingStage('processing-answer')
+    }
+
     try {
       await onCommand(command)
     } catch (error) {
       console.error('Error processing command:', error)
+      setLoadingMessage('Error occurred')
+      setLoadingStage('error')
     } finally {
       setIsLoading(false)
-      // Focus back to input after a short delay to ensure messages are rendered
+      // Reset loading message after a short delay
       setTimeout(() => {
+        setLoadingMessage('Processing...')
+        setLoadingStage('command')
         inputRef.current?.focus()
       }, 100)
     }
@@ -50,15 +72,21 @@ const ChatInterface = ({ messages, onCommand }) => {
     if (isLoading) return
     
     setIsLoading(true)
+    setLoadingMessage('Skipping to next step...')
+    setLoadingStage('next-step')
 
     try {
       await onCommand('next step')
     } catch (error) {
       console.error('Error processing next step:', error)
+      setLoadingMessage('Error occurred')
+      setLoadingStage('error')
     } finally {
       setIsLoading(false)
-      // Focus back to input after a short delay to ensure messages are rendered
+      // Reset loading message after a short delay
       setTimeout(() => {
+        setLoadingMessage('Processing...')
+        setLoadingStage('command')
         inputRef.current?.focus()
       }, 100)
     }
@@ -88,13 +116,13 @@ const ChatInterface = ({ messages, onCommand }) => {
         
         {isLoading && (
           <div className="message-bubble message-system">
-            <div className="flex items-center space-x-2">
-              <div className="animate-pulse flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animation-delay-200"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animation-delay-400"></div>
+            <div className="flex items-center space-x-3">
+              <div className="loading-dots">
+                <div className="loading-dot"></div>
+                <div className="loading-dot"></div>
+                <div className="loading-dot"></div>
               </div>
-              <span className="text-gray-500 text-sm">Processing...</span>
+              <span className="text-gray-600 text-sm font-medium">{loadingMessage}</span>
             </div>
           </div>
         )}

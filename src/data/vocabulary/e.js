@@ -33,8 +33,7 @@ export const letterE = {
     {"error": ["Fehler", "Fehler", "der", "die", "m"]},
     {"event": ["Ereignis", "Ereignisse", "das", "die", "n"]},
     {"evening": ["Abend", "Abende", "der", "die", "m"]},
-    {"everyone": ["jeder", "jede", "jeder", "jede", "m"]},
-    {"everything": ["alles", "alles", "alles", "alles", "n"]},
+    {"everyone": ["jede", "jeden", "der", "die", "m"]},
     {"exam": ["Prüfung", "Prüfungen", "die", "die", "f"]},
     {"exercise": ["Übung", "Übungen", "die", "die", "f"]},
     {"exit": ["Ausgang", "Ausgänge", "der", "die", "m"]},
@@ -46,9 +45,6 @@ export const letterE = {
     {"earth": ["Erde", "Erden", "die", "die", "f"]},
     {"east": ["Osten", "Osten", "der", "die", "m"]},
     {"eight": ["acht", "acht", "acht", "acht", "num"]},
-    {"eighteen": ["achtzehn", "achtzehn", "achtzehn", "achtzehn", "num"]},
-    {"eighty": ["achtzig", "achtzig", "achtzig", "achtzig", "num"]},
-    {"eleven": ["elf", "elf", "elf", "elf", "num"]},
     {"enemy": ["Feind", "Feinde", "der", "die", "m"]}
   ],
   verbs: [

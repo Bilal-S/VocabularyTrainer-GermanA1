@@ -191,6 +191,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
       return
     }
     
+    // Reduce delay for better UX - show Step 1 immediately
     setTimeout(() => {
       setCurrentStep(1)
       setIsBatchMode(false) // Ensure single question mode for Step 1
@@ -209,7 +210,7 @@ We'll review ${state.pools.reviewQueue.length} items from your review queue.
 ---
 ${currentReview?.question || 'Loading question...'}
 Type your answer below:`)
-    }, state.lastSessionDate ? 3500 : 1500) // Longer delay if we have previous data
+    }, state.lastSessionDate ? 2000 : 800) // Reduced delays for better UX
   }
 
   const skipToNextStepFromStep = async (fromStep) => {
@@ -428,7 +429,7 @@ Please conjugate the following **verbs for the given subjects**:
       return
     }
 
-    const isCorrect = vocabManager.validateAnswer(answer, currentExercise.answer, currentExercise.type)
+    const isCorrect = vocabManager.validateAnswer(answer, currentExercise.answer, currentExercise.type, currentExercise)
     const progress = vocabManager.getBatchProgress()
     
     // Generate feedback message
@@ -639,7 +640,7 @@ Please conjugate the following **verbs for the given subjects**:
       feedback += `**Feedback for this round:**\n\n`
       
       newlyAnsweredItems.forEach(({ exercise, index, userAnswer }) => {
-        const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type)
+        const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type, exercise)
         const prompt = getPrompt(exercise)
         
         if (isCorrect) {
@@ -669,7 +670,7 @@ Please conjugate the following **verbs for the given subjects**:
       feedback += `**All answers submitted so far (${answeredItems.length}/${currentBatch.length}):**\n\n`
       answeredItems.forEach(({ index, exercise, answer }) => {
         // Validation logic for summary list
-        const isCorrect = vocabManager.validateAnswer(answer, exercise.answer, exercise.type)
+        const isCorrect = vocabManager.validateAnswer(answer, exercise.answer, exercise.type, exercise)
         const prompt = getPrompt(exercise)
         
         if (isCorrect) {

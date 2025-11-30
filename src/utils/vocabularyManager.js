@@ -3,6 +3,9 @@ import {
   getNounsFromLetters, 
   getVerbsFromLetters, 
   getExamplesByTypeAndLetters,
+  getAllNounsFromAllLetters,
+  getAllVerbsFromAllLetters,
+  getAllExamplesFromAllLetters,
   initializeVocabularyPools,
   getVocabularyByLetter,
   getAvailableLetters
@@ -34,11 +37,19 @@ export class VocabularyManager {
       return []
     }
 
+    console.log('Generating review batch with TRUE RANDOMIZATION:', { 
+      queueSize: reviewQueue.length, 
+      batchSize 
+    })
+
+    // CRITICAL FIX: Shuffle review queue for random order each time
+    const shuffledReviewQueue = [...reviewQueue].sort(() => 0.5 - Math.random())
+
     // Use all available letters to search for review items
     const allLetters = getAvailableLetters()
     
     // Find matching words from all letters with section-aware question generation
-    const reviewItems = reviewQueue.map(item => {
+    const reviewItems = shuffledReviewQueue.map(item => {
       const itemWord = typeof item === 'string' ? item : item.word
       const section = typeof item === 'string' ? 'Unknown' : item.section
       
@@ -68,18 +79,32 @@ export class VocabularyManager {
             
           case 'VERBS':
             if (letterData.type === 'verb') {
-              // Pick a random subject for verb conjugation review
-              const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
-              const randomSubject = subjects[Math.floor(Math.random() * subjects.length)]
-              const conjugation = letterData.conjugations[randomSubject]
+              // Use same subject mapping as main verb generation for consistency
+              const subjectMapping = {
+                'ich': { clean: 'ich', display: 'ich' },
+                'du': { clean: 'du', display: 'du' },
+                'er': { clean: 'er', display: 'er' },
+                'sie (she)': { clean: 'sie', display: 'sie (she)' },
+                'es': { clean: 'es', display: 'es' },
+                'wir': { clean: 'wir', display: 'wir' },
+                'ihr': { clean: 'ihr', display: 'ihr' },
+                'sie (they)': { clean: 'sie', display: 'sie (they)' },
+                'Sie': { clean: 'Sie', display: 'Sie' }
+              }
+              
+              const cleanSubjects = Object.keys(subjectMapping)
+              const randomCleanSubject = cleanSubjects[Math.floor(Math.random() * cleanSubjects.length)]
+              const subjectObj = subjectMapping[randomCleanSubject]
+              const conjugation = letterData.conjugations[randomCleanSubject]
               
               return {
                 type: 'conjugation',
-                question: `Conjugate "${letterData.english}" for "${randomSubject}" (e.g., "ich bin"):`,
-                answer: `${randomSubject} ${conjugation}`,
+                question: `Conjugate "${letterData.english}" for "${subjectObj.display}" (e.g., "ich bin"):`,
+                answer: `${subjectObj.clean} ${conjugation}`,
                 verb: letterData.german,
                 verbEnglish: letterData.english,
-                subject: randomSubject,
+                subject: subjectObj.display, // Keep display subject for reference
+                cleanSubject: subjectObj.clean, // Store clean subject for validation
                 conjugation: conjugation,
                 word: letterData.german,
                 originSection: section
@@ -160,33 +185,38 @@ export class VocabularyManager {
 
   // Generate Step 2: New Vocabulary (20 nouns)
   generateVocabularyBatch(exclude = [], batchSize = 20) {
-    console.log('Generating vocabulary batch with:', { exclude: exclude.slice(0, 5), batchSize })
+    const combinedExclude = [...exclude, ...this.excludeList]
+    console.log('Generating vocabulary batch with TRUE RANDOMIZATION:', { 
+      exclude: exclude.slice(0, 5), 
+      excludeListSize: this.excludeList.length,
+      totalCombinedExclude: combinedExclude.length,
+      batchSize 
+    })
     
-    // Try with increasing number of letters until we get enough nouns
-    let letters = getRandomLetters(4) // Use 4 letters for variety
-    let nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
+    // CRITICAL FIX: Use ALL nouns from ALL letters for true randomization
+    const allNouns = getAllNounsFromAllLetters(combinedExclude)
     
-    // Fallback: try with more letters if we don't have enough
-    if (!nouns || nouns.length < batchSize) {
-      console.warn(`Insufficient nouns with ${letters.length} letters, trying with all available letters`)
-      letters = getRandomLetters(10) // Try all available letters
-      nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
-    }
-    
-    // Final fallback: use available letters without randomization
-    if (!nouns || nouns.length === 0) {
-      console.error('No nouns available even with all letters, checking vocabulary database')
-      const availableLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-      nouns = getNounsFromLetters(availableLetters, batchSize, [...exclude, ...this.excludeList])
-    }
-    
-    if (!nouns || nouns.length === 0) {
-      console.error('Vocabulary generation failed completely')
+    if (!allNouns || allNouns.length === 0) {
+      console.error('No nouns available from vocabulary database')
       return []
     }
 
+    // Take the requested batch size from the shuffled all-nouns array
+    const selectedNouns = allNouns.slice(0, batchSize)
+
+    // CRITICAL FIX: Add debugging to see letter distribution
+    const letterDistribution = {}
+    selectedNouns.forEach(noun => {
+      // Use the full german word (including article) for letter distribution
+      const germanWord = noun.german || noun.word || ''
+      const firstLetter = germanWord.charAt(0).toLowerCase()
+      letterDistribution[firstLetter] = (letterDistribution[firstLetter] || 0) + 1
+    })
+
+    console.log('DEBUG: Letter distribution in selected nouns:', letterDistribution)
+
     // Ensure we have proper noun structure
-    const validNouns = nouns.filter(noun => 
+    const validNouns = selectedNouns.filter(noun => 
       noun && 
       noun.german && 
       noun.english && 
@@ -213,10 +243,10 @@ export class VocabularyManager {
     this.currentBatchIndex = 0
     this.addToExcludeList(validNouns.map(n => n.german))
     
-    console.log('Generated vocabulary batch:', {
+    console.log('Generated vocabulary batch with TRUE RANDOMIZATION:', {
+      totalAvailable: allNouns.length,
       batchSize: this.currentBatch.length,
-      firstItem: this.currentBatch[0],
-      letters: letters.join(',')
+      firstItem: this.currentBatch[0]
     })
     
     return this.currentBatch
@@ -224,15 +254,50 @@ export class VocabularyManager {
 
   // Generate Step 3: Plural Practice (20 nouns)
   generatePluralBatch(exclude = [], batchSize = 20) {
-    const letters = getRandomLetters(4) // Use 4 letters for variety
-    const nouns = getNounsFromLetters(letters, batchSize, [...exclude, ...this.excludeList])
+    const combinedExclude = [...exclude, ...this.excludeList]
+    console.log('Generating plural batch with TRUE RANDOMIZATION:', { 
+      exclude: exclude.slice(0, 5), 
+      excludeListSize: this.excludeList.length,
+      totalCombinedExclude: combinedExclude.length,
+      batchSize 
+    })
     
-    if (!nouns || nouns.length === 0) {
+    // CRITICAL FIX: Use ALL nouns from ALL letters for true randomization
+    const allNouns = getAllNounsFromAllLetters(combinedExclude)
+    
+    if (!allNouns || allNouns.length === 0) {
       console.error('No nouns available for plural batch')
+      console.error('DEBUG: Exclude list might be too large. Available letters check:')
+      
+      // DEBUG: Check what's available across all letters
+      const availableLetters = getAvailableLetters()
+      const debugInfo = {}
+      availableLetters.forEach(letter => {
+        const letterData = getVocabularyByLetter(letter)
+        const availableNouns = (letterData.nouns || []).filter(noun => 
+          !combinedExclude.includes(noun.german)
+        )
+        debugInfo[letter] = availableNouns.length
+      })
+      console.error('DEBUG: Available nouns by letter after exclude filtering:', debugInfo)
       return []
     }
 
-    this.currentBatch = nouns.map(noun => ({
+    // Take the requested batch size from the shuffled all-nouns array
+    const selectedNouns = allNouns.slice(0, batchSize)
+
+    // CRITICAL FIX: Add debugging to see letter distribution
+    const letterDistribution = {}
+    selectedNouns.forEach(noun => {
+      // Use full german word (including article) for letter distribution
+      const germanWord = noun.german || noun.word || ''
+      const firstLetter = germanWord.charAt(0).toLowerCase()
+      letterDistribution[firstLetter] = (letterDistribution[firstLetter] || 0) + 1
+    })
+
+    console.log('DEBUG: Letter distribution in selected nouns:', letterDistribution)
+
+    this.currentBatch = selectedNouns.map(noun => ({
       type: 'plural',
       form: 'plural', // Track that this is plural form practice
       question: `What is plural form of "${noun.german}"?`,
@@ -245,16 +310,24 @@ export class VocabularyManager {
     }))
 
     this.currentBatchIndex = 0
-    this.addToExcludeList(nouns.map(n => n.german))
+    this.addToExcludeList(selectedNouns.map(n => n.german))
+    
+    console.log('Generated plural batch with TRUE RANDOMIZATION:', {
+      totalAvailable: allNouns.length,
+      batchSize: this.currentBatch.length
+    })
+    
     return this.currentBatch
   }
 
   // Generate Step 4: Articles in Context (30 sentences: 10 each case)
   generateArticlesBatch() {
-    const letters = getRandomLetters(3) // Use 3 letters for variety
-    const nominative = getExamplesByTypeAndLetters('nominative', letters, 10)
-    const accusative = getExamplesByTypeAndLetters('accusative', letters, 10)
-    const dative = getExamplesByTypeAndLetters('dative', letters, 10)
+    console.log('Generating articles batch with TRUE RANDOMIZATION')
+    
+    // CRITICAL FIX: Use ALL examples from ALL letters for true randomization
+    const nominative = getAllExamplesFromAllLetters('nominative')
+    const accusative = getAllExamplesFromAllLetters('accusative')
+    const dative = getAllExamplesFromAllLetters('dative')
     
     if (!nominative || !accusative || !dative) {
       console.error('No examples available for articles batch')
@@ -262,68 +335,108 @@ export class VocabularyManager {
     }
 
     this.currentBatch = [
-      ...nominative.map(s => ({ ...s, type: 'article', caseType: 'nominative' })),
-      ...accusative.map(s => ({ ...s, type: 'article', caseType: 'accusative' })),
-      ...dative.map(s => ({ ...s, type: 'article', caseType: 'dative' }))
+      ...nominative.slice(0, 10).map(s => ({ ...s, type: 'article', caseType: 'nominative' })),
+      ...accusative.slice(0, 10).map(s => ({ ...s, type: 'article', caseType: 'accusative' })),
+      ...dative.slice(0, 10).map(s => ({ ...s, type: 'article', caseType: 'dative' }))
     ]
 
     this.currentBatchIndex = 0
+    
+    console.log('Generated articles batch with TRUE RANDOMIZATION:', {
+      totalNominative: nominative.length,
+      totalAccusative: accusative.length,
+      totalDative: dative.length,
+      batchSize: this.currentBatch.length
+    })
+    
     return this.currentBatch
   }
 
   // Generate Step 5: Case Translations (30 sentences: 10 each case)
   generateTranslationBatch() {
-    const letters = getRandomLetters(3) // Use 3 letters for variety
-    const translations = getExamplesByTypeAndLetters('translations', letters, 30)
+    console.log('Generating translation batch with TRUE RANDOMIZATION')
+    
+    // CRITICAL FIX: Use ALL translations from ALL letters for true randomization
+    const translations = getAllExamplesFromAllLetters('translations')
     
     if (!translations || translations.length === 0) {
       console.error('No translations available for translation batch')
       return []
     }
 
-    this.currentBatch = translations.map(t => ({
+    this.currentBatch = translations.slice(0, 30).map(t => ({
       ...t,
       answer: t.german, // Ensure answer property exists
       type: 'translation'
     }))
 
     this.currentBatchIndex = 0
+    
+    console.log('Generated translation batch with TRUE RANDOMIZATION:', {
+      totalAvailable: translations.length,
+      batchSize: this.currentBatch.length
+    })
+    
     return this.currentBatch
   }
 
   // Generate Step 6: Verb Conjugation (3 rounds of 10 items)
   generateVerbBatch(exclude = [], batchSize = 10) {
-    const letters = getRandomLetters(2) // Use 2 letters for variety
-    const verbs = getVerbsFromLetters(letters, Math.ceil(batchSize / 2), [...exclude, ...this.excludeList])
+    console.log('Generating verb batch with TRUE RANDOMIZATION:', { exclude: exclude.slice(0, 5), batchSize })
     
-    if (!verbs || verbs.length === 0) {
+    // CRITICAL FIX: Use ALL verbs from ALL letters for true randomization
+    const allVerbs = getAllVerbsFromAllLetters([...exclude, ...this.excludeList])
+    
+    if (!allVerbs || allVerbs.length === 0) {
       console.error('No verbs available for conjugation batch')
       return []
     }
 
     // Use explicit subjects to distinguish between singular "she" and plural "they"
-    const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
+    // Create mapping for clean subject vs display subject
+    const subjectMapping = {
+      'ich': { clean: 'ich', display: 'ich' },
+      'du': { clean: 'du', display: 'du' },
+      'er': { clean: 'er', display: 'er' },
+      'sie (she)': { clean: 'sie', display: 'sie (she)' },
+      'es': { clean: 'es', display: 'es' },
+      'wir': { clean: 'wir', display: 'wir' },
+      'ihr': { clean: 'ihr', display: 'ihr' },
+      'sie (they)': { clean: 'sie', display: 'sie (they)' },
+      'Sie': { clean: 'Sie', display: 'Sie' }
+    }
+    
+    const displaySubjects = Object.values(subjectMapping)
+    const cleanSubjects = Object.keys(subjectMapping)
     
     this.currentBatch = []
     for (let i = 0; i < batchSize; i++) {
-      const verb = verbs[i % verbs.length]
-      const subject = subjects[i % subjects.length]
-      const conjugation = verb.conjugations[subject]
+      const verb = allVerbs[i % allVerbs.length]
+      const cleanSubject = cleanSubjects[i % cleanSubjects.length]
+      const subjectObj = subjectMapping[cleanSubject]
+      const conjugation = verb.conjugations[cleanSubject]
       
       this.currentBatch.push({
         type: 'conjugation',
-        question: `Conjugate "${verb.english}" for "${subject}" (e.g., "ich bin"):`,
-        answer: `${subject} ${conjugation}`, // Expect full "subject + verb" format
+        question: `Conjugate "${verb.english}" for "${subjectObj.display}" (e.g., "ich bin"):`,
+        answer: `${subjectObj.clean} ${conjugation}`, // Store clean subject in answer
         verb: verb.german,
         verbEnglish: verb.english,
-        subject: subject,
+        subject: subjectObj.display, // Keep display subject for reference
+        cleanSubject: subjectObj.clean, // Store clean subject for validation
         conjugation: conjugation,
         word: verb.german // For progress tracking
       })
     }
 
     this.currentBatchIndex = 0
-    this.addToExcludeList(verbs.map(v => v.german))
+    this.addToExcludeList(allVerbs.slice(0, Math.ceil(batchSize / 2)).map(v => v.german))
+    
+    console.log('Generated verb batch with TRUE RANDOMIZATION:', {
+      totalAvailable: allVerbs.length,
+      batchSize: this.currentBatch.length
+    })
+    
     return this.currentBatch
   }
 
@@ -356,6 +469,18 @@ export class VocabularyManager {
     this.excludeList = [...new Set([...this.excludeList, ...words])]
   }
 
+  // DEBUG: Method to reset exclude list for testing
+  resetExcludeList() {
+    console.log('DEBUG: Resetting exclude list. Was:', this.excludeList.length, 'items')
+    this.excludeList = []
+    console.log('DEBUG: Exclude list reset to empty')
+  }
+
+  // DEBUG: Method to get exclude list size
+  getExcludeListSize() {
+    return this.excludeList.length
+  }
+
   getCurrentItem() {
     return this.currentBatch[this.currentBatchIndex] || null
   }
@@ -380,7 +505,7 @@ export class VocabularyManager {
   }
 
   // CRITICAL FIX: Implement case-sensitive validation for German answers
-  validateAnswer(userAnswer, correctAnswer, type) {
+  validateAnswer(userAnswer, correctAnswer, type, exercise = null) {
     if (userAnswer === undefined || userAnswer === null || correctAnswer === undefined || correctAnswer === null) {
       console.warn('validateAnswer called with missing arguments', { userAnswer, correctAnswer, type })
       return false
@@ -401,7 +526,7 @@ export class VocabularyManager {
       
       case 'conjugation':
         // Special handling for conjugation - expect "subject + verb" format
-        return this.validateConjugationAnswer(normalizedUser, normalizedCorrect)
+        return this.validateConjugationAnswer(normalizedUser, normalizedCorrect, exercise)
       
       case 'article':
         // Case-sensitive for German articles but allow case variations
@@ -457,7 +582,7 @@ export class VocabularyManager {
   }
 
   // CRITICAL FIX: Enhanced conjugation answer validation with umlaut support
-  validateConjugationAnswer(userAnswer, correctAnswer) {
+  validateConjugationAnswer(userAnswer, correctAnswer, exercise = null) {
     // Apply umlaut normalization to user input
     const normalizedUser = this.normalizeUmlauts(userAnswer)
     const normalizedCorrect = this.normalizeUmlauts(correctAnswer)
@@ -481,8 +606,15 @@ export class VocabularyManager {
     const [userSubject, userVerb] = userParts
     const [correctSubject, correctVerb] = correctParts
     
+    // For conjugation exercises, use clean subject comparison if available
+    // Handle both new format (with cleanSubject) and old format (without)
+    let cleanCorrectSubject = correctSubject
+    if (exercise && exercise.cleanSubject) {
+      cleanCorrectSubject = exercise.cleanSubject
+    }
+    
     // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
-    const subjectMatch = userSubject.toLowerCase() === correctSubject.toLowerCase()
+    const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase()
     const verbMatch = userVerb === correctVerb
     
     console.log('Conjugation match result:', { 
@@ -490,6 +622,7 @@ export class VocabularyManager {
       verbMatch, 
       userSubject, 
       correctSubject,
+      cleanCorrectSubject,
       userVerb, 
       correctVerb 
     })
