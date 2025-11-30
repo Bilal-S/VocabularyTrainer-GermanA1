@@ -644,14 +644,14 @@ Please conjugate the following **verbs for the given subjects**:
         
         if (isCorrect) {
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** ✅\n`
-          // Update progress for correct answers
-          updateProgress(exercise.word, true, `${stepName}`)
+          // Update progress for correct answers with form information
+          updateProgress(exercise.word, true, `${stepName}`, exercise.form || 'singular')
         } else {
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${prompt}" in German?`)
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${exercise.answer}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
-          // Update progress for incorrect answers
-          updateProgress(exercise.word, false, `${stepName}`)
+          // Update progress for incorrect answers with form information
+          updateProgress(exercise.word, false, `${stepName}`, exercise.form || 'singular')
         }
       })
       

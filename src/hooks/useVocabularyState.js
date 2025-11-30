@@ -3,6 +3,44 @@ import { initializeVocabularyPools, getTotalVocabularyCount } from '../data/voca
 
 const STORAGE_KEY = 'a1-german-coach-state'
 
+// Validate progress structure for dual-form noun mastery
+const validateProgressStructure = (progressData) => {
+  const validatedProgress = {}
+  
+  for (const [word, data] of Object.entries(progressData)) {
+    // Check if data has old single-counter format (reject)
+    if (data.correctCount !== undefined || data.incorrectCount !== undefined) {
+      throw new Error(`Invalid progress format for word "${word}": Old single-counter format detected. Please clear all progress data and start fresh with dual-form tracking.`)
+    }
+    
+    // Validate dual-form structure
+    if (data.singular && data.plural) {
+      // Ensure both forms have required counters
+      validatedProgress[word] = {
+        singular: {
+          correctCount: data.singular.correctCount || 0,
+          incorrectCount: data.singular.incorrectCount || 0
+        },
+        plural: {
+          correctCount: data.plural.correctCount || 0,
+          incorrectCount: data.plural.incorrectCount || 0
+        },
+        section: data.section || 'Unknown'
+      }
+    } else {
+      // Default to empty dual-form structure for invalid data
+      console.warn(`Invalid progress data for word "${word}", initializing fresh`)
+      validatedProgress[word] = {
+        singular: { correctCount: 0, incorrectCount: 0 },
+        plural: { correctCount: 0, incorrectCount: 0 },
+        section: data.section || 'Unknown'
+      }
+    }
+  }
+  
+  return validatedProgress
+}
+
 const getInitialState = () => {
   const vocabPools = initializeVocabularyPools()
   return {
@@ -129,8 +167,8 @@ export const useVocabularyState = () => {
           reviewQueue: jsonData.pools?.reviewQueue || []
           // Note: 'available' field is ignored - redundant database data
         },
-        // Ensure progress exists
-        progress: jsonData.progress || {},
+      // Validate and ensure progress exists with dual-form structure
+      progress: validateProgressStructure(jsonData.progress || {}),
         // Ensure other fields exist
         currentStep: jsonData.currentStep || 0,
         batchProgress: jsonData.batchProgress || {
@@ -197,12 +235,12 @@ export const useVocabularyState = () => {
     }
   }
 
-  const updateProgress = (word, isCorrect, section = 'Unknown') => {
+  const updateProgress = (word, isCorrect, section = 'Unknown', form = 'singular') => {
     const newState = { ...state }
     if (!newState.progress[word]) {
       newState.progress[word] = {
-        correctCount: 0,
-        incorrectCount: 0,
+        singular: { correctCount: 0, incorrectCount: 0 },
+        plural: { correctCount: 0, incorrectCount: 0 },
         section: section
       }
     }
@@ -211,7 +249,8 @@ export const useVocabularyState = () => {
     let wasMovedToMastered = false
 
     if (isCorrect) {
-      newState.progress[word].correctCount++
+      // Update correct count for specific form
+      newState.progress[word][form].correctCount++
       
       // Determine if item is in review queue to use correct mastering threshold
       const isInReviewQueue = newState.pools.reviewQueue.findIndex(item => 
@@ -222,8 +261,20 @@ export const useVocabularyState = () => {
         ? newState.settings.maxReviewCount 
         : newState.settings.masteringCount
       
-      // Move to mastered if correct count reaches threshold
-      if (newState.progress[word].correctCount >= masteringThreshold) {
+      // Check if noun is fully mastered (both singular and plural forms)
+      const isNounFullyMastered = (wordData) => {
+        if (!wordData || wordData.singular === undefined || wordData.plural === undefined) {
+          return false
+        }
+        
+        const singularMastered = wordData.singular.correctCount >= masteringThreshold
+        const pluralMastered = wordData.plural.correctCount >= masteringThreshold
+        
+        return singularMastered && pluralMastered
+      }
+      
+      // Move to mastered if noun is fully mastered
+      if (isNounFullyMastered(newState.progress[word])) {
         // Remove from review queue if present
         const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
           typeof item === 'string' ? item === word : item.word === word
@@ -255,7 +306,8 @@ export const useVocabularyState = () => {
         }
       }
     } else {
-      newState.progress[word].incorrectCount++
+      // Update incorrect count for specific form
+      newState.progress[word][form].incorrectCount++
       
       // Add to review queue with section info if not already there
       const existsInReview = newState.pools.reviewQueue.findIndex(item => 

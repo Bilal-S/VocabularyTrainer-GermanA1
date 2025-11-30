@@ -53,6 +53,7 @@ export class VocabularyManager {
               const displayWord = letterData.word || letterData.german.split(' ').pop()
               return {
                 type: 'plural',
+                form: 'plural', // Track that this is plural form review
                 question: `What is plural form of "${displayWord}"?`,
                 answer: letterData.plural,
                 word: displayWord,
@@ -126,6 +127,7 @@ export class VocabularyManager {
             if (letterData.type === 'noun') {
               return {
                 type: 'noun',
+                form: 'singular', // Track that this is singular form review
                 question: `What is German word for "${letterData.english}"?`,
                 answer: letterData.german,
                 word: letterData.german,
@@ -198,6 +200,7 @@ export class VocabularyManager {
 
     this.currentBatch = validNouns.map(noun => ({
       type: 'vocabulary',
+      form: 'singular', // Track that this is singular form practice
       question: `Provide German translation for "${noun.english}" (include article)`,
       answer: noun.german,
       word: noun.german,
@@ -231,6 +234,7 @@ export class VocabularyManager {
 
     this.currentBatch = nouns.map(noun => ({
       type: 'plural',
+      form: 'plural', // Track that this is plural form practice
       question: `What is plural form of "${noun.german}"?`,
       answer: noun.plural,
       word: noun.german,
