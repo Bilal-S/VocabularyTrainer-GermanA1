@@ -202,9 +202,17 @@ Once an item is in the mastered pool it should not be used in any of the questio
   "batchProgress": {
     "answered": [],
     "remaining": []
-  }
+  },
+  "availableExtra": {
+    "nouns": [],
+    "verbs": [],
+    "examples" :[]
+  }  
 }
 ```
+
+* availableExtra: this key contains any extra nouns, verbs and examples that can be added to the database for questions. Input should be validated and match pattern in `a.js` through `z.js` files.
+
 
 ***
 
