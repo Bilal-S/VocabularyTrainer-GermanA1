@@ -46,6 +46,24 @@ const ChatInterface = ({ messages, onCommand }) => {
     }
   }
 
+  const handleNextStep = async () => {
+    if (isLoading) return
+    
+    setIsLoading(true)
+
+    try {
+      await onCommand('next step')
+    } catch (error) {
+      console.error('Error processing next step:', error)
+    } finally {
+      setIsLoading(false)
+      // Focus back to input after a short delay to ensure messages are rendered
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }
+
   const handleKeyDown = (e) => {
     // Only submit on Ctrl+Enter, allow Enter for new lines
     if (e.key === 'Enter' && e.ctrlKey) {
@@ -124,6 +142,15 @@ const ChatInterface = ({ messages, onCommand }) => {
               className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Send
+            </button>
+            <button
+              type="button"
+              onClick={handleNextStep}
+              disabled={isLoading}
+              className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Skip to next step"
+            >
+              Next
             </button>
           </div>
         </form>

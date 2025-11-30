@@ -26,7 +26,7 @@ export class VocabularyManager {
     // Use all available letters to search for review items
     const allLetters = getAvailableLetters()
     
-    // Find matching words from all letters
+    // Find matching words from all letters with section-aware question generation
     const reviewItems = reviewQueue.map(item => {
       const itemWord = typeof item === 'string' ? item : item.word
       const section = typeof item === 'string' ? 'Unknown' : item.section
@@ -34,26 +34,106 @@ export class VocabularyManager {
       const letterData = this.findWordInLetters(itemWord, allLetters)
       
       if (letterData) {
-        if (letterData.type === 'noun') {
-          return {
-            type: 'noun',
-            question: `What is German word for "${letterData.english}"?`,
-            answer: letterData.german,
-            word: letterData.german,
-            english: letterData.english,
-            gender: letterData.gender,
-            article: letterData.article,
-            originSection: section || 'Unknown'
-          }
-        } else if (letterData.type === 'verb') {
-          return {
-            type: 'verb',
-            question: `What is German word for "${letterData.english}"?`,
-            answer: letterData.german,
-            word: letterData.german,
-            english: letterData.english,
-            originSection: section || 'Unknown'
-          }
+        // CRITICAL FIX: Generate section-aware review questions based on original mistake
+        switch (section) {
+          case 'PLURAL':
+            if (letterData.type === 'noun') {
+              // Use the raw word without article for the question, but full plural with article for answer
+              const displayWord = letterData.word || letterData.german.split(' ').pop()
+              return {
+                type: 'plural',
+                question: `What is plural form of "${displayWord}"?`,
+                answer: letterData.plural,
+                word: displayWord,
+                singular: letterData.german,
+                plural: letterData.plural,
+                english: letterData.english,
+                article: letterData.pluralArticle,
+                originSection: section
+              }
+            }
+            break
+            
+          case 'VERBS':
+            if (letterData.type === 'verb') {
+              // Pick a random subject for verb conjugation review
+              const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
+              const randomSubject = subjects[Math.floor(Math.random() * subjects.length)]
+              const conjugation = letterData.conjugations[randomSubject]
+              
+              return {
+                type: 'conjugation',
+                question: `Conjugate "${letterData.english}" for "${randomSubject}" (e.g., "ich bin"):`,
+                answer: `${randomSubject} ${conjugation}`,
+                verb: letterData.german,
+                verbEnglish: letterData.english,
+                subject: randomSubject,
+                conjugation: conjugation,
+                word: letterData.german,
+                originSection: section
+              }
+            }
+            break
+            
+          case 'ARTICLES':
+            // Generate article context question using existing examples
+            const articleExamples = getExamplesByTypeAndLetters('articles', getRandomLetters(2), 1)
+            if (articleExamples && articleExamples.length > 0) {
+              const example = articleExamples[0]
+              return {
+                type: 'article',
+                question: `Fill in the blank: ${example.german.replace('___', '_____')}`,
+                answer: example.answer || example.german.match(/___\s*(\w+)/)?.[1] || example.answer,
+                german: example.german,
+                english: example.english,
+                caseType: example.caseType || 'nominative',
+                originSection: section
+              }
+            }
+            break
+            
+          case 'TRANSLATIONS':
+            // Generate translation question using existing examples
+            const translationExamples = getExamplesByTypeAndLetters('translations', getRandomLetters(2), 1)
+            if (translationExamples && translationExamples.length > 0) {
+              const example = translationExamples[0]
+              return {
+                type: 'translation',
+                question: `Translate to German: "${example.english}"`,
+                answer: example.german,
+                german: example.german,
+                english: example.english,
+                caseType: example.caseType || 'nominative',
+                originSection: section
+              }
+            }
+            break
+            
+          case 'VOCABULARY':
+          default:
+            // Default: vocabulary translation question
+            if (letterData.type === 'noun') {
+              return {
+                type: 'noun',
+                question: `What is German word for "${letterData.english}"?`,
+                answer: letterData.german,
+                word: letterData.german,
+                english: letterData.english,
+                gender: letterData.gender,
+                article: letterData.article,
+                originSection: section
+              }
+            } else if (letterData.type === 'verb') {
+              return {
+                type: 'verb',
+                question: `What is German word for "${letterData.english}"?`,
+                answer: letterData.german,
+                word: letterData.german,
+                english: letterData.english,
+                originSection: section
+              }
+            }
+            break
         }
       }
       return null
@@ -242,10 +322,15 @@ export class VocabularyManager {
     for (const letter of letters) {
       const letterData = this.getLetterData(letter)
       if (letterData) {
-        const noun = (letterData.nouns || []).find(n => n.german === word)
+        // CRITICAL FIX: Search both full german field and raw word field
+        const noun = (letterData.nouns || []).find(n => 
+          n.german === word || n.word === word
+        )
         if (noun) return { ...noun, type: 'noun' }
         
-        const verb = (letterData.verbs || []).find(v => v.german === word)
+        const verb = (letterData.verbs || []).find(v => 
+          v.german === word || v.word === word
+        )
         if (verb) return { ...verb, type: 'verb' }
       }
     }
@@ -333,7 +418,7 @@ export class VocabularyManager {
     }
     
     // For compound words and nouns, check case-sensitive
-    // Allow minor case differences in articles at the beginning
+    // Allow minor case differences in articles at beginning
     if (answer.length > 3 && correct.length > 3) {
       // Check if difference is just in the first word (article case)
       const answerWords = answer.split(' ')
