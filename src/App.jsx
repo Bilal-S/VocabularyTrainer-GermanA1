@@ -3,6 +3,7 @@ import ChatInterface from './components/ChatInterface'
 import SectionBanner from './components/SectionBanner'
 import HamburgerMenu from './components/HamburgerMenu'
 import ImportExportModal from './components/ImportExportModal'
+import SettingsModal from './components/SettingsModal'
 import { useVocabularyState } from './hooks/useVocabularyState'
 import { useDailyRoutine } from './hooks/useDailyRoutine'
 
@@ -27,6 +28,7 @@ const SECTIONS = {
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [messages, setMessages] = useState([])
   
   const {
@@ -38,7 +40,9 @@ function App() {
     exportState,
     updateProgress,
     trackSessionLearning,
-    getCurrentSessionStats
+    getCurrentSessionStats,
+    updateSettings,
+    getSettings
   } = useVocabularyState()
 
   const {
@@ -118,6 +122,15 @@ Type **"Today is a new day"** to begin your German learning journey!`
     }])
   }
 
+  const handleSettingsSave = (newSettings) => {
+    updateSettings(newSettings)
+    setMessages(prev => [...prev, {
+      id: generateMessageId(),
+      type: 'system',
+      content: '✅ Settings updated successfully!'
+    }])
+  }
+
   const currentSection = getCurrentSection()
   const sectionInfo = SECTIONS[currentSection] || SECTIONS.INTRO
   const progress = getSectionProgress()
@@ -142,6 +155,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
         onOpenImport={() => setIsModalOpen(true)}
         onExport={handleExport}
         onReset={handleReset}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
       />
       
       <SectionBanner 
@@ -161,6 +175,13 @@ Type **"Today is a new day"** to begin your German learning journey!`
         onClose={() => setIsModalOpen(false)}
         onImport={handleImport}
         onExport={handleExport}
+      />
+      
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        settings={getSettings()}
+        onSave={handleSettingsSave}
       />
     </div>
   )

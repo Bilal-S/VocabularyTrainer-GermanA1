@@ -130,31 +130,86 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     // CRITICAL FIX: Reset batch answers when starting a new day
     setBatchAnswers({})
     
+    // Clear messages and show welcome screen first
+    const welcomeMessage = `# Welcome to A1 German Coach! 🇩🇪
+
+This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
+
+## Available Commands:
+- **"Today is a new day"** - Start your daily learning routine
+- **"Next Step"** - Skip to the next exercise
+- **"clear all progress data"** - Reset all your progress
+
+## Features:
+- 📚 Structured 7-step daily routine
+- 🎯 Progress tracking and mastery system
+- 💾 Save/load your progress via JSON
+- 📱 Mobile-friendly chat interface
+
+Type **"Today is a new day"** to begin your German learning journey!`
+    
+    setMessages([{
+      id: generateMessageId(),
+      type: 'system',
+      content: welcomeMessage
+    }])
+    
+    // Check if we have previous data to show summary
+    if (state.lastSessionDate && state.lastSessionDate !== new Date().toISOString().split('T')[0]) {
+      const sessionStats = getCurrentSessionStats()
+      const summaryMessage = `## Previous Session Summary:
+- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Verbs introduced:** ${sessionStats.verbsIntroduced}
+- **Items added to review queue:** ${sessionStats.itemsAddedToReview}
+- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+
+---
+
+`
+      
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: generateMessageId(),
+          type: 'system',
+          content: summaryMessage
+        }])
+      }, 1000)
+    }
+    
     // Check if review queue is empty
     if (state.pools.reviewQueue.length === 0) {
-      // Skip directly to Step 2
-      await skipToNextStepFromStep(1)
+      setTimeout(() => {
+        addSystemMessage(`*Checking Review Queue...*
+> **Status:** Your Review Queue is currently empty! Great job.
+> **Action:** Moving immediately to Step 2.`)
+        
+        // Skip directly to Step 2 after a brief delay
+        setTimeout(() => {
+          skipToNextStepFromStep(1)
+        }, 2000)
+      }, 2000)
       return
     }
     
-    setCurrentStep(1)
-    setIsBatchMode(false) // Ensure single question mode for Step 1
-    
-    // Generate review batch
-    const reviewBatch = vocabManager.generateReviewBatch(state.pools.reviewQueue)
-    setCurrentExercise(reviewBatch[0])
-    setBatchProgress({ completed: 1, total: reviewBatch.length }) // Start with 1 since we're on question 1
-    
-    const currentReview = reviewBatch[0]
-    addSystemMessage(`# 🌅 Good morning! Let's start your German practice!
-
-## Step 1: Review Previous Mistakes
+    setTimeout(() => {
+      setCurrentStep(1)
+      setIsBatchMode(false) // Ensure single question mode for Step 1
+      
+      // Generate review batch with configurable batch size
+      const reviewBatchSize = Math.min(state.settings.maxReviewBatchSize, state.pools.reviewQueue.length)
+      const reviewBatch = vocabManager.generateReviewBatch(state.pools.reviewQueue, reviewBatchSize)
+      setCurrentExercise(reviewBatch[0])
+      setBatchProgress({ completed: 1, total: reviewBatch.length }) // Start with 1 since we're on question 1
+      
+      const currentReview = reviewBatch[0]
+      addSystemMessage(`## Step 1: Review Previous Mistakes
 We'll review ${state.pools.reviewQueue.length} items from your review queue.
 
 **Question 1 of ${reviewBatch.length}: From ${currentReview?.originSection || 'Unknown'}**
 ---
 ${currentReview?.question || 'Loading question...'}
 Type your answer below:`)
+    }, state.lastSessionDate ? 3500 : 1500) // Longer delay if we have previous data
   }
 
   const skipToNextStepFromStep = async (fromStep) => {
@@ -170,9 +225,17 @@ Type your answer below:`)
     
     switch (stepKey) {
       case 'VOCABULARY':
-        // Generate exclude list from mastered and review queue words
+        // Generate exclude list from mastered and review queue words (handle new structure)
+        const masteredWords = Array.isArray(state.pools.mastered) 
+          ? state.pools.mastered 
+          : [
+              ...(state.pools.mastered.nouns || []),
+              ...(state.pools.mastered.verbs || []),
+              ...(state.pools.mastered.words || [])
+            ]
+        
         const excludeList = [
-          ...state.pools.mastered,
+          ...masteredWords,
           ...state.pools.reviewQueue.map(item => typeof item === 'string' ? item : item.word),
           ...state.pools.unselected // Also exclude words already used in this session
         ]

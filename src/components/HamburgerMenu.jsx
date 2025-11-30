@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const HamburgerMenu = ({ onOpenImport, onExport, onReset }) => {
+const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleImport = () => {
@@ -73,6 +73,15 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset }) => {
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 💾 Export Progress
+              </button>
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  onOpenSettings()
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                ⚙️ Settings
               </button>
               <hr className="my-1 border-gray-200" />
               <button

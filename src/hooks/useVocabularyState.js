@@ -7,10 +7,19 @@ const getInitialState = () => {
   const vocabPools = initializeVocabularyPools()
   return {
     userId: 'user-' + Math.random().toString(36).substr(2, 9),
+    settings: {
+      masteringCount: 1,
+      maxReviewBatchSize: 50,
+      maxReviewCount: 3
+    },
     progress: {},
     pools: {
       unselected: [], // Start empty - words get moved here as they're used
-      mastered: [],   // Words with 3+ correct answers
+      mastered: {
+        nouns: [],
+        verbs: [],
+        words: []
+      },   // Words with correctCount >= masteringCount
       reviewQueue: [], // Words with incorrect answers
       available: vocabPools.unselected // All available words for selection
     },
@@ -102,10 +111,20 @@ export const useVocabularyState = () => {
         ...jsonData,
         // Preserve original userId if not provided
         userId: jsonData.userId || freshState.userId,
-        // Ensure pools exist
+        // Ensure settings exist
+        settings: {
+          masteringCount: jsonData.settings?.masteringCount || 1,
+          maxReviewBatchSize: jsonData.settings?.maxReviewBatchSize || 50,
+          maxReviewCount: jsonData.settings?.maxReviewCount || 3
+        },
+        // Ensure pools exist - handle both old and new formats
         pools: {
           unselected: jsonData.pools?.unselected || [],
-          mastered: jsonData.pools?.mastered || [],
+          mastered: jsonData.pools?.mastered || {
+            nouns: [],
+            verbs: [],
+            words: []
+          },
           reviewQueue: jsonData.pools?.reviewQueue || []
         },
         // Ensure progress exists
@@ -175,22 +194,44 @@ export const useVocabularyState = () => {
     if (isCorrect) {
       newState.progress[word].correctCount++
       
-      // Move to mastered if correct 3 times
-      if (newState.progress[word].correctCount >= 3) {
-        const index = newState.pools.reviewQueue.findIndex(item => 
+      // Determine if item is in review queue to use correct mastering threshold
+      const isInReviewQueue = newState.pools.reviewQueue.findIndex(item => 
+        typeof item === 'string' ? item === word : item.word === word
+      ) > -1
+      
+      const masteringThreshold = isInReviewQueue 
+        ? newState.settings.maxReviewCount 
+        : newState.settings.masteringCount
+      
+      // Move to mastered if correct count reaches threshold
+      if (newState.progress[word].correctCount >= masteringThreshold) {
+        // Remove from review queue if present
+        const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
           typeof item === 'string' ? item === word : item.word === word
         )
-        if (index > -1) {
-          newState.pools.reviewQueue.splice(index, 1)
+        if (reviewIndex > -1) {
+          newState.pools.reviewQueue.splice(reviewIndex, 1)
         }
         
+        // Remove from unselected if present
         const unselectedIndex = newState.pools.unselected.indexOf(word)
         if (unselectedIndex > -1) {
           newState.pools.unselected.splice(unselectedIndex, 1)
         }
         
-        if (!newState.pools.mastered.includes(word)) {
-          newState.pools.mastered.push(word)
+        // Add to appropriate mastered category
+        if (!newState.pools.mastered.nouns.includes(word) && 
+            !newState.pools.mastered.verbs.includes(word) && 
+            !newState.pools.mastered.words.includes(word)) {
+          
+          // Determine word type based on section (simple heuristic)
+          if (section === 'VOCABULARY' || section === 'PLURAL') {
+            newState.pools.mastered.nouns.push(word)
+          } else if (section === 'VERBS') {
+            newState.pools.mastered.verbs.push(word)
+          } else {
+            newState.pools.mastered.words.push(word)
+          }
           wasMovedToMastered = true
         }
       }
@@ -262,9 +303,14 @@ export const useVocabularyState = () => {
   }
 
   const getCurrentSessionStats = () => {
-    // SIMPLIFIED FIX: Calculate remaining A1 words correctly
+    // Calculate mastered count from new structure
+    const masteredCount = Array.isArray(state.pools.mastered) 
+      ? state.pools.mastered.length 
+      : (state.pools.mastered.nouns?.length || 0) + 
+        (state.pools.mastered.verbs?.length || 0) + 
+        (state.pools.mastered.words?.length || 0)
+    
     const totalAvailable = getTotalVocabularyCount() // Total words in database
-    const masteredCount = state.pools.mastered.length
     const inReviewCount = state.pools.reviewQueue.length
     const remainingCount = Math.max(0, totalAvailable - masteredCount - inReviewCount)
 
@@ -275,9 +321,25 @@ export const useVocabularyState = () => {
       itemsAddedToReview: state.currentSessionStats.itemsAddedToReviewToday,
       itemsRemainingInReview: state.pools.reviewQueue.length,
       initialReviewQueueSize: state.currentSessionStats.initialReviewQueueSize,
-      totalMastered: state.pools.mastered.length,
+      totalMastered: masteredCount,
       totalRemaining: remainingCount
     }
+  }
+
+  const updateSettings = (newSettings) => {
+    const newState = {
+      ...state,
+      settings: {
+        ...state.settings,
+        ...newSettings
+      }
+    }
+    saveState(newState)
+    return newState
+  }
+
+  const getSettings = () => {
+    return state.settings
   }
 
   return {
@@ -291,6 +353,8 @@ export const useVocabularyState = () => {
     trackSessionLearning,
     isNewDay,
     updateSessionStats,
-    getCurrentSessionStats
+    getCurrentSessionStats,
+    updateSettings,
+    getSettings
   }
 }
