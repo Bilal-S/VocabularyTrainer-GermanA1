@@ -16,6 +16,17 @@ export class VocabularyManager {
     this.excludeList = []
   }
 
+  // CRITICAL FIX: Add umlaut substitution helper
+  normalizeUmlauts(text) {
+    return text
+      .replace(/ue/g, 'ü')
+      .replace(/oe/g, 'ö')
+      .replace(/ae/g, 'ä')
+      .replace(/Ue/g, 'Ü')
+      .replace(/Oe/g, 'Ö')
+      .replace(/Ae/g, 'Ä')
+  }
+
   // Generate Step 1: Review Previous Mistakes
   generateReviewBatch(reviewQueue, batchSize = 10) {
     if (!reviewQueue || reviewQueue.length === 0) {
@@ -38,7 +49,7 @@ export class VocabularyManager {
         switch (section) {
           case 'PLURAL':
             if (letterData.type === 'noun') {
-              // Use the raw word without article for the question, but full plural with article for answer
+              // Use raw word without article for the question, but full plural with article for answer
               const displayWord = letterData.word || letterData.german.split(' ').pop()
               return {
                 type: 'plural',
@@ -441,12 +452,25 @@ export class VocabularyManager {
     return false
   }
 
+  // CRITICAL FIX: Enhanced conjugation answer validation with umlaut support
   validateConjugationAnswer(userAnswer, correctAnswer) {
+    // Apply umlaut normalization to user input
+    const normalizedUser = this.normalizeUmlauts(userAnswer)
+    const normalizedCorrect = this.normalizeUmlauts(correctAnswer)
+    
+    console.log('Conjugation validation details:', { 
+      originalUser: userAnswer, 
+      normalizedUser, 
+      originalCorrect: correctAnswer, 
+      normalizedCorrect 
+    })
+
     // Parse user input to separate subject and verb
-    const userParts = userAnswer.split(' ')
-    const correctParts = correctAnswer.split(' ')
+    const userParts = normalizedUser.split(' ')
+    const correctParts = normalizedCorrect.split(' ')
     
     if (userParts.length !== 2 || correctParts.length !== 2) {
+      console.log('Invalid conjugation format - wrong number of parts')
       return false
     }
     
@@ -456,6 +480,15 @@ export class VocabularyManager {
     // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
     const subjectMatch = userSubject.toLowerCase() === correctSubject.toLowerCase()
     const verbMatch = userVerb === correctVerb
+    
+    console.log('Conjugation match result:', { 
+      subjectMatch, 
+      verbMatch, 
+      userSubject, 
+      correctSubject,
+      userVerb, 
+      correctVerb 
+    })
     
     return subjectMatch && verbMatch
   }
