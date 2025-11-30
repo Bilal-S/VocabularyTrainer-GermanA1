@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { initializeVocabularyPools } from '../data/vocabulary/index.js'
+import { initializeVocabularyPools, getTotalVocabularyCount } from '../data/vocabulary/index.js'
 
 const STORAGE_KEY = 'a1-german-coach-state'
 
@@ -262,6 +262,12 @@ export const useVocabularyState = () => {
   }
 
   const getCurrentSessionStats = () => {
+    // SIMPLIFIED FIX: Calculate remaining A1 words correctly
+    const totalAvailable = getTotalVocabularyCount() // Total words in database
+    const masteredCount = state.pools.mastered.length
+    const inReviewCount = state.pools.reviewQueue.length
+    const remainingCount = Math.max(0, totalAvailable - masteredCount - inReviewCount)
+
     return {
       nounsLearned: state.currentSessionStats.nounsLearnedToday,
       verbsIntroduced: state.currentSessionStats.verbsIntroducedToday,
@@ -270,7 +276,7 @@ export const useVocabularyState = () => {
       itemsRemainingInReview: state.pools.reviewQueue.length,
       initialReviewQueueSize: state.currentSessionStats.initialReviewQueueSize,
       totalMastered: state.pools.mastered.length,
-      totalRemaining: state.pools.unselected.length
+      totalRemaining: remainingCount
     }
   }
 

@@ -188,3 +188,19 @@ export const initializeVocabularyPools = () => {
     reviewQueue: []
   }
 }
+
+// Get total count of all vocabulary words in the database
+export const getTotalVocabularyCount = () => {
+  const availableLetters = getAvailableLetters()
+  let totalCount = 0
+  
+  availableLetters.forEach(letter => {
+    const letterData = vocabularyDatabase[letter.toLowerCase()]
+    if (letterData) {
+      totalCount += (letterData.nouns || []).length
+      totalCount += (letterData.verbs || []).length
+    }
+  })
+  
+  return totalCount
+}
