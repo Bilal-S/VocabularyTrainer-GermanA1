@@ -120,6 +120,8 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
   }
 
   const startDailyRoutine = async () => {
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
     // CRITICAL FIX: Reset batch answers when starting a new day
     setBatchAnswers({})
     
@@ -160,50 +162,47 @@ Type **"Today is a new day"** to begin your German learning journey!`
 
 `
       
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          id: generateMessageId(),
-          type: 'system',
-          content: summaryMessage
-        }])
-      }, 1000)
+      await delay(1000)
+      setMessages(prev => [...prev, {
+        id: generateMessageId(),
+        type: 'system',
+        content: summaryMessage
+      }])
     }
     
     // Check if review queue is empty
     if (state.pools.reviewQueue.length === 0) {
-      setTimeout(() => {
-        addSystemMessage(`*Checking Review Queue...*
+      await delay(2000)
+      addSystemMessage(`*Checking Review Queue...*
 > **Status:** Your Review Queue is currently empty! Great job.
 > **Action:** Moving immediately to Step 2.`)
         
-        // Skip directly to Step 2 after a brief delay
-        setTimeout(() => {
-          skipToNextStepFromStep(1)
-        }, 2000)
-      }, 2000)
+      // Skip directly to Step 2 after a brief delay
+      await delay(2000)
+      await skipToNextStepFromStep(1)
       return
     }
     
     // Reduce delay for better UX - show Step 1 immediately
-    setTimeout(() => {
-      setCurrentStep(1)
-      setIsBatchMode(false) // Ensure single question mode for Step 1
+    await delay(state.lastSessionDate ? 2000 : 800)
+    
+    setCurrentStep(1)
+    setIsBatchMode(false) // Ensure single question mode for Step 1
       
-      // Generate review batch with configurable batch size
-      const reviewBatchSize = Math.min(state.settings.maxReviewBatchSize, state.pools.reviewQueue.length)
-      const reviewBatch = vocabManager.generateReviewBatch(state.pools.reviewQueue, reviewBatchSize)
-      setCurrentExercise(reviewBatch[0])
-      setBatchProgress({ completed: 1, total: reviewBatch.length }) // Start with 1 since we're on question 1
+    // Generate review batch with configurable batch size
+    const reviewBatchSize = Math.min(state.settings.maxReviewBatchSize, state.pools.reviewQueue.length)
+    const reviewBatch = vocabManager.generateReviewBatch(state.pools.reviewQueue, reviewBatchSize)
+    setCurrentExercise(reviewBatch[0])
+    setBatchProgress({ completed: 1, total: reviewBatch.length }) // Start with 1 since we're on question 1
       
-      const currentReview = reviewBatch[0]
-      addSystemMessage(`## Step 1: Review Previous Mistakes
+    const currentReview = reviewBatch[0]
+    addSystemMessage(`## Step 1: Review Previous Mistakes
 We'll review ${state.pools.reviewQueue.length} items from your review queue.
 
 **Question 1 of ${reviewBatch.length}: From ${currentReview?.originSection || 'Unknown'}**
 ---
 ${currentReview?.question || 'Loading question...'}
 Type your answer below:`)
-    }, state.lastSessionDate ? 2000 : 800) // Reduced delays for better UX
   }
 
   const skipToNextStepFromStep = async (fromStep) => {

@@ -6,7 +6,6 @@ const ChatInterface = ({ messages, onCommand }) => {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState('Processing...')
-  const [loadingStage, setLoadingStage] = useState('command')
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -50,16 +49,12 @@ const ChatInterface = ({ messages, onCommand }) => {
     const normalizedCommand = command.toLowerCase()
     if (normalizedCommand.includes('today is a new day')) {
       setLoadingMessage('Starting your daily routine...')
-      setLoadingStage('starting-routine')
     } else if (normalizedCommand === 'next step') {
       setLoadingMessage('Skipping to next step...')
-      setLoadingStage('next-step')
     } else if (normalizedCommand === 'clear all progress data') {
       setLoadingMessage('Clearing all progress data...')
-      setLoadingStage('clearing-data')
     } else {
       setLoadingMessage('Processing your answer...')
-      setLoadingStage('processing-answer')
     }
 
     try {
@@ -67,13 +62,11 @@ const ChatInterface = ({ messages, onCommand }) => {
     } catch (error) {
       console.error('Error processing command:', error)
       setLoadingMessage('Error occurred')
-      setLoadingStage('error')
     } finally {
       setIsLoading(false)
       // Reset loading message after a short delay
       setTimeout(() => {
         setLoadingMessage('Processing...')
-        setLoadingStage('command')
         inputRef.current?.focus()
       }, 100)
     }
@@ -84,20 +77,17 @@ const ChatInterface = ({ messages, onCommand }) => {
     
     setIsLoading(true)
     setLoadingMessage('Skipping to next step...')
-    setLoadingStage('next-step')
 
     try {
       await onCommand('next step')
     } catch (error) {
       console.error('Error processing next step:', error)
       setLoadingMessage('Error occurred')
-      setLoadingStage('error')
     } finally {
       setIsLoading(false)
       // Reset loading message after a short delay
       setTimeout(() => {
         setLoadingMessage('Processing...')
-        setLoadingStage('command')
         inputRef.current?.focus()
       }, 100)
     }
@@ -179,12 +169,18 @@ const ChatInterface = ({ messages, onCommand }) => {
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="p-2 mb-1 mr-1 text-blue-500 hover:bg-blue-50 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              className={`p-2 mb-1 mr-1 text-blue-500 hover:bg-blue-50 rounded-full transition-colors flex-shrink-0 ${isLoading ? 'opacity-100 cursor-wait' : 'disabled:opacity-50 disabled:cursor-not-allowed'}`}
               title="Send answer"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-              </svg>
+              {isLoading ? (
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                  <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                </svg>
+              )}
             </button>
           </div>
           <button
