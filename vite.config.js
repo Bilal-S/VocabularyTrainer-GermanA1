@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['german-coach-icon.svg', 'icons/ios/180.png'],
       manifest: {
         name: 'A1 German Coach - Vocabulary Training',
         short_name: 'German Coach',
