@@ -228,10 +228,10 @@ export const letterK = {
         caseType: 'dative'
       },
       {
-        english: 'The child slept well.',
-        german: 'Das Kind schlief gut.',
+        english: 'The child plays.',
+        german: 'Das Kind spielt.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'We need a suitcase.',
@@ -252,10 +252,10 @@ export const letterK = {
         caseType: 'accusative'
       },
       {
-        english: 'The kitchen was clean.',
-        german: 'Die Küche war sauber.',
+        english: 'The kitchen is clean.',
+        german: 'Die Küche ist sauber.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'He knows the colleague.',

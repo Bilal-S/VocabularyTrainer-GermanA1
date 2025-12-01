@@ -218,70 +218,70 @@ export const letterT = {
         caseType: 'nominative'
       },
       {
-        english: 'We made the appointment.',
-        german: 'Wir machten den Termin.',
+        english: 'We make the appointment.',
+        german: 'Wir machen den Termin.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The test was difficult.',
-        german: 'Der Test war schwierig.',
+        english: 'The test is difficult.',
+        german: 'Der Test ist schwierig.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'He drank the tea.',
-        german: 'Er trank den Tee.',
+        english: 'He drinks the tea.',
+        german: 'Er trinkt den Tee.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She bought the ticket.',
-        german: 'Sie kaufte das Ticket.',
+        english: 'She buys the ticket.',
+        german: 'Sie kauft das Ticket.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We met the teacher.',
-        german: 'Wir trafen den Lehrer.',
+        english: 'We meet the teacher.',
+        german: 'Wir treffen den Lehrer.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'You danced well.',
-        german: 'Du tanztest gut.',
+        english: 'You dance well.',
+        german: 'Du tanzt gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'The daughter played.',
-        german: 'Die Tochter spielte.',
+        english: 'The daughter plays.',
+        german: 'Die Tochter spielt.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'I called the friend.',
-        german: 'Ich telefonierte mit dem Freund.',
+        english: 'I call the friend.',
+        german: 'Ich telefoniere mit dem Freund.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'They drank coffee.',
-        german: 'Sie tranken Kaffee.',
+        english: 'They drink coffee.',
+        german: 'Sie trinken Kaffee.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The table was clean.',
-        german: 'Der Tisch war sauber.',
+        english: 'The table is clean.',
+        german: 'Der Tisch ist sauber.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'You did the work.',
-        german: 'Du tatst die Arbeit.',
+        english: 'You do the work.',
+        german: 'Du tust die Arbeit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [

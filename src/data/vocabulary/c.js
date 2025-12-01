@@ -249,16 +249,16 @@ export const letterC = {
         caseType: 'accusative'
       },
       {
-        english: 'The computer was fast.',
-        german: 'Der Computer war schnell.',
+        english: 'The computer is fast.',
+        german: 'Der Computer ist schnell.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'She visited the café.',
-        german: 'Sie besuchte das Café.',
+        english: 'She visits the café.',
+        german: 'Sie besucht das Café.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
         english: 'I know the boss.',

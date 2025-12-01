@@ -57,22 +57,22 @@ export const letterN = {
         caseType: 'nominative'
       },
       {
-        english: 'She chose the number.',
-        german: 'Sie wählte die Nummer.',
+        english: 'She chooses the number.',
+        german: 'Sie wählt die Nummer.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I took the book.',
-        german: 'Ich nahm das Buch.',
+        english: 'I take the book.',
+        german: 'Ich nehme das Buch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The man took the name.',
-        german: 'Der Mann nahm den Namen.',
+        english: 'The man takes the name.',
+        german: 'Der Mann nimmt den Namen.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [

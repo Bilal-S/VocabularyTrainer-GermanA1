@@ -269,10 +269,10 @@ export const letterB = {
         caseType: 'dative'
       },
       {
-        english: 'The baby slept well.',
-        german: 'Das Baby schlief gut.',
+        english: 'The baby is small.',
+        german: 'Das Baby ist klein.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'We need a book.',
@@ -299,10 +299,10 @@ export const letterB = {
         caseType: 'accusative'
       },
       {
-        english: 'The mountain was high.',
-        german: 'Der Berg war hoch.',
+        english: 'The mountain is high.',
+        german: 'Der Berg ist hoch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'She sits on the bench.',

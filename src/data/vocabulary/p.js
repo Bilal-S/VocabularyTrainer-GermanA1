@@ -228,82 +228,82 @@ export const letterP = {
         caseType: 'dative'
       },
       {
-        english: 'The party was fun.',
-        german: 'Die Party war lustig.',
+        english: 'The party is fun.',
+        german: 'Die Party ist lustig.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We showed the passport.',
-        german: 'Wir zeigten den Pass.',
+        english: 'We show the passport.',
+        german: 'Wir zeigen den Pass.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The plan was good.',
-        german: 'Der Plan war gut.',
+        english: 'The plan is good.',
+        german: 'Der Plan ist gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'She paid the price.',
-        german: 'Sie zahlte den Preis.',
+        english: 'She pays the price.',
+        german: 'Sie zahlt den Preis.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He solved the problem.',
-        german: 'Er löste das Problem.',
+        english: 'He solves the problem.',
+        german: 'Er löst das Problem.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The police came quickly.',
-        german: 'Die Polizei kam schnell.',
+        english: 'The police comes quickly.',
+        german: 'Die Polizei kommt schnell.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'You passed the exam.',
-        german: 'Du bestandst die Prüfung.',
+        english: 'You pass the exam.',
+        german: 'Du bestehst die Prüfung.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The pause was short.',
-        german: 'Die Pause war kurz.',
+        english: 'The pause is short.',
+        german: 'Die Pause ist kurz.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We made a plan.',
-        german: 'Wir machten einen Plan.',
+        english: 'We make a plan.',
+        german: 'Wir machen einen Plan.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The price was high.',
-        german: 'Der Preis war hoch.',
+        english: 'The price is high.',
+        german: 'Der Preis ist hoch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'I read the prospectus.',
-        german: 'Ich las den Prospekt.',
+        german: 'Ich lese den Prospekt.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The partner worked hard.',
-        german: 'Der Partner arbeitete hart.',
+        english: 'The partner works hard.',
+        german: 'Der Partner arbeitet hart.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'She showed the passport.',
-        german: 'Sie zeigte den Pass.',
+        english: 'She shows the passport.',
+        german: 'Sie zeigt den Pass.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: []

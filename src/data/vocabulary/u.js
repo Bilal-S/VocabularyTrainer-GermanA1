@@ -110,40 +110,40 @@ export const letterU = {
         caseType: 'dative'
       },
       {
-        english: 'The vacation was beautiful.',
-        german: 'Der Urlaub war schön.',
+        english: 'The vacation is beautiful.',
+        german: 'Der Urlaub ist schön.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We attended the lesson.',
-        german: 'Wir besuchten den Unterricht.',
+        english: 'We attend the lesson.',
+        german: 'Wir besuchen den Unterricht.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She signed the document.',
-        german: 'Sie unterschrieb das Dokument.',
+        english: 'She signs the document.',
+        german: 'Sie unterschreibt das Dokument.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He transferred the money.',
-        german: 'Er überwies das Geld.',
+        english: 'He transfers the money.',
+        german: 'Er überweist das Geld.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'They moved to Berlin.',
-        german: 'Sie zogen nach Berlin um.',
+        english: 'They move to Berlin.',
+        german: 'Sie ziehen nach Berlin um.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'I stayed overnight.',
-        german: 'Ich übernachtete im Hotel.',
+        english: 'I stay overnight.',
+        german: 'Ich übernachte im Hotel.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
         english: 'The clock is new.',
@@ -152,16 +152,16 @@ export const letterU = {
         caseType: 'nominative'
       },
       {
-        english: 'You signed the contract.',
-        german: 'Du unterschriebst den Vertrag.',
+        english: 'You sign the contract.',
+        german: 'Du unterschreibst den Vertrag.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The lesson was long.',
-        german: 'Der Unterricht war lang.',
+        english: 'The lesson is long.',
+        german: 'Der Unterricht ist lang.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       }
     ],
     conjugations: [

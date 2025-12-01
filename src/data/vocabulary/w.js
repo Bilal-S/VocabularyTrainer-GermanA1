@@ -177,70 +177,70 @@ export const letterW = {
         caseType: 'dative'
       },
       {
-        english: 'The weather was good.',
-        german: 'Das Wetter war gut.',
+        english: 'The weather is good.',
+        german: 'Das Wetter ist gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We waited.',
-        german: 'Wir warteten.',
+        english: 'We wait.',
+        german: 'Wir warten.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'He lived in Berlin.',
-        german: 'Er wohnte in Berlin.',
+        english: 'He lives in Berlin.',
+        german: 'Er wohnt in Berlin.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'She washed the car.',
-        german: 'Sie wusch das Auto.',
+        english: 'She washes the car.',
+        german: 'Sie wäscht das Auto.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'They knew the answer.',
-        german: 'Sie kannten die Antwort.',
+        english: 'They know the answer.',
+        german: 'Sie wissen die Antwort.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I knew the truth.',
-        german: 'Ich wusste die Wahrheit.',
+        english: 'I know the truth.',
+        german: 'Ich weiß die Wahrheit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'You wanted to go.',
-        german: 'Du wolltest gehen.',
+        english: 'You want to go.',
+        german: 'Du willst gehen.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'The week was long.',
-        german: 'Die Woche war lang.',
+        english: 'The week is long.',
+        german: 'Die Woche ist lang.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'He became a teacher.',
-        german: 'Er wurde Lehrer.',
+        english: 'He becomes a teacher.',
+        german: 'Er wird Lehrer.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'They washed the dishes.',
-        german: 'Sie wuschen das Geschirr.',
+        english: 'They wash the car.',
+        german: 'Sie waschen das Auto.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We wanted to help.',
-        german: 'Wir wollten helfen.',
+        english: 'We want to help.',
+        german: 'Wir wollen helfen.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       }
     ],
     conjugations: [

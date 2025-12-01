@@ -232,40 +232,40 @@ export const letterR = {
         caseType: 'nominative'
       },
       {
-        english: 'We made the trip.',
-        german: 'Wir machten die Reise.',
+        english: 'We make the trip.',
+        german: 'Wir machen die Reise.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The restaurant was full.',
-        german: 'Das Restaurant war voll.',
+        english: 'The restaurant is full.',
+        german: 'Das Restaurant ist voll.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'She found the reception.',
-        german: 'Sie fand die Rezeption.',
+        english: 'She finds the reception.',
+        german: 'Sie findet die Rezeption.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He repaired the machine.',
-        german: 'Er reparierte die Maschine.',
+        english: 'He repairs the machine.',
+        german: 'Er repariert die Maschine.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I rode the bike.',
-        german: 'Ich fuhr Rad.',
+        english: 'I buy the rice.',
+        german: 'Ich kaufe den Reis.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The travel agency helped.',
-        german: 'Das Reisebüro half.',
+        english: 'The travel agency helps.',
+        german: 'Das Reisebüro hilft.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'You smell the rain.',
@@ -274,34 +274,34 @@ export const letterR = {
         caseType: 'accusative'
       },
       {
-        english: 'The rice was good.',
-        german: 'Der Reis war gut.',
+        english: 'The rice is good.',
+        german: 'Der Reis ist gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We traveled to Berlin.',
-        german: 'Wir reisten nach Berlin.',
+        english: 'We travel to Berlin.',
+        german: 'Wir reisen nach Berlin.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'She smoked a cigarette.',
-        german: 'Sie rauchte eine Zigarette.',
+        english: 'She smokes a cigarette.',
+        german: 'Sie raucht eine Zigarette.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He read the travel guide.',
-        german: 'Er las den Reiseführer.',
+        english: 'He reads the travel guide.',
+        german: 'Er liest den Reiseführer.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The reception was closed.',
-        german: 'Die Rezeption war geschlossen.',
+        english: 'The reception is closed.',
+        german: 'Die Rezeption ist geschlossen.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       }
     ],
     conjugations: [

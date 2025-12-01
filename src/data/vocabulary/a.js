@@ -283,124 +283,124 @@ export const letterA = {
         caseType: 'temporal'
       },
       {
-        english: 'The departure was at 8 o\'clock.',
-        german: 'Die Abfahrt war um 8 Uhr.',
+        english: 'The departure is long.',
+        german: 'Die Abfahrt ist lang.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'He answered the phone call.',
-        german: 'Er antwortete dem Anruf.',
+        english: 'He hears the announcement.',
+        german: 'Er hört die Ansage.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She filled out the registration.',
-        german: 'Sie füllte die Anmeldung aus.',
+        english: 'She writes the registration.',
+        german: 'Sie schreibt die Anmeldung.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We began the work.',
-        german: 'Wir fingen die Arbeit an.',
+        english: 'We have the work.',
+        german: 'Wir haben die Arbeit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I arrived at the airport.',
-        german: 'Ich kam am Flughafen an.',
+        english: 'I see the exit.',
+        german: 'Ich sehe den Ausgang.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The offer was very good.',
-        german: 'Das Angebot war sehr gut.',
+        english: 'The offer is good.',
+        german: 'Das Angebot ist gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'You picked up the apple.',
-        german: 'Du holtest den Apfel ab.',
+        english: 'You buy the apple.',
+        german: 'Du kaufst den Apfel.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He saw the exit.',
-        german: 'Er sah den Ausgang.',
+        english: 'He finds the exit.',
+        german: 'Er findet den Ausgang.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'They turned on the machine.',
-        german: 'Sie machten den Automat an.',
+        english: 'They use the machine.',
+        german: 'Sie benutzen den Automat.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I had the address.',
-        german: 'Ich hatte die Adresse.',
+        english: 'I give the address.',
+        german: 'Ich gebe die Adresse.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She was at the work.',
-        german: 'Sie war bei der Arbeit.',
+        english: 'She likes the work.',
+        german: 'Sie mag die Arbeit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We went to the excursion.',
-        german: 'Wir gingen zum Ausflug.',
+        english: 'We make an excursion.',
+        german: 'Wir machen einen Ausflug.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The doctor gave the answer.',
-        german: 'Der Arzt gab die Antwort.',
+        english: 'The doctor gives the answer.',
+        german: 'Der Arzt gibt die Antwort.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I called the sender.',
-        german: 'Ich rief den Absender an.',
+        english: 'I call the sender.',
+        german: 'Ich rufe den Absender an.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'You got up early.',
-        german: 'Du standest früh auf.',
+        english: 'The eye is blue.',
+        german: 'Das Auge ist blau.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'He turned off the machine.',
-        german: 'Er machte den Automat aus.',
+        english: 'He buys the machine.',
+        german: 'Er kauft den Automat.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She got dressed quickly.',
-        german: 'Sie zog sich schnell an.',
+        english: 'She sees the arm.',
+        german: 'Sie sieht den Arm.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We registered for the offer.',
-        german: 'Wir meldeten uns für das Angebot an.',
+        english: 'We need the ID.',
+        german: 'Wir brauchen den Ausweis.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The excursion was great.',
-        german: 'Der Ausflug war toll.',
+        english: 'The excursion is beautiful.',
+        german: 'Der Ausflug ist schön.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'I stopped the work.',
-        german: 'Ich hörte mit der Arbeit auf.',
+        english: 'I search for the task.',
+        german: 'Ich suche die Aufgabe.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [

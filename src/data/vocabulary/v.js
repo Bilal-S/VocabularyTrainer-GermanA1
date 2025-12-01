@@ -120,52 +120,52 @@ export const letterV = {
         caseType: 'dative'
       },
       {
-        english: 'The club was large.',
-        german: 'Der Verein war groß.',
+        english: 'The club is large.',
+        german: 'Der Verein ist groß.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We understood the lesson.',
-        german: 'Wir verstanden die Stunde.',
+        english: 'We understand the lesson.',
+        german: 'Wir verstehen die Stunde.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He sold the car.',
-        german: 'Er verkaufte das Auto.',
+        english: 'He sells the car.',
+        german: 'Er verkauft das Auto.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She imagined the problem.',
-        german: 'Sie stellte sich das Problem vor.',
+        english: 'She imagines the problem.',
+        german: 'Sie stellt sich das Problem vor.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'They earned money.',
-        german: 'Sie verdienten Geld.',
+        english: 'They earn money.',
+        german: 'Sie verdienen Geld.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I rented the apartment.',
-        german: 'Ich vermietete die Wohnung.',
+        english: 'I rent out the apartment.',
+        german: 'Ich vermiete die Wohnung.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The relative came yesterday.',
-        german: 'Der Verwandte kam gestern.',
+        english: 'The relative comes today.',
+        german: 'Der Verwandte kommt heute.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'You showed caution.',
-        german: 'Du zeigtest Vorsicht.',
+        english: 'You show caution.',
+        german: 'Du zeigst Vorsicht.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [

@@ -253,88 +253,88 @@ export const letterS = {
         caseType: 'nominative'
       },
       {
-        english: 'We wrote the sentence.',
-        german: 'Wir schrieben den Satz.',
+        english: 'We write the sentence.',
+        german: 'Wir schreiben den Satz.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The school was big.',
-        german: 'Die Schule war groß.',
+        english: 'The school is big.',
+        german: 'Die Schule ist groß.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'He saw the sister.',
-        german: 'Er sah die Schwester.',
+        english: 'He sees the sister.',
+        german: 'Er sieht die Schwester.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She spoke with the student.',
-        german: 'Sie sprach mit dem Schüler.',
+        english: 'She speaks with the student.',
+        german: 'Sie spricht mit dem Schüler.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'The sun shone brightly.',
-        german: 'Die Sonne schien hell.',
+        english: 'The sun shines brightly.',
+        german: 'Die Sonne scheint hell.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We played football.',
-        german: 'Wir spielten Fußball.',
+        english: 'We play football.',
+        german: 'Wir spielen Fußball.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'You stood up early.',
-        german: 'Du standest früh auf.',
+        english: 'You stand at the door.',
+        german: 'Du stehst an der Tür.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'The key was lost.',
-        german: 'Der Schlüssel war verloren.',
+        english: 'The key is lost.',
+        german: 'Der Schlüssel ist verloren.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'I studied German.',
-        german: 'Ich studierte Deutsch.',
+        english: 'I study German.',
+        german: 'Ich studiere Deutsch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The soup tasted good.',
-        german: 'Die Suppe schmeckte gut.',
+        english: 'The soup tastes good.',
+        german: 'Die Suppe schmeckt gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'They swam in the lake.',
-        german: 'Sie schwammen im See.',
+        english: 'They swim in the lake.',
+        german: 'Sie schwimmen im See.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'She closed the door.',
-        german: 'Sie schloss die Tür.',
+        english: 'She closes the door.',
+        german: 'Sie schließt die Tür.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We slept well.',
-        german: 'Wir schliefen gut.',
+        english: 'We sleep well.',
+        german: 'Wir schlafen gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'The student searched for the book.',
-        german: 'Der Schüler suchte das Buch.',
+        english: 'The student searches for the book.',
+        german: 'Der Schüler sucht das Buch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [

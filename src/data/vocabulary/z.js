@@ -139,64 +139,64 @@ export const letterZ = {
         caseType: 'dative'
       },
       {
-        english: 'The train was late.',
-        german: 'Der Zug war spät.',
+        english: 'The train is late.',
+        german: 'Der Zug ist spät.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We counted the numbers.',
-        german: 'Wir zählten die Zahlen.',
+        english: 'We count the numbers.',
+        german: 'Wir zählen die Zahlen.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He showed the way.',
-        german: 'Er zeigte den Weg.',
+        english: 'He shows the way.',
+        german: 'Er zeigt den Weg.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'They went back home.',
-        german: 'Sie gingen nach Hause zurück.',
+        english: 'They go back home.',
+        german: 'Sie gehen nach Hause zurück.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'She drove the car.',
-        german: 'Sie fuhr das Auto.',
+        english: 'She drives the car.',
+        german: 'Sie fährt das Auto.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I pulled the door.',
-        german: 'Ich zog die Tür.',
+        english: 'I pull the door.',
+        german: 'Ich ziehe die Tür.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The number was high.',
-        german: 'Die Zahl war hoch.',
+        english: 'The number is high.',
+        german: 'Die Zahl ist hoch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'You showed the book.',
-        german: 'Du zeigtest das Buch.',
+        english: 'You show the book.',
+        german: 'Du zeigst das Buch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We went back to school.',
-        german: 'Wir gingen zur Schule zurück.',
+        english: 'We go back to school.',
+        german: 'Wir gehen zur Schule zurück.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'He counted to ten.',
-        german: 'Er zählte bis zehn.',
+        english: 'He counts to ten.',
+        german: 'Er zählt bis zehn.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       }
     ],
     conjugations: [

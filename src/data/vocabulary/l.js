@@ -241,10 +241,10 @@ export const letterL = {
         caseType: 'dative'
       },
       {
-        english: 'The teacher laughed.',
-        german: 'Der Lehrer lachte.',
+        english: 'The teacher laughs.',
+        german: 'Der Lehrer lacht.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'We learn the song.',
@@ -271,10 +271,10 @@ export const letterL = {
         caseType: 'accusative'
       },
       {
-        english: 'The solution was correct.',
-        german: 'Die Lösung war richtig.',
+        english: 'The solution is correct.',
+        german: 'Die Lösung ist richtig.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'I love my life.',
@@ -313,52 +313,52 @@ export const letterL = {
         caseType: 'dative'
       },
       {
-        english: 'They laughed at the joke.',
-        german: 'Sie lachten über den Witz.',
-        type: 'translation',
-        caseType: 'simple_past'
-      },
-      {
-        english: 'You learn German.',
-        german: 'Du lernst Deutsch.',
-        type: 'translation',
-        caseType: 'accusative'
-      },
-      {
-        english: 'The light shines brightly.',
-        german: 'Das Licht leuchtet hell.',
+        english: 'The people laugh.',
+        german: 'Die Leute lachen.',
         type: 'translation',
         caseType: 'nominative'
       },
       {
-        english: 'We ran to the shop.',
-        german: 'Wir liefen zum Laden.',
+        english: 'We run to the shop.',
+        german: 'Wir laufen zum Laden.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'She lived in the country.',
-        german: 'Sie lebte auf dem Land.',
+        english: 'She lives in the country.',
+        german: 'Sie lebt auf dem Land.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'He put the book on the table.',
-        german: 'Er legte das Buch auf den Tisch.',
+        english: 'He puts the book on the table.',
+        german: 'Er legt das Buch auf den Tisch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'I learned the solution.',
-        german: 'Ich lernte die Lösung.',
+        english: 'I learn the solution.',
+        german: 'Ich lerne die Lösung.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The teacher read the letter.',
-        german: 'Der Lehrer las den Brief.',
+        english: 'He puts the book on the table.',
+        german: 'Er legt das Buch auf den Tisch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
+      },
+      {
+        english: 'I learn the solution.',
+        german: 'Ich lerne die Lösung.',
+        type: 'translation',
+        caseType: 'accusative'
+      },
+      {
+        english: 'The teacher reads the letter.',
+        german: 'Der Lehrer liest den Brief.',
+        type: 'translation',
+        caseType: 'accusative'
       }
     ],
     conjugations: [

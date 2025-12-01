@@ -243,10 +243,10 @@ export const letterM = {
         caseType: 'dative'
       },
       {
-        english: 'The machine worked well.',
-        german: 'Die Maschine arbeitete gut.',
+        english: 'The machine is good.',
+        german: 'Die Maschine ist gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'We make the furniture.',
@@ -273,10 +273,10 @@ export const letterM = {
         caseType: 'accusative'
       },
       {
-        english: 'The rent was expensive.',
-        german: 'Die Miete war teuer.',
+        english: 'The rent is high.',
+        german: 'Die Miete ist hoch.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'I want to rent the apartment.',
@@ -315,10 +315,10 @@ export const letterM = {
         caseType: 'modal'
       },
       {
-        english: 'They laughed loudly.',
-        german: 'Sie lachten laut.',
+        english: 'The mother laughs.',
+        german: 'Die Mutter lacht.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'You must help.',
@@ -333,34 +333,34 @@ export const letterM = {
         caseType: 'nominative'
       },
       {
-        english: 'We rented the apartment.',
-        german: 'Wir mieteten die Wohnung.',
+        english: 'We rent the apartment.',
+        german: 'Wir mieten die Wohnung.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'She brought the food.',
-        german: 'Sie brachte das Essen mit.',
+        english: 'She brings the food.',
+        german: 'Sie bringt das Essen mit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'He came along.',
-        german: 'Er kam mit.',
+        english: 'He comes along.',
+        german: 'Er kommt mit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'verb'
       },
       {
-        english: 'I took the book.',
-        german: 'Ich nahm das Buch mit.',
+        english: 'I take the book.',
+        german: 'Ich nehme das Buch mit.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'They liked the movie.',
-        german: 'Sie mochten den Film.',
+        english: 'They like the movie.',
+        german: 'Sie mögen den Film.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [

@@ -145,34 +145,34 @@ export const letterO = {
         caseType: 'dative'
       },
       {
-        english: 'The grandpa worked hard.',
-        german: 'Der Opa arbeitete hart.',
+        english: 'The grandpa works hard.',
+        german: 'Der Opa arbeitet hart.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'We opened the door.',
-        german: 'Wir öffneten die Tür.',
+        english: 'We open the door.',
+        german: 'Wir öffnen die Tür.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The order was good.',
-        german: 'Die Ordnung war gut.',
+        english: 'The order is good.',
+        german: 'Die Ordnung ist gut.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'He found the place.',
-        german: 'Er fand den Ort.',
+        english: 'He finds the place.',
+        german: 'Er findet den Ort.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'The oil was cheap.',
-        german: 'Das Öl war billig.',
+        english: 'The oil is cheap.',
+        german: 'Das Öl ist billig.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
         english: 'Grandma loves the fruit.',
@@ -187,34 +187,34 @@ export const letterO = {
         caseType: 'accusative'
       },
       {
-        english: 'I came from this place.',
-        german: 'Ich kam aus diesem Ort.',
+        english: 'I come from this place.',
+        german: 'Ich komme aus diesem Ort.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'She made order.',
-        german: 'Sie machte Ordnung.',
+        english: 'She makes order.',
+        german: 'Sie macht Ordnung.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       },
       {
-        english: 'We thanked the grandma.',
-        german: 'Wir dankten der Oma.',
+        english: 'We thank the grandma.',
+        german: 'Wir danken der Oma.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'dative'
       },
       {
-        english: 'The place was beautiful.',
-        german: 'Der Ort war schön.',
+        english: 'The place is beautiful.',
+        german: 'Der Ort ist schön.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'nominative'
       },
       {
-        english: 'You opened the bottle.',
-        german: 'Du öffnetest die Flasche.',
+        english: 'You open the bottle.',
+        german: 'Du öffnest die Flasche.',
         type: 'translation',
-        caseType: 'simple_past'
+        caseType: 'accusative'
       }
     ],
     conjugations: [
