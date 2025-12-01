@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- German flag colors as background -->
+  <rect width="512" height="170" fill="#000000"/>
+  <rect y="170" width="512" height="172" fill="#DD0000"/>
+  <rect y="342" width="512" height="170" fill="#FFCE00"/>
+  
+  <!-- German text overlay -->
+  <text x="256" y="256" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">
+    DE
+  </text>
+  
+  <!-- Book icon overlay -->
+  <path d="M128 100 L128 400 L384 400 L384 100 L128 100 Z M160 140 L352 140 L352 360 L160 360 L160 140 Z" 
+        fill="white" opacity="0.8" transform="translate(0, -50)"/>
+</svg>

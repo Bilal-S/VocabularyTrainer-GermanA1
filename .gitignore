@@ -81,8 +81,8 @@ jspm_packages/
 # vuepress build output
 .vuepress/dist
 
-# Serverless directories
-.serverless
+# vite
+dev-dist/
 
 # FuseBox cache
 .fusebox/

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings }) => {
+const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleImport = () => {
@@ -18,6 +18,11 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings }) => {
     if (window.confirm('Are you sure you want to clear all progress data? This cannot be undone.')) {
       onReset()
     }
+  }
+
+  const handleInstall = () => {
+    setIsOpen(false)
+    onInstall()
   }
 
   return (
@@ -83,6 +88,14 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings }) => {
               >
                 ⚙️ Settings
               </button>
+              {isInstallable && (
+                <button
+                  onClick={handleInstall}
+                  className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors font-semibold"
+                >
+                  📲 Install App
+                </button>
+              )}
               <hr className="my-1 border-gray-200" />
               <button
                 onClick={handleReset}

@@ -30,6 +30,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [messages, setMessages] = useState([])
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [isInstallable, setIsInstallable] = useState(false)
   
   const {
     state,
@@ -53,6 +55,46 @@ function App() {
     getSectionProgress
   } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats)
 
+  // PWA Install Prompt Handler
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setIsInstallable(true)
+    }
+
+    const handleAppInstalled = () => {
+      setDeferredPrompt(null)
+      setIsInstallable(false)
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.addEventListener('appinstalled', handleAppInstalled)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      window.removeEventListener('appinstalled', handleAppInstalled)
+    }
+  }, [])
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return
+    
+    deferredPrompt.prompt()
+    const { outcome } = await deferredPrompt.userChoice
+    
+    if (outcome === 'accepted') {
+      setMessages(prev => [...prev, {
+        id: generateMessageId(),
+        type: 'system',
+        content: '🎉 German Coach has been installed! You can now access it from your home screen.'
+      }])
+    }
+    
+    setDeferredPrompt(null)
+    setIsInstallable(false)
+  }
+
   // Initialize with welcome message
   useEffect(() => {
     const welcomeMessage = {
@@ -72,6 +114,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - 🎯 Progress tracking and mastery system
 - 💾 Save/load your progress via JSON
 - 📱 Mobile-friendly chat interface
+- 📲 Install as a PWA for offline access
 
 Type **"Today is a new day"** to begin your German learning journey!`
     }
@@ -156,6 +199,8 @@ Type **"Today is a new day"** to begin your German learning journey!`
         onExport={handleExport}
         onReset={handleReset}
         onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onInstall={handleInstall}
+        isInstallable={isInstallable}
       />
       
       <SectionBanner 
