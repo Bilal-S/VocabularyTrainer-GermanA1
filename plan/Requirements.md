@@ -1,12 +1,9 @@
-Here's a **Product Requirement Document (PRD)** for your single-page web application based on the detailed behavior you provided:
-
-***
-
 # **Product Requirement Document (PRD)**
 
-**Project Name:** A1 German Coach (Goethe-only)  
-**Type:** Single Page Web Application (SPA)  
-**Primary Goal:** Help learners practice German at A1 level using a structured daily routine without AI-generated content.
+* **Project Name:** A1 German Coach 
+* **Type:** Progressive Web Application (PWA)  
+* **Primary Goal:** Help learners practice German at A1 level using a structured daily routine without AI-generated content.
+* **Author:** Boncode
 
 ***
 
@@ -29,10 +26,8 @@ It should use modern web standards with response behavior and attractive designs
     * All items to be reviewed will be presented once a day and need to be completed before moving on to step 2. If we have 17 items in the queue we will present 17 items one at time for user to answer.
     * By default the `maxReviewCount` is set to `3`
 
-All the entered values should be exported in Export and Imported in JSON format in the `settings` key.
+All entered values should be exported in Export and Imported in JSON format in the `settings` key.
 Once an item is in the mastered pool it should not be used in any of the questions.
-
-
 
 ***
 
@@ -47,7 +42,6 @@ Once an item is in the mastered pool it should not be used in any of the questio
     *   **"clear all progress data"** → resets user progress.
 *   Static Section Headers banners. As you move to next section the section header description, colors should update to reflect the new section. The banner should display progress inside the current section.
 *   Start with `Introduction` section that describes this application and basic commands.
-
 
 ### **2.2 State Management**
 
@@ -79,15 +73,15 @@ Once an item is in the mastered pool it should not be used in any of the questio
     *   Sections 3: German singular → user provides plural
     *   Section 4: Fill in the blank sentence
     *   Section 6: German subject verb conjugated
-*   Ensure you are using the correct pattern to evaluate the answer based on section it originates from.
+*   Ensure you are using the correct pattern to evaluate the answer based on the section it originates from.
 *   Feedback: Correct German + English explanation.
 
 #### **Step 2: New Vocabulary (20 Nouns)**
 
-*   Randomly select 20 nouns from unselected pool.
+*   Randomly select 20 nouns from the unselected pool.
 *   Display all English nouns at once.
 *   User provides German translations (article + noun).
-*   Handle partial responses until all 20 cleared.
+*   Handle partial responses until all 20 are cleared.
 
 #### **Step 3: Plural Practice (20 Nouns)**
 
@@ -121,15 +115,14 @@ Once an item is in the mastered pool it should not be used in any of the questio
     *   Items added to review queue.
     *   Items remaining in review queue.
 
-
-### **2.5 Adding Mistakes to Review Pool **
+### **2.5 Adding Mistakes to Review Pool** 
 
 * any question that has been wrongly answered in Step 2 through 6 should be added to the review queue 
 
-### **2.6 Adding to Mastered Pool **
-* any question that has been correctly answered in Step 2 throigh 6 based on the `correctCount` >= `masteringCount` should be added to the mastered pool in the right section `nouns`, `verbs`, or `words`
+### **2.6 Adding to Mastered Pool** 
+* any question that has been correctly answered in Step 2 through 6 based on `correctCount` >= `masteringCount` should be added to the mastered pool in the right section `nouns`, `verbs`, or `words`
   
-### **2.7 Startup Display **
+### **2.7 Startup Display** 
 
 * When user enters `Today is a new day` the screen should be cleared before drawing the instructions text box and and a new text box starting the exercises either step 1 or step 2
 * If the user enters the app again and we have old data, we should display previous day's summary in text box followed by text box with the initial instructions
@@ -157,7 +150,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
     *   None required (logic runs client-side).
     *   Vocabulary loaded from static JSON (parsed from PDF).
 *   **Data:**
-    *   From `a1_word-list.md`  parse and pregenerate a large number of questions and examples as shown in a.js, each letter of the alphabet should  use its own JSON files that can be expanded.
+    *   From `a1_word-list.md` parse and pregenerate a large number of questions and examples as shown in a.js, each letter of the alphabet should use its own JSON files that can be expanded.
         *   Fields: `word`, `type` (noun/verb/etc.), `plural`, `examples`.
     *   Keep state memory in local browser storage about progress, mistakes, selected pool
 
@@ -174,8 +167,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
     *   Simple, mobile-friendly chat interface.
 *   **Compliance:**
     *   Strict adherence to A1 vocabulary list.
-*   Use node http for local development and testing with assumption that a this will be hosted on web server.
-
+*   Use node http for local development and testing with the assumption that this will be hosted on a web server.
 
 ***
 
@@ -224,8 +216,7 @@ This is the export/import JSON structure that needs to be exported from local st
 }
 ```
 
-* availableExtra: this key contains any extra nouns, verbs and examples that can be added to the database for questions. Input should be validated and match pattern in `a.js` through `z.js` files.
-
+* availableExtra: this key contains any extra nouns, verbs and examples that can be added to the database for questions. Input should be validated and match the pattern in `a.js` through `z.js` files.
 
 ***
 
@@ -243,9 +234,9 @@ This is the export/import JSON structure that needs to be exported from local st
 
 The application supports cumulative partial responses for batch exercises. When users submit partial answers:
 
-*   **State Preservation**: All previously submitted and graded answers are preserved in the system state.
+*   **State Preservation**: All previously submitted and graded answers are preserved in system state.
 *   **Progressive Feedback**: Only feedback for newly submitted items is shown in each response.
-*   **Running Summary**: the section header maintain and displays a cumulative progress bar of the number of answers submitted and questions vs total questions.
+*   **Running Summary**: The section header maintains and displays a cumulative progress bar of the number of answers submitted and questions vs total questions.
 *   **Remaining Items**: The system re-prompts with only the remaining unanswered items, maintaining original numbering.
 
 ### **9.2 Numbered vs Sequential Answer Formats**
@@ -293,9 +284,9 @@ Each partial response follows this pattern:
 
 ### **9.5 Completion Handling**
 
-*   **Auto-advancement**: When all items in a batch are answered, system automatically moves to next step
+*   **Auto-advancement**: When all items in a batch are answered, the system automatically moves to the next step
 *   **Final Summary**: Completion message shows progress statistics
-*   **Transition Message**: Clear indication of next step with instructions
+*   **Transition Message**: Clear indication of the next step with instructions
 
 ***
 
@@ -348,3 +339,20 @@ The `src/data/vocabulary/index.js` loader transforms this compact data into usab
         *   `ich`, `du`, `er`, `es`, `wir`, `ihr`, `Sie` (standard)
         *   `sie (she)`: Mapped from index 4
         *   `sie (they)`: Mapped from index 8
+
+***
+
+## **11. Technology Stack**
+
+
+### **11.2 Target Technology Stack**
+
+* **Build Tool**: Vite 7.0.0
+* **Frontend Framework**: React 19.0.0
+* **Styling**: Tailwind CSS 3.3.6 (unchanged - see upgrade note)
+* **TypeScript Types**: @types/react 19.0.0, @types/react-dom 19.0.0
+* **Development**: PostCSS 8.5.1, Autoprefixer 10.4.20
+
+
+
+
