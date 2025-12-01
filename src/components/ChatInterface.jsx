@@ -27,6 +27,17 @@ const ChatInterface = ({ messages, onCommand }) => {
     }
   }, [messages, isLoading])
 
+  // Auto-resize textarea
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+      const scrollHeight = inputRef.current.scrollHeight
+      const maxHeight = 120
+      inputRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`
+      inputRef.current.style.overflowY = scrollHeight > maxHeight ? 'auto' : 'hidden'
+    }
+  }, [input])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!input.trim() || isLoading) return
@@ -152,35 +163,39 @@ const ChatInterface = ({ messages, onCommand }) => {
 
       {/* Input Form */}
       <div className="input-container">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-          <div className="flex space-x-2">
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex items-end space-x-2">
+          <div className="flex-1 flex items-end border border-gray-300 rounded-2xl bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent overflow-hidden">
             <textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your command or answer... (Ctrl+Enter to send)"
-              className="chat-input flex-1 resize-none"
+              className="flex-1 py-3 pl-4 pr-2 resize-none border-none focus:ring-0 outline-none focus:outline-none bg-transparent min-h-[48px] text-sm md:text-base"
               disabled={isLoading}
-              rows={3}
+              rows={1}
+              style={{ maxHeight: '120px', overflowY: 'hidden' }}
             />
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 mb-1 mr-1 text-blue-500 hover:bg-blue-50 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              title="Send answer"
             >
-              Send
-            </button>
-            <button
-              type="button"
-              onClick={handleNextStep}
-              disabled={isLoading}
-              className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Skip to next step"
-            >
-              Next
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+              </svg>
             </button>
           </div>
+          <button
+            type="button"
+            onClick={handleNextStep}
+            disabled={isLoading}
+            className="btn btn-secondary h-[48px] hidden md:block"
+            title="Skip to next step"
+          >
+            Next
+          </button>
         </form>
       </div>
     </div>
