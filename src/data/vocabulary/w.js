@@ -1,12 +1,5 @@
 export const letterW = {
   nouns: [
-    {"to wait": ["warten", "warte", "wartest", "wartet", "wartet", "wartet", "warten", "wartet", "warten", "warten"]},
-    {"to live": ["wohnen", "wohne", "wohnst", "wohnt", "wohnt", "wohnt", "wohnen", "wohnt", "wohnen", "wohnen"]},
-    {"to wash": ["waschen", "wasche", "wäschst", "wäscht", "wäscht", "wäscht", "waschen", "wascht", "waschen", "waschen"]},
-    {"to know a person/place": ["kennen", "kenne", "kennst", "kennt", "kennt", "kennt", "kennen", "kennt", "kennen", "kennen"]},
-    {"to know a fact": ["wissen", "weiß", "weißt", "weiß", "weiß", "weiß", "wissen", "wisst", "wissen", "wissen"]},
-    {"to want": ["wollen", "will", "willst", "will", "will", "will", "wollen", "wollt", "wollen", "wollen"]},
-    {"to become": ["werden", "werde", "wirst", "wird", "wird", "wird", "werden", "werdet", "werden", "werden"]},
     {"water": ["Wasser", "Wässer", "das", "die", "n"]},
     {"weather": ["Wetter", "Wetter", "das", "die", "n"]},
     {"week": ["Woche", "Wochen", "die", "die", "f"]},
@@ -19,7 +12,8 @@ export const letterW = {
     {"door": ["Tür", "Türen", "die", "die", "f"]},
     {"tea": ["Tee", "Tees", "der", "die", "m"]},
     {"table": ["Tisch", "Tische", "der", "die", "m"]},
-    {"window": ["Fenster", "Fenster", "das", "die", "n"]}
+    {"window": ["Fenster", "Fenster", "das", "die", "n"]},
+    {"apartment": ["Wohnung", "Wohnungen", "die", "die", "f"]}
   ],
   verbs: [
     {"to wait": ["warten", "warte", "wartest", "wartet", "wartet", "wartet", "warten", "wartet", "warten", "warten"]},

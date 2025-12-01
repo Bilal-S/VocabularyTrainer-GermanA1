@@ -209,7 +209,7 @@ export const letterR = {
     translations: [
       {
         english: 'The room is large.',
-        german: 'Der Raum ist groß.',
+        german: ['Der Raum ist groß.', 'Das Zimmer ist groß.'],
         type: 'translation',
         caseType: 'nominative'
       },

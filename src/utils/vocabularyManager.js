@@ -30,6 +30,14 @@ export class VocabularyManager {
       .replace(/Ae/g, 'Ä')
   }
 
+  // Helper to find synonyms based on English translation
+  getSynonyms(englishWord) {
+    if (!englishWord) return []
+    // CRITICAL FIX: Use getAllNounsFromAllLetters to find potential synonyms
+    const allNouns = getAllNounsFromAllLetters()
+    return allNouns.filter(n => n.english.toLowerCase() === englishWord.toLowerCase())
+  }
+
   // Generate Step 1: Review Previous Mistakes
   generateReviewBatch(reviewQueue, batchSize = 10) {
     if (!reviewQueue || reviewQueue.length === 0) {
@@ -513,7 +521,9 @@ export class VocabularyManager {
 
     // Use case-sensitive comparison for German answers
     const normalizedUser = String(userAnswer).trim()
-    const normalizedCorrect = String(correctAnswer).trim()
+    const normalizedCorrect = Array.isArray(correctAnswer)
+      ? correctAnswer
+      : String(correctAnswer).trim()
 
     console.log('Validating answer:', { userAnswer: normalizedUser, correctAnswer: normalizedCorrect, type })
 
@@ -522,7 +532,22 @@ export class VocabularyManager {
       case 'verb':
       case 'plural':
         // Case-sensitive comparison for German words
-        return this.caseSensitiveMatch(normalizedUser, normalizedCorrect)
+        if (Array.isArray(normalizedCorrect)) {
+          return normalizedCorrect.some(ans => this.caseSensitiveMatch(normalizedUser, ans))
+        }
+        
+        // Check exact match first
+        if (this.caseSensitiveMatch(normalizedUser, normalizedCorrect)) return true
+        
+        // Check synonyms for nouns
+        if (type === 'noun' && exercise && exercise.english) {
+           const synonyms = this.getSynonyms(exercise.english)
+           // synonyms is array of noun objects. Check against their .german
+           for (const syn of synonyms) {
+             if (this.caseSensitiveMatch(normalizedUser, syn.german)) return true
+           }
+        }
+        return false
       
       case 'conjugation':
         // Special handling for conjugation - expect "subject + verb" format
@@ -535,6 +560,9 @@ export class VocabularyManager {
       
       case 'translation':
         // Case-sensitive for German translations with some flexibility
+        if (Array.isArray(normalizedCorrect)) {
+          return normalizedCorrect.some(ans => this.fuzzyMatch(normalizedUser, ans))
+        }
         return this.fuzzyMatch(normalizedUser, normalizedCorrect)
       
       default:
@@ -585,49 +613,43 @@ export class VocabularyManager {
   validateConjugationAnswer(userAnswer, correctAnswer, exercise = null) {
     // Apply umlaut normalization to user input
     const normalizedUser = this.normalizeUmlauts(userAnswer)
-    const normalizedCorrect = this.normalizeUmlauts(correctAnswer)
+    // Handle array of correct answers if passed (unlikely for conjugation currently but good practice)
+    const correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer]
     
-    console.log('Conjugation validation details:', { 
-      originalUser: userAnswer, 
-      normalizedUser, 
-      originalCorrect: correctAnswer, 
-      normalizedCorrect 
-    })
+    for (const correct of correctAnswers) {
+        const normalizedCorrect = this.normalizeUmlauts(correct)
+        
+        console.log('Conjugation validation details:', { 
+          originalUser: userAnswer, 
+          normalizedUser, 
+          originalCorrect: correct, 
+          normalizedCorrect 
+        })
 
-    // Parse user input to separate subject and verb
-    const userParts = normalizedUser.split(' ')
-    const correctParts = normalizedCorrect.split(' ')
-    
-    if (userParts.length !== 2 || correctParts.length !== 2) {
-      console.log('Invalid conjugation format - wrong number of parts')
-      return false
+        // Parse user input to separate subject and verb
+        const userParts = normalizedUser.split(' ')
+        const correctParts = normalizedCorrect.split(' ')
+        
+        if (userParts.length === 2 && correctParts.length === 2) {
+            const [userSubject, userVerb] = userParts
+            const [correctSubject, correctVerb] = correctParts
+            
+            // For conjugation exercises, use clean subject comparison if available
+            // Handle both new format (with cleanSubject) and old format (without)
+            let cleanCorrectSubject = correctSubject
+            if (exercise && exercise.cleanSubject) {
+              cleanCorrectSubject = exercise.cleanSubject
+            }
+            
+            // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
+            const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase()
+            const verbMatch = userVerb === correctVerb
+            
+            if (subjectMatch && verbMatch) return true
+        }
     }
     
-    const [userSubject, userVerb] = userParts
-    const [correctSubject, correctVerb] = correctParts
-    
-    // For conjugation exercises, use clean subject comparison if available
-    // Handle both new format (with cleanSubject) and old format (without)
-    let cleanCorrectSubject = correctSubject
-    if (exercise && exercise.cleanSubject) {
-      cleanCorrectSubject = exercise.cleanSubject
-    }
-    
-    // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
-    const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase()
-    const verbMatch = userVerb === correctVerb
-    
-    console.log('Conjugation match result:', { 
-      subjectMatch, 
-      verbMatch, 
-      userSubject, 
-      correctSubject,
-      cleanCorrectSubject,
-      userVerb, 
-      correctVerb 
-    })
-    
-    return subjectMatch && verbMatch
+    return false
   }
 
   fuzzyMatch(answer, correct) {

@@ -212,7 +212,7 @@ export const letterL = {
     translations: [
       {
         english: 'The shop is open.',
-        german: 'Der Laden ist offen.',
+        german: ['Der Laden ist offen.', 'Das Geschäft ist offen.'],
         type: 'translation',
         caseType: 'nominative'
       },

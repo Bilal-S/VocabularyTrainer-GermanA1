@@ -122,13 +122,13 @@ export const letterZ = {
     translations: [
       {
         english: 'The room is large.',
-        german: 'Das Zimmer ist groß.',
+        german: ['Das Zimmer ist groß.', 'Der Raum ist groß.'],
         type: 'translation',
         caseType: 'nominative'
       },
       {
         english: 'She takes the train.',
-        german: 'Sie nimmt den Zug.',
+        german: ['Sie nimmt den Zug.', 'Sie nimmt die Bahn.'],
         type: 'translation',
         caseType: 'accusative'
       },
@@ -140,7 +140,7 @@ export const letterZ = {
       },
       {
         english: 'The train is late.',
-        german: 'Der Zug ist spät.',
+        german: ['Der Zug ist spät.', 'Die Bahn ist spät.'],
         type: 'translation',
         caseType: 'nominative'
       },

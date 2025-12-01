@@ -478,7 +478,10 @@ Please conjugate the following **verbs for the given subjects**:
         feedback += `The correct article is: **${currentExercise.answer}**\n`
         feedback += `Complete sentence: ${currentExercise.german.replace('___', currentExercise.answer)}\n\n`
       } else if (currentExercise.type === 'translation') {
-        feedback += `The correct translation is: **${currentExercise.answer}**\n\n`
+        const answers = Array.isArray(currentExercise.answer) 
+          ? currentExercise.answer.join('** or **') 
+          : currentExercise.answer
+        feedback += `The correct translation is: **${answers}**\n\n`
       }
       
       // Add ChatGPT link for help
@@ -649,7 +652,10 @@ Please conjugate the following **verbs for the given subjects**:
           updateProgress(exercise.word, true, `${stepName}`, exercise.form || 'singular')
         } else {
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${prompt}" in German?`)
-          feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${exercise.answer}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
+          const correctDisplay = Array.isArray(exercise.answer) 
+            ? exercise.answer.join(' or ') 
+            : exercise.answer
+          feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${correctDisplay}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
           // Update progress for incorrect answers with form information
           updateProgress(exercise.word, false, `${stepName}`, exercise.form || 'singular')
@@ -677,7 +683,10 @@ Please conjugate the following **verbs for the given subjects**:
           feedback += `${index + 1}. **${prompt}**: **${answer}** ✅\n`
         } else {
           const helpQuery = encodeURIComponent(`Why is "${answer}" wrong for "${prompt}" in German?`)
-          feedback += `${index + 1}. **${prompt}**: **${answer}** <span style="color: red;">❌ Correction: **${exercise.answer}**</span> <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
+          const correctDisplay = Array.isArray(exercise.answer) 
+            ? exercise.answer.join(' or ') 
+            : exercise.answer
+          feedback += `${index + 1}. **${prompt}**: **${answer}** <span style="color: red;">❌ Correction: **${correctDisplay}**</span> <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
         }
       });
       feedback += `\n***\n\n`

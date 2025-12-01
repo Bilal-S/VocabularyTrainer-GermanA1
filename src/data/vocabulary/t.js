@@ -237,7 +237,7 @@ export const letterT = {
       },
       {
         english: 'She buys the ticket.',
-        german: 'Sie kauft das Ticket.',
+        german: ['Sie kauft das Ticket.', 'Sie kauft die Fahrkarte.'],
         type: 'translation',
         caseType: 'accusative'
       },
