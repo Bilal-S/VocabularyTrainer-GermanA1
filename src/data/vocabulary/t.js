@@ -21,7 +21,13 @@ export const letterT = {
     {"to make a phone call": ["telefonieren", "telefoniere", "telefonierst", "telefoniert", "telefoniert", "telefoniert", "telefonieren", "telefoniert", "telefonieren", "telefonieren"]},
     {"to meet": ["treffen", "treffe", "triffst", "trifft", "trifft", "trifft", "treffen", "trefft", "treffen", "treffen"]},
     {"to drink": ["trinken", "trinke", "trinkst", "trinkt", "trinkt", "trinkt", "trinken", "trinkt", "trinken", "trinken"]},
-    {"to do": ["tun", "tue", "tust", "tut", "tut", "tut", "tun", "tut", "tun", "tun"]}
+    {"to do": ["tun", "tue", "tust", "tut", "tut", "tut", "tun", "tut", "tun", "tun"]},
+    {"to carry": ["tragen", "trage", "trägst", "trägt", "trägt", "trägt", "tragen", "tragt", "tragen", "tragen"]},
+    {"to share": ["teilen", "teile", "teilst", "teilt", "teilt", "teilt", "teilen", "teilt", "teilen", "teilen"]},
+    {"to kill": ["töten", "töte", "tötest", "tötet", "tötet", "tötet", "töten", "tötet", "töten", "töten"]},
+    {"to dream": ["träumen", "träume", "träumst", "träumt", "träumt", "träumt", "träumen", "träumt", "träumen", "träumen"]},
+    {"to separate": ["trennen", "trenne", "trennst", "trennt", "trennt", "trennt", "trennen", "trennt", "trennen", "trennen"]}
+
   ],
   examples: {
     nominative: [

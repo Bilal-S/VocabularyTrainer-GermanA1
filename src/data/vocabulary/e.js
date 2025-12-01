@@ -44,7 +44,6 @@ export const letterE = {
     {"ear": ["Ohr", "Ohren", "das", "die", "n"]},
     {"earth": ["Erde", "Erden", "die", "die", "f"]},
     {"east": ["Osten", "Osten", "der", "die", "m"]},
-    {"eight": ["acht", "acht", "acht", "acht", "num"]},
     {"enemy": ["Feind", "Feinde", "der", "die", "m"]}
   ],
   verbs: [

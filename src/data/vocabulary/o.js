@@ -5,10 +5,13 @@ export const letterO = {
     {"grandma": ["Oma", "Omas", "die", "die", "f"]},
     {"grandpa": ["Opa", "Opas", "der", "die", "m"]},
     {"order": ["Ordnung", "Ordnungen", "die", "die", "f"]},
-    {"place": ["Ort", "Orte", "der", "die", "m"]}
+    {"place": ["Ort", "Orte", "der", "die", "m"]},
+    {"ear": ["Ohr", "Ohren", "das", "die", "n"]}
   ],
   verbs: [
-    {"to open": ["öffnen", "öffne", "öffnest", "öffnet", "öffnet", "öffnet", "öffnen", "öffnet", "öffnen", "öffnen"]}
+    {"to open": ["öffnen", "öffne", "öffnest", "öffnet", "öffnet", "öffnet", "öffnen", "öffnet", "öffnen", "öffnen"]},
+    {"to arrange": ["ordnen", "ordne", "ordnest", "ordnet", "ordnet", "ordnet", "ordnen", "ordnet", "ordnen", "ordnen"]},
+    {"to operate": ["operieren", "operiere", "operierst", "operiert", "operiert", "operiert", "operieren", "operiert", "operieren", "operieren"]}
   ],
   examples: {
     nominative: [

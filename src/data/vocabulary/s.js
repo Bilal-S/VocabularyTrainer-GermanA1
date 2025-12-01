@@ -50,7 +50,13 @@ export const letterS = {
     {"to stand": ["stehen", "stehe", "stehst", "steht", "steht", "steht", "stehen", "steht", "stehen", "stehen"]},
     {"to put, to place": ["stellen", "stelle", "stellst", "stellt", "stellt", "stellt", "stellen", "stellt", "stellen", "stellen"]},
     {"to study": ["studieren", "studiere", "studierst", "studiert", "studiert", "studiert", "studieren", "studiert", "studieren", "studieren"]},
-    {"to search": ["suchen", "suche", "suchst", "sucht", "sucht", "sucht", "suchen", "sucht", "suchen", "suchen"]}
+    {"to search": ["suchen", "suche", "suchst", "sucht", "sucht", "sucht", "suchen", "sucht", "suchen", "suchen"]},
+    {"to collect": ["sammeln", "sammle", "sammelst", "sammelt", "sammelt", "sammelt", "sammeln", "sammelt", "sammeln", "sammeln"]},
+    {"to cut": ["schneiden", "schneide", "schneidest", "schneidet", "schneidet", "schneidet", "schneiden", "schneidet", "schneiden", "schneiden"]},
+    {"to set": ["setzen", "setze", "setzt", "setzt", "setzt", "setzt", "setzen", "setzt", "setzen", "setzen"]},
+    {"to climb": ["steigen", "steige", "steigst", "steigt", "steigt", "steigt", "steigen", "steigt", "steigen", "steigen"]},
+    {"to die": ["sterben", "sterbe", "stirbst", "stirbt", "stirbt", "stirbt", "sterben", "sterbt", "sterben", "sterben"]}
+
   ],
   examples: {
     nominative: [

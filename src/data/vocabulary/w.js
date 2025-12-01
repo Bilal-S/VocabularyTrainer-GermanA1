@@ -13,7 +13,13 @@ export const letterW = {
     {"tea": ["Tee", "Tees", "der", "die", "m"]},
     {"table": ["Tisch", "Tische", "der", "die", "m"]},
     {"window": ["Fenster", "Fenster", "das", "die", "n"]},
-    {"apartment": ["Wohnung", "Wohnungen", "die", "die", "f"]}
+    {"apartment": ["Wohnung", "Wohnungen", "die", "die", "f"]},
+    {"wall": ["Wand", "Wände", "die", "die", "f"]},
+    {"world": ["Welt", "Welten", "die", "die", "f"]},
+    {"wine": ["Wein", "Weine", "der", "die", "m"]},
+    {"way": ["Weg", "Wege", "der", "die", "m"]},
+    {"economy": ["Wirtschaft", "Wirtschaften", "die", "die", "f"]}
+
   ],
   verbs: [
     {"to wait": ["warten", "warte", "wartest", "wartet", "wartet", "wartet", "warten", "wartet", "warten", "warten"]},
@@ -22,7 +28,13 @@ export const letterW = {
     {"to know a person/place": ["kennen", "kenne", "kennst", "kennt", "kennt", "kennt", "kennen", "kennt", "kennen", "kennen"]},
     {"to know a fact": ["wissen", "weiß", "weißt", "weiß", "weiß", "weiß", "wissen", "wisst", "wissen", "wissen"]},
     {"to want": ["wollen", "will", "willst", "will", "will", "will", "wollen", "wollt", "wollen", "wollen"]},
-    {"to become": ["werden", "werde", "wirst", "wird", "wird", "wird", "werden", "werdet", "werden", "werden"]}
+    {"to become": ["werden", "werde", "wirst", "wird", "wird", "wird", "werden", "werdet", "werden", "werden"]},
+    {"to hike": ["wandern", "wandere", "wanderst", "wandert", "wandert", "wandert", "wandern", "wandert", "wandern", "wandern"]},
+    {"to change": ["wechseln", "wechsle", "wechselst", "wechselt", "wechselt", "wechselt", "wechseln", "wechselt", "wechseln", "wechseln"]},
+    {"to cry": ["weinen", "weine", "weinst", "weint", "weint", "weint", "weinen", "weint", "weinen", "weinen"]},
+    {"to repeat": ["wiederholen", "wiederhole", "wiederholst", "wiederholt", "wiederholt", "wiederholt", "wiederholen", "wiederholt", "wiederholen", "wiederholen"]},
+    {"to wish": ["wünschen", "wünsche", "wünschst", "wünscht", "wünscht", "wünscht", "wünschen", "wünscht", "wünschen", "wünschen"]}
+
   ],
   examples: {
     nominative: [

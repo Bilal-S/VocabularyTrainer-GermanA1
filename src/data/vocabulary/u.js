@@ -3,13 +3,25 @@ export const letterU = {
     {"lesson": ["Unterricht", "Unterrichte", "der", "die", "m"]},
     {"signature": ["Unterschrift", "Unterschriften", "die", "die", "f"]},
     {"vacation": ["Urlaub", "Urlaube", "der", "die", "m"]},
-    {"clock": ["Uhr", "Uhren", "die", "die", "f"]}
+    {"clock": ["Uhr", "Uhren", "die", "die", "f"]},
+    {"university": ["Universität", "Universitäten", "die", "die", "f"]},
+    {"environment": ["Umwelt", "Umwelten", "die", "die", "f"]},
+    {"underpants": ["Unterhose", "Unterhosen", "die", "die", "f"]},
+    {"accommodation": ["Unterkunft", "Unterkünfte", "die", "die", "f"]},
+    {"exercise": ["Übung", "Übungen", "die", "die", "f"]}
+
   ],
   verbs: [
     {"to stay overnight": ["übernachten", "übernachte", "übernachtest", "übernachtet", "übernachtet", "übernachtet", "übernachten", "übernachtet", "übernachten", "übernachten"]},
     {"to transfer": ["überweisen", "überweise", "überweist", "überweist", "überweist", "überweist", "überweisen", "überweist", "überweisen", "überweisen"]},
     {"to move": ["umziehen", "ziehe um", "ziehst um", "zieht um", "zieht um", "zieht um", "umziehen", "zieht um", "umziehen", "umziehen"]},
-    {"to sign": ["unterschreiben", "unterschreibe", "unterschreibst", "unterschreibt", "unterschreibt", "unterschreibt", "unterschreiben", "unterschreibt", "unterschreiben", "unterschreiben"]}
+    {"to sign": ["unterschreiben", "unterschreibe", "unterschreibst", "unterschreibt", "unterschreibt", "unterschreibt", "unterschreiben", "unterschreibt", "unterschreiben", "unterschreiben"]},
+    {"to change (transport)": ["umsteigen", "steige um", "steigst um", "steigt um", "steigt um", "steigt um", "umsteigen", "steigt um", "umsteigen", "umsteigen"]},
+    {"to exchange": ["umtauschen", "tausche um", "tauschst um", "tauscht um", "tauscht um", "tauscht um", "umtauschen", "tauscht um", "umtauschen", "umtauschen"]},
+    {"to examine": ["untersuchen", "untersuche", "untersuchst", "untersucht", "untersucht", "untersucht", "untersuchen", "untersucht", "untersuchen", "untersuchen"]},
+    {"to undertake": ["unternehmen", "unternehme", "unternimmst", "unternimmt", "unternimmt", "unternimmt", "unternehmen", "unternehmt", "unternehmen", "unternehmen"]},
+    {"to hug": ["umarmen", "umarme", "umarmst", "umarmt", "umarmt", "umarmt", "umarmen", "umarmt", "umarmen", "umarmen"]}
+
   ],
   examples: {
     nominative: [

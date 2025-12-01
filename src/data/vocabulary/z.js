@@ -7,14 +7,26 @@ export const letterZ = {
     {"tooth": ["Zahn", "Zähne", "der", "die", "m"]},
     {"onion": ["Zwiebel", "Zwiebeln", "die", "die", "f"]},
     {"return": ["Zurück", "Zurück", "das", "die", "n"]},
-    {"train": ["Zug", "Züge", "der", "die", "m"]}
+    {"train": ["Zug", "Züge", "der", "die", "m"]},
+    {"lemon": ["Zitrone", "Zitronen", "die", "die", "f"]},
+    {"cigarette": ["Zigarette", "Zigaretten", "die", "die", "f"]},
+    {"tongue": ["Zunge", "Zungen", "die", "die", "f"]},
+    {"future": ["Zukunft", "Zukünfte", "die", "die", "f"]},
+    {"payment": ["Zahlung", "Zahlungen", "die", "die", "f"]}
+
   ],
   verbs: [
     {"to go back": ["zurückgehen", "gehe zurück", "gehst zurück", "geht zurück", "geht zurück", "geht zurück", "zurückgehen", "geht zurück", "zurückgehen", "zurückgehen"]},
     {"to drive": ["fahren", "fahre", "fährst", "fährt", "fährt", "fährt", "fahren", "fahrt", "fahren", "fahren"]},
     {"to pull": ["ziehen", "ziehe", "ziehst", "zieht", "zieht", "zieht", "ziehen", "zieht", "ziehen", "ziehen"]},
     {"to count": ["zählen", "zähle", "zählst", "zählt", "zählt", "zählt", "zählen", "zählt", "zählen", "zählen"]},
-    {"to show": ["zeigen", "zeige", "zeigst", "zeigt", "zeigt", "zeigt", "zeigen", "zeigt", "zeigen", "zeigen"]}
+    {"to show": ["zeigen", "zeige", "zeigst", "zeigt", "zeigt", "zeigt", "zeigen", "zeigt", "zeigen", "zeigen"]},
+    {"to pay": ["zahlen", "zahle", "zahlst", "zahlt", "zahlt", "zahlt", "zahlen", "zahlt", "zahlen", "zahlen"]},
+    {"to tear": ["zerreißen", "zerreiße", "zerreißt", "zerreißt", "zerreißt", "zerreißt", "zerreißen", "zerreißt", "zerreißen", "zerreißen"]},
+    {"to come back": ["zurückkommen", "komme zurück", "kommst zurück", "kommt zurück", "kommt zurück", "kommt zurück", "zurückkommen", "kommt zurück", "zurückkommen", "zurückkommen"]},
+    {"to work together": ["zusammenarbeiten", "arbeite zusammen", "arbeitest zusammen", "arbeitet zusammen", "arbeitet zusammen", "arbeitet zusammen", "zusammenarbeiten", "arbeitet zusammen", "zusammenarbeiten", "zusammenarbeiten"]},
+    {"to agree": ["zustimmen", "stimme zu", "stimmst zu", "stimmt zu", "stimmt zu", "stimmt zu", "zustimmen", "stimmt zu", "zustimmen", "zustimmen"]}
+
   ],
   examples: {
     nominative: [

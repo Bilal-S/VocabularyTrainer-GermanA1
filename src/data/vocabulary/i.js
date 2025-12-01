@@ -4,6 +4,9 @@ export const letterI = {
     {"internet": ["Internet", "Internets", "das", "die", "n"]}
   ],
   verbs: [
+    {"to inform": ["informieren", "informiere", "informierst", "informiert", "informiert", "informiert", "informieren", "informiert", "informieren", "informieren"]},
+    {"to interest": ["interessieren", "interessiere", "interessierst", "interessiert", "interessiert", "interessiert", "interessieren", "interessiert", "interessieren", "interessieren"]},
+    {"to install": ["installieren", "installiere", "installierst", "installiert", "installiert", "installiert", "installieren", "installiert", "installieren", "installieren"]}
   ],
   examples: {
     nominative: [

@@ -17,6 +17,9 @@ export const letterR = {
     {"to rain": ["regnen", "regne", "regnst", "regnet", "regnet", "regnet", "regnen", "regnet", "regnen", "regnen"]},
     {"to travel": ["reisen", "reise", "reist", "reist", "reist", "reist", "reisen", "reist", "reisen", "reisen"]},
     {"to repair": ["reparieren", "repariere", "reparierst", "repariert", "repariert", "repariert", "reparieren", "repariert", "reparieren", "reparieren"]},
+    {"to call": ["rufen", "rufe", "rufst", "ruft", "ruft", "ruft", "rufen", "ruft", "rufen", "rufen"]},
+    {"to run": ["rennen", "renne", "rennst", "rennt", "rennt", "rennt", "rennen", "rennt", "rennen", "rennen"]},
+    {"to rain": ["regnen", "regne", "regnest", "regnet", "regnet", "regnet", "regnen", "regnet", "regnen", "regnen"]},
     {"to smell": ["riechen", "rieche", "riechst", "riecht", "riecht", "riecht", "riechen", "riecht", "riechen", "riechen"]}
   ],
   examples: {

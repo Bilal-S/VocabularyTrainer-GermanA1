@@ -4,16 +4,29 @@ export const letterV = {
     {"club": ["Verein", "Vereine", "der", "die", "m"]},
     {"seller": ["Verkäufer", "Verkäufer", "der", "die", "m"]},
     {"relative": ["Verwandte", "Verwandten", "der", "die", "m"]},
-    {"forer": ["Vorname", "Vornamen", "der", "die", "m"]},
+    {"first name": ["Vorname", "Vornamen", "der", "die", "m"]},
     {"caution": ["Vorsicht", "Vorsichten", "die", "die", "f"]},
-    {"area code": ["Vorwahl", "Vorwahlen", "die", "die", "f"]}
+    {"area code": ["Vorwahl", "Vorwahlen", "die", "die", "f"]},
+    {"insurance": ["Versicherung", "Versicherungen", "die", "die", "f"]},
+    {"quarter": ["Viertel", "Viertel", "das", "die", "n"]},
+    {"folk music": ["Volksmusik", "Volksmusiken", "die", "die", "f"]},
+    {"preparation": ["Vorbereitung", "Vorbereitungen", "die", "die", "f"]},
+    {"bird": ["Vogel", "Vögel", "der", "die", "m"]}
+
   ],
   verbs: [
     {"to earn": ["verdienen", "verdiene", "verdienst", "verdient", "verdient", "verdient", "verdienen", "verdienst", "verdienen", "verdienen"]},
     {"to sell": ["verkaufen", "verkaufe", "verkaufst", "verkauft", "verkauft", "verkauft", "verkaufen", "verkauft", "verkaufen", "verkaufen"]},
     {"to rent out": ["vermieten", "vermieste", "vermietest", "vermietet", "vermietet", "vermietet", "vermieten", "vermietet", "vermieten", "vermieten"]},
     {"to understand": ["verstehen", "verstehe", "verstehst", "versteht", "versteht", "versteht", "verstehen", "versteht", "verstehen", "verstehen"]},
-    {"to imagine": ["vorstellen", "stelle vor", "stellst vor", "stellt vor", "stellt vor", "stellt vor", "vorstellen", "stellt vor", "vorstellen", "vorstellen"]}
+    {"to imagine": ["vorstellen", "stelle vor", "stellst vor", "stellt vor", "stellt vor", "stellt vor", "vorstellen", "stellt vor", "vorstellen", "vorstellen"]},
+    {"to forget": ["vergessen", "vergesse", "vergisst", "vergisst", "vergisst", "vergisst", "vergessen", "vergesset", "vergessen", "vergessen"]},
+    {"to lose": ["verlieren", "verliere", "verlierst", "verliert", "verliert", "verliert", "verlieren", "verliert", "verlieren", "verlieren"]},
+    {"to try": ["versuchen", "versuche", "versuchst", "versucht", "versucht", "versucht", "versuchen", "versucht", "versuchen", "versuchen"]},
+    {"to prepare": ["vorbereiten", "bereite vor", "bereitest vor", "bereitet vor", "bereitet vor", "bereitet vor", "vorbereiten", "bereitet vor", "vorbereiten", "vorbereiten"]},
+    {"to plan": ["vorhaben", "habe vor", "hast vor", "hat vor", "hat vor", "hat vor", "vorhaben", "habt vor", "vorhaben", "vorhaben"]},
+    {"to read aloud": ["vorlesen", "lese vor", "liest vor", "liest vor", "liest vor", "liest vor", "vorlesen", "lest vor", "vorlesen", "vorlesen"]}
+
   ],
   examples: {
     nominative: [

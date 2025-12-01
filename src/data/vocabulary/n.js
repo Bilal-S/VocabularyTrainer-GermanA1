@@ -1,10 +1,17 @@
 export const letterN = {
   nouns: [
+    {"night": ["Nacht", "Nächte", "die", "die", "f"]},
     {"name": ["Name", "Namen", "der", "die", "m"]},
-    {"number": ["Nummer", "Nummern", "die", "die", "f"]}
+    {"nose": ["Nase", "Nasen", "die", "die", "f"]},
+    {"number": ["Nummer", "Nummern", "die", "die", "f"]},
+    {"message": ["Nachricht", "Nachrichten", "die", "die", "f"]},
+    {"grade": ["Note", "Noten", "die", "die", "f"]},
+    {"noodles": ["Nudeln", "Nudeln", "die", "die", "f"]}
   ],
   verbs: [
-    {"to take": ["nehmen", "nehme", "nimmst", "nimmt", "nimmt", "nimmt", "nehmen", "nehmt", "nehmen", "nehmen"]}
+    {"to take": ["nehmen", "nehme", "nimmst", "nimmt", "nimmt", "nimmt", "nehmen", "nehmt", "nehmen", "nehmen"]},
+    {"to name": ["nennen", "nenne", "nennst", "nennt", "nennt", "nennt", "nennen", "nennt", "nennen", "nennen"]},
+    {"to use": ["nutzen", "nutze", "nutzt", "nutzt", "nutzt", "nutzt", "nutzen", "nutzt", "nutzen", "nutzen"]}
   ],
   examples: {
     nominative: [

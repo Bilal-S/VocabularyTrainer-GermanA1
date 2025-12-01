@@ -20,7 +20,12 @@ export const letterP = {
     {"prospectus": ["Prospekt", "Prospekte", "der", "die", "m"]},
     {"exam": ["Prüfung", "Prüfungen", "die", "die", "f"]}
   ],
-  verbs: [],
+  verbs: [
+    {"to pack": ["packen", "packe", "packst", "packt", "packt", "packt", "packen", "packt", "packen", "packen"]},
+    {"to park": ["parken", "parke", "parkst", "parkt", "parkt", "parkt", "parken", "parkt", "parken", "parken"]},
+    {"to fit": ["passen", "passe", "passt", "passt", "passt", "passt", "passen", "passt", "passen", "passen"]},
+    {"to clean": ["putzen", "putze", "putzt", "putzt", "putzt", "putzt", "putzen", "putzt", "putzen", "putzen"]}
+  ],
   examples: {
     nominative: [
       {

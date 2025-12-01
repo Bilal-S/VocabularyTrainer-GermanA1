@@ -666,7 +666,7 @@ Please conjugate the following **verbs for the given subjects**:
     })).sort((a, b) => a.index - b.index);
     
     if (answeredItems.length > 0) {
-      feedback += `**All answers submitted so far (${answeredItems.length}/${currentBatch.length}):**\n\n`
+      feedback += `<details>\n<summary><strong>All answers submitted so far (${answeredItems.length}/${currentBatch.length})</strong></summary>\n\n`
       answeredItems.forEach(({ index, exercise, answer }) => {
         // Validation logic for summary list
         const isCorrect = vocabManager.validateAnswer(answer, exercise.answer, exercise.type, exercise)
@@ -682,7 +682,7 @@ Please conjugate the following **verbs for the given subjects**:
           feedback += `${index + 1}. **${prompt}**: **${answer}** <span style="color: red;">❌ Correction: **${correctDisplay}**</span> <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
         }
       });
-      feedback += `\n***\n\n`
+      feedback += `\n</details>\n\n***\n\n`
     }
     
     // Check if all items have been answered
