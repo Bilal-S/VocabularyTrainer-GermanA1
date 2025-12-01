@@ -129,13 +129,13 @@ export class VocabularyManager {
                 type: 'article',
                 question: `Fill in the blank: ${example.german.replace('___', '_____')}`,
                 answer: example.answer || example.german.match(/___\s*(\w+)/)?.[1] || example.answer,
-                german: example.german,
-                english: example.english,
-                caseType: example.caseType || 'nominative',
-                originSection: section
-              }
+              german: example.german,
+              english: example.english,
+              caseType: example.caseType || example.case || 'nominative',
+              originSection: section
             }
-            break
+          }
+          break
             
           case 'TRANSLATIONS':
             // Generate translation question using existing examples
@@ -148,7 +148,7 @@ export class VocabularyManager {
                 answer: example.german,
                 german: example.german,
                 english: example.english,
-                caseType: example.caseType || 'nominative',
+                caseType: example.caseType || example.case || 'nominative',
                 originSection: section
               }
             }

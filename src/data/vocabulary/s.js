@@ -97,6 +97,24 @@ export const letterS = {
         case: 'nominative'
       },
       {
+        english: 'The student learns quickly.',
+        german: ['Der Schüler lernt schnell.', 'Der Student lernt schnell.'],
+        type: 'translation',
+        case: 'nominative'
+      },
+      {
+        english: 'She speaks with the student.',
+        german: ['Sie spricht mit dem Schüler.', 'Sie spricht mit dem Studenten.'],
+        type: 'translation',
+        case: 'dative'
+      },
+      {
+        english: 'The student searches for the book.',
+        german: ['Der Schüler sucht das Buch.', 'Der Student sucht das Buch.'],
+        type: 'translation',
+        case: 'accusative'
+      },
+      {
         german: '___ Schwester hilft.',
         english: 'The sister helps.',
         answer: 'Die',
@@ -113,7 +131,7 @@ export const letterS = {
         english: 'The sun is shining.',
         answer: 'Die',
         case: 'nominative'
-      }
+      }      
     ],
     accusative: [
       {
@@ -141,7 +159,7 @@ export const letterS = {
         case: 'accusative'
       },
       {
-        german: 'Du nehme ___ S-Bahn.',
+        german: 'Du nimmst ___ S-Bahn.',
         english: 'You take the S-Bahn.',
         answer: 'die',
         case: 'accusative'
@@ -232,109 +250,109 @@ export const letterS = {
         english: 'The juice is sweet.',
         german: 'Der Saft ist süß.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'She eats the salad.',
         german: 'Sie isst den Salat.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       },
       {
         english: 'I help the student.',
         german: 'Ich helfe dem Schüler.',
         type: 'translation',
-        caseType: 'dative'
+        case: 'dative'
       },
       {
         english: 'The student learns quickly.',
         german: 'Der Schüler lernt schnell.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'We write the sentence.',
         german: 'Wir schreiben den Satz.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       },
       {
         english: 'The school is big.',
         german: 'Die Schule ist groß.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'He sees the sister.',
         german: 'Er sieht die Schwester.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       },
       {
         english: 'She speaks with the student.',
         german: 'Sie spricht mit dem Schüler.',
         type: 'translation',
-        caseType: 'dative'
+        case: 'dative'
       },
       {
         english: 'The sun shines brightly.',
         german: 'Die Sonne scheint hell.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'We play football.',
         german: 'Wir spielen Fußball.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       },
       {
         english: 'You stand at the door.',
         german: 'Du stehst an der Tür.',
         type: 'translation',
-        caseType: 'dative'
+        case: 'dative'
       },
       {
         english: 'The key is lost.',
         german: 'Der Schlüssel ist verloren.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'I study German.',
         german: 'Ich studiere Deutsch.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       },
       {
         english: 'The soup tastes good.',
         german: 'Die Suppe schmeckt gut.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'They swim in the lake.',
         german: 'Sie schwimmen im See.',
         type: 'translation',
-        caseType: 'dative'
+        case: 'dative'
       },
       {
         english: 'She closes the door.',
         german: 'Sie schließt die Tür.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       },
       {
         english: 'We sleep well.',
         german: 'Wir schlafen gut.',
         type: 'translation',
-        caseType: 'nominative'
+        case: 'nominative'
       },
       {
         english: 'The student searches for the book.',
         german: 'Der Schüler sucht das Buch.',
         type: 'translation',
-        caseType: 'accusative'
+        case: 'accusative'
       }
     ],
     conjugations: [
