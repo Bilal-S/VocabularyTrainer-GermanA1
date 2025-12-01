@@ -1,13 +1,6 @@
 import { useState, useCallback } from 'react'
 import VocabularyManager from '../utils/vocabularyManager'
-
-// Unique ID generator to avoid duplicate keys
-let messageIdCounter = 0
-const generateMessageId = () => {
-  const timestamp = Date.now()
-  const counter = ++messageIdCounter
-  return `${timestamp}-${counter}`
-}
+import { generateMessageId } from '../utils/idGenerator'
 
 const STEPS = {
   0: 'INTRO',

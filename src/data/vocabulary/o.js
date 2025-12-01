@@ -146,7 +146,7 @@ export const letterO = {
       },
       {
         english: 'The grandpa works hard.',
-        german: 'Der Opa arbeitet hart.',
+        german: ['Der Opa arbeitet hart.', 'Der Großvater arbeitet hart.'],
         type: 'translation',
         caseType: 'nominative'
       },
@@ -176,13 +176,13 @@ export const letterO = {
       },
       {
         english: 'Grandma loves the fruit.',
-        german: 'Die Oma liebt das Obst.',
+        german: ['Die Oma liebt das Obst.', 'Die Großmutter liebt das Obst.'],
         type: 'translation',
         caseType: 'accusative'
       },
       {
         english: 'Grandpa opens the window.',
-        german: 'Der Opa öffnet das Fenster.',
+        german: ['Der Opa öffnet das Fenster.', 'Der Großvater öffnet das Fenster.'],
         type: 'translation',
         caseType: 'accusative'
       },
@@ -200,7 +200,7 @@ export const letterO = {
       },
       {
         english: 'We thank the grandma.',
-        german: 'Wir danken der Oma.',
+        german: ['Wir danken der Oma.', 'Wir danken der Großmutter.'],
         type: 'translation',
         caseType: 'dative'
       },

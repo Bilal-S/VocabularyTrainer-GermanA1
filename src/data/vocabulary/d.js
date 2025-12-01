@@ -554,7 +554,7 @@ export const letterD = {
     translations: [
       {
         english: 'The lady is nice.',
-        german: 'Die Dame ist nett.',
+        german: ['Die Dame ist nett.', 'Die Frau ist nett.'],
         type: 'translation',
         caseType: 'nominative'
       },
@@ -578,7 +578,7 @@ export const letterD = {
       },
       {
         english: 'The doctor comes.',
-        german: 'Der Doktor kommt.',
+        german: ['Der Doktor kommt.', 'Der Arzt kommt.'],
         type: 'translation',
         caseType: 'nominative'
       },

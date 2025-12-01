@@ -33,7 +33,7 @@ export const letterE = {
     {"error": ["Fehler", "Fehler", "der", "die", "m"]},
     {"event": ["Ereignis", "Ereignisse", "das", "die", "n"]},
     {"evening": ["Abend", "Abende", "der", "die", "m"]},
-    {"everyone": ["jede", "jeden", "der", "die", "m"]},
+    {"everyone": ["Jede", "Jeden", "der", "die", "m"]},
     {"exam": ["Prüfung", "Prüfungen", "die", "die", "f"]},
     {"exercise": ["Übung", "Übungen", "die", "die", "f"]},
     {"exit": ["Ausgang", "Ausgänge", "der", "die", "m"]},

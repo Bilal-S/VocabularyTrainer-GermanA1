@@ -1,7 +1,7 @@
 export const letterI = {
   nouns: [
     {"information": ["Information", "Informationen", "die", "die", "f"]},
-    {"internet": ["Internet", "Internet", "das", "die", "n"]}
+    {"internet": ["Internet", "Internets", "das", "die", "n"]}
   ],
   verbs: [
   ],
@@ -123,7 +123,7 @@ export const letterI = {
       },
       {
         english: 'She gives the child the picture.',
-        german: 'Sie gibt dem Kind das Bild.',
+        german: ['Sie gibt dem Kind das Bild.', 'Sie gibt dem Kind das Foto.'],
         type: 'translation',
         caseType: 'dative'
       },

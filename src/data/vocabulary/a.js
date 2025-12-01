@@ -260,15 +260,15 @@ export const letterA = {
       },
       {
         english: 'The doctor works here.',
-        german: 'Der Arzt arbeitet hier.',
+        german: ['Der Arzt arbeitet hier.', 'Der Doktor arbeitet hier.'],
         type: 'translation',
         caseType: 'nominative'
       },
       {
-        english: 'She visits the address.',
-        german: 'Sie besucht die Adresse.',
-        type: 'translation',
-        caseType: 'accusative'
+        german: 'Du besuchst ___ Arzt.',
+        english: 'You visit the doctor.',
+        answer: 'den',
+        case: 'accusative'
       },
       {
         english: 'I give the child the apple.',
@@ -356,7 +356,7 @@ export const letterA = {
       },
       {
         english: 'The doctor gives the answer.',
-        german: 'Der Arzt gibt die Antwort.',
+        german: ['Der Arzt gibt die Antwort.', 'Der Doktor gibt die Antwort.'],
         type: 'translation',
         caseType: 'accusative'
       },

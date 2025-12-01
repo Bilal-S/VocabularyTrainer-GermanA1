@@ -159,13 +159,13 @@ export const letterF = {
       },
       {
         english: 'She gives the friend the photo.',
-        german: 'Sie gibt dem Freund das Foto.',
+        german: ['Sie gibt dem Freund das Foto.', 'Sie gibt dem Freund das Bild.'],
         type: 'translation',
         caseType: 'dative'
       },
       {
         english: 'The woman works.',
-        german: 'Die Frau arbeitet.',
+        german: ['Die Frau arbeitet.', 'Die Dame arbeitet.'],
         type: 'translation',
         caseType: 'nominative'
       }

@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import ChatInterface from './components/ChatInterface'
-import SectionBanner from './components/SectionBanner'
+import Header from './components/Header'
 import HamburgerMenu from './components/HamburgerMenu'
 import ImportExportModal from './components/ImportExportModal'
 import SettingsModal from './components/SettingsModal'
+import HelpModal from './components/HelpModal'
 import { useVocabularyState } from './hooks/useVocabularyState'
 import { useDailyRoutine } from './hooks/useDailyRoutine'
-
-// Unique ID generator to avoid duplicate keys
-let messageIdCounter = 0
-const generateMessageId = () => {
-  const timestamp = Date.now()
-  const counter = ++messageIdCounter
-  return `${timestamp}-${counter}`
-}
+import { generateMessageId } from './utils/idGenerator'
 
 const SECTIONS = {
   INTRO: { id: 'intro', name: 'Introduction', color: 'section-intro' },
@@ -29,6 +23,7 @@ const SECTIONS = {
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false)
   const [messages, setMessages] = useState([])
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [isInstallable, setIsInstallable] = useState(false)
@@ -194,21 +189,30 @@ Type **"Today is a new day"** to begin your German learning journey!`
 
   return (
     <div className="chat-container">
-      <HamburgerMenu 
-        onOpenImport={() => setIsModalOpen(true)}
-        onExport={handleExport}
-        onReset={handleReset}
-        onOpenSettings={() => setIsSettingsModalOpen(true)}
-        onInstall={handleInstall}
-        isInstallable={isInstallable}
-      />
-      
-      <SectionBanner 
+      <Header 
         section={{...sectionInfo, totalItems: progress.total}}
         progress={progress}
         stepNumber={currentStep > 0 && currentStep < 8 ? currentStep : null}
         isReviewMode={currentStep === 1}
-      />
+      >
+        <button 
+          onClick={() => setIsHelpModalOpen(true)}
+          className="p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+          title="Help"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+        <HamburgerMenu 
+          onOpenImport={() => setIsModalOpen(true)}
+          onExport={handleExport}
+          onReset={handleReset}
+          onOpenSettings={() => setIsSettingsModalOpen(true)}
+          onInstall={handleInstall}
+          isInstallable={isInstallable}
+        />
+      </Header>
       
       <ChatInterface 
         messages={messages}
@@ -227,6 +231,11 @@ Type **"Today is a new day"** to begin your German learning journey!`
         onClose={() => setIsSettingsModalOpen(false)}
         settings={getSettings()}
         onSave={handleSettingsSave}
+      />
+      
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
       />
     </div>
   )

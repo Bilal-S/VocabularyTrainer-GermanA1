@@ -29,11 +29,11 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInst
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="hamburger-menu"
+        className="p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
         aria-label="Menu"
       >
         <svg
-          className="w-6 h-6 text-gray-700"
+          className="w-6 h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -65,7 +65,7 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInst
           />
           
           {/* Menu */}
-          <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
+          <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
             <div className="py-1">
               <button
                 onClick={handleImport}
