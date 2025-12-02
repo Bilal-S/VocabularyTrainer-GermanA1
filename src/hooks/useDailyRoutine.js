@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import VocabularyManager from '../utils/vocabularyManager'
 import { generateMessageId } from '../utils/idGenerator'
+import { updateChecker } from '../utils/updateChecker'
 
 const STEPS = {
   0: 'INTRO',
@@ -129,6 +130,34 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     // CRITICAL FIX: Reset batch answers when starting a new day
     setBatchAnswers({})
     
+    // Check for PWA updates if running as PWA
+    let updateMessage = ''
+    if (updateChecker.isPWA) {
+      const updateResult = await updateChecker.checkForUpdates()
+      if (updateResult.shouldUpdate && !updateChecker.isUpdateDismissed()) {
+        updateMessage = `
+---
+## 🔄 Update Available!
+
+**A new version (${updateResult.latestVersion}) is available!**
+- **Current version:** ${updateResult.currentVersion}
+- **Latest version:** ${updateResult.latestVersion}
+
+<button onclick="window.updateApp()" style="background-color: #3b82f6; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; margin: 8px 0;">
+  🚀 Update Now
+</button>
+<button onclick="window.dismissUpdate()" style="background-color: #6b7280; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; margin: 8px 8px 8px 0;">
+  ✖️ Dismiss
+</button>
+
+*Updates include bug fixes and new features. You can continue using the current version and update later.*
+
+---
+
+`
+      }
+    }
+    
     // Clear messages and show welcome screen first
     const welcomeMessage = `# Welcome to A1 German Coach! 🇩🇪
 
@@ -144,8 +173,9 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - 🎯 Progress tracking and mastery system
 - 💾 Save/load your progress via JSON
 - 📱 Mobile-friendly chat interface
+${updateChecker.isPWA ? '- 🔄 Auto-update notifications for PWA users' : ''}
 
-Type **"Today is a new day"** to begin your German learning journey!`
+Type **"Today is a new day"** to begin your German learning journey!${updateMessage}`
     
     setMessages([{
       id: generateMessageId(),

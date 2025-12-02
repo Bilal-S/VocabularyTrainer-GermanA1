@@ -8,6 +8,7 @@ import HelpModal from './components/HelpModal'
 import { useVocabularyState } from './hooks/useVocabularyState'
 import { useDailyRoutine } from './hooks/useDailyRoutine'
 import { generateMessageId } from './utils/idGenerator'
+import { updateChecker } from './utils/updateChecker'
 
 const SECTIONS = {
   INTRO: { id: 'intro', name: 'Introduction', color: 'section-intro' },
@@ -63,12 +64,29 @@ function App() {
       setIsInstallable(false)
     }
 
+    // Global functions for update buttons in chat messages
+    window.updateApp = async () => {
+      await updateChecker.refreshApp()
+    }
+
+    window.dismissUpdate = () => {
+      updateChecker.dismissUpdate()
+      setMessages(prev => [...prev, {
+        id: generateMessageId(),
+        type: 'system',
+        content: '✅ Update dismissed. You will be notified again tomorrow.'
+      }])
+    }
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleAppInstalled)
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       window.removeEventListener('appinstalled', handleAppInstalled)
+      // Clean up global functions
+      delete window.updateApp
+      delete window.dismissUpdate
     }
   }, [])
 
