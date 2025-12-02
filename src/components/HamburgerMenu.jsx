@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { deviceDetector } from '../utils/deviceDetector'
 
-const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable }) => {
+const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable, onOpenHelp }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleImport = () => {
@@ -82,20 +83,28 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInst
               <button
                 onClick={() => {
                   setIsOpen(false)
+                  onOpenHelp()
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                ❓ Help
+              </button>
+              <button
+                onClick={() => {
+                  setIsOpen(false)
                   onOpenSettings()
                 }}
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 ⚙️ Settings
               </button>
-              {isInstallable && (
-                <button
-                  onClick={handleInstall}
-                  className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors font-semibold"
-                >
-                  📲 Install App
-                </button>
-              )}
+              <button
+                onClick={handleInstall}
+                className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors font-semibold"
+                title={isInstallable ? "Install app as PWA" : "Get installation instructions"}
+              >
+                📲 {isInstallable ? "Install App" : "Install Help"}
+              </button>
               <hr className="my-1 border-gray-200" />
               <button
                 onClick={handleReset}

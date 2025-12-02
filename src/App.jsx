@@ -118,7 +118,7 @@ function App() {
 This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
 
 ## Available Commands:
-- **"Today is a new day"** - Start your daily learning routine
+- **"Today is a new day"** (or **"tiand"**) - Start your daily learning routine
 - **"Next Step"** - Skip to the next exercise
 - **"clear all progress data"** - Reset all your progress
 
@@ -127,7 +127,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - 🎯 Progress tracking and mastery system
 - 💾 Save/load your progress via JSON
 - 📱 Mobile-friendly chat interface
-- 📲 Install as a PWA for offline access from Menu (☰)
+- 📲 Install as PWA for offline access (Menu ☰ → Install)
 
 Type **"Today is a new day"** to begin your German learning journey!`
     }
@@ -227,6 +227,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
           onExport={handleExport}
           onReset={handleReset}
           onOpenSettings={() => setIsSettingsModalOpen(true)}
+          onOpenHelp={() => setIsHelpModalOpen(true)}
           onInstall={handleInstall}
           isInstallable={isInstallable}
         />

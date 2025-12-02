@@ -98,7 +98,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
   const processCommand = async (command) => {
     const normalizedCommand = command.trim().toLowerCase()
 
-    if (normalizedCommand === 'today is a new day') {
+    if (normalizedCommand === 'today is a new day' || normalizedCommand === 'tiand') {
       await startDailyRoutine()
     } else if (normalizedCommand === 'next step') {
       if (currentStep === 0) {
@@ -118,7 +118,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
       }
     } else {
       addSystemMessage(`I didn't understand that command. Available commands:
-- **"Today is a new day"** - Start your daily routine
+- **"Today is a new day"** (or **"tiand"**) - Start your daily routine
 - **"Next Step"** - Skip to next exercise
 - **"clear all progress data"** - Reset all progress`)
     }
