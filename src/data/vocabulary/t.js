@@ -176,7 +176,7 @@ export const letterT = {
       {
         german: 'Ich gebe ___ Kind ___ Tee.',
         english: 'I give the child the tea.',
-        answer: 'dem',
+        answer: 'dem den',
         case: 'dative'
       },
       {

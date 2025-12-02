@@ -181,7 +181,7 @@ export const letterL = {
       {
         german: 'Er gibt ___ Kind ___ Lied.',
         english: 'He gives the child the song.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

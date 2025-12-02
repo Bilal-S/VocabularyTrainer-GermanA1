@@ -106,7 +106,7 @@ export const letterO = {
       {
         german: 'Er spricht mit ___ Oma über ___ Ordnung.',
         english: 'He speaks with the grandma about the order.',
-        answer: 'der',
+        answer: 'der die',
         case: 'dative'
       },
       {

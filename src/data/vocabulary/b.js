@@ -191,7 +191,7 @@ export const letterB = {
       {
         german: 'Er gibt ___ Kind ___ Buch.',
         english: 'He gives the child the book.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {
@@ -221,7 +221,7 @@ export const letterB = {
       {
         german: 'Ich gebe ___ Bruder ___ Buch.',
         english: 'I give the brother the book.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

@@ -4,7 +4,7 @@ export const letterS = {
     {"salad": ["Salat", "Salate", "der", "die", "m"]},
     {"salt": ["Salz", "Salze", "das", "die", "n"]},
     {"sentence": ["Satz", "Sätze", "der", "die", "m"]},
-    {"S-Bahn": ["S-Bahn", "S-Bahnen", "die", "die", "f"]},
+    {"commuter train": ["S-Bahn", "S-Bahnen", "die", "die", "f"]},
     {"counter": ["Schalter", "Schalter", "der", "die", "m"]},
     {"sign": ["Schild", "Schilder", "das", "die", "n"]},
     {"ham": ["Schinken", "Schinken", "der", "die", "m"]},

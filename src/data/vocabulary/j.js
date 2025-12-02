@@ -82,9 +82,9 @@ export const letterJ = {
         case: 'dative'
       },
       {
-        german: 'Sie gibt ___ Kind ___ Jahr.',
-        english: 'She gives the child the year.',
-        answer: 'dem',
+        german: 'Sie gibt ___ Kind ___ Spielzeug.',
+        english: 'She gives the child the toy.',
+        answer: 'dem das',
         case: 'dative'
       },
       {

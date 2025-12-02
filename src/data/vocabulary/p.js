@@ -185,7 +185,7 @@ export const letterP = {
       {
         german: 'Ich gebe ___ Kind ___ Papier.',
         english: 'I give the child the paper.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

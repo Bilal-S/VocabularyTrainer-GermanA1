@@ -116,7 +116,7 @@ export const letterF = {
       {
         german: 'Sie gibt ___ Freund ___ Foto.',
         english: 'She gives the friend the photo.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

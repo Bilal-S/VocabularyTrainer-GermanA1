@@ -80,7 +80,7 @@ export const letterU = {
       {
         german: 'Ich helfe ___ Lehrer im ___ Unterricht.',
         english: 'I help the teacher in the lesson.',
-        answer: 'dem',
+        answer: 'dem dem',
         case: 'dative'
       },
       {
@@ -92,7 +92,7 @@ export const letterU = {
       {
         german: 'Er spricht mit ___ Schüler über ___ Unterricht.',
         english: 'He speaks with the student about the lesson.',
-        answer: 'dem',
+        answer: 'dem den',
         case: 'dative'
       },
       {

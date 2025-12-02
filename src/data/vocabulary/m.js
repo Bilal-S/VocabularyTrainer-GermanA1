@@ -183,7 +183,7 @@ export const letterM = {
       {
         german: 'Ich gebe ___ Kind ___ Milch.',
         english: 'I give the child the milk.',
-        answer: 'dem',
+        answer: 'dem die',
         case: 'dative'
       },
       {

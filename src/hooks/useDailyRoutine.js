@@ -100,7 +100,11 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     if (normalizedCommand === 'today is a new day') {
       await startDailyRoutine()
     } else if (normalizedCommand === 'next step') {
-      await skipToNextStep()
+      if (currentStep === 0) {
+        addSystemMessage("Please start your daily routine first. Type **\"Today is a new day\"** to begin.")
+      } else {
+        await skipToNextStep()
+      }
     } else if (normalizedCommand === 'clear all progress data') {
       // This is handled in App component
       return
@@ -268,13 +272,13 @@ Type your answer below:`)
 ### **Step 2: New Vocabulary (20 Nouns)**
 **[Step 2 | Batch 1 | Remaining: ${batch.length}]**
 
-Please translate the following **English nouns** into **German** (Article + Noun):
+Please translate the following **English nouns** into **German** (Article + Noun) singular form:
 *Example: 1. house -> das Haus*
 
 `
         // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
-          batchMessage += `${index + 1}. ${item.english}\n`
+          batchMessage += `*${index + 1}.* ${item.english}\n`
         })
         addSystemMessage(batchMessage)
         
@@ -301,7 +305,7 @@ Please provide the **plural forms** for the following German nouns:
 `
         // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
-          pluralMessage += `${index + 1}. ${item.singular}\n`
+          pluralMessage += `*${index + 1}.* ${item.singular}\n`
         })
         addSystemMessage(pluralMessage)
         return
@@ -321,7 +325,7 @@ Please fill in the blanks with the **correct articles** (der, die, das, ein, ein
 `
         // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
-          articlesMessage += `${index + 1}. ${item.german}\n`
+          articlesMessage += `*${index + 1}.* ${item.german}\n`
         })
         addSystemMessage(articlesMessage)
         return
@@ -341,7 +345,7 @@ Please translate the following **sentences from English to German**:
 `
         // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
-          translationsMessage += `${index + 1}. ${item.english}\n`
+          translationsMessage += `*${index + 1}.* ${item.english}\n`
         })
         addSystemMessage(translationsMessage)
         return
@@ -366,7 +370,7 @@ Please conjugate the following **verbs for the given subjects**:
 `
         // Number the items sequentially starting from 1
         batch.forEach((item, index) => {
-          verbsMessage += `${index + 1}. ${item.verb} (${item.subject})\n`
+          verbsMessage += `*${index + 1}.* ${item.verb} (${item.subject})\n`
         })
         addSystemMessage(verbsMessage)
         return
@@ -523,11 +527,18 @@ Please conjugate the following **verbs for the given subjects**:
     const sequentialAnswers = []
     
     lines.forEach(line => {
-      const match = line.match(/^(\d+)\.\s*(.+)$/i)
+      // Enhanced regex to match:
+      // 1. Answer (space)
+      // 1. Answer (dot)
+      // 1) Answer (paren)
+      // 1- Answer (dash)
+      // Captures the number and the answer content
+      const match = line.match(/^(\d+)(?:[\.\)\-]\s*|\s+)(.+)$/i)
+      
       if (match) {
         numberedAnswers.push({ index: parseInt(match[1]) - 1, answer: match[2].trim() })
       } else if (line.trim()) {
-        // For non-numbered lines, treat as sequential answers for remaining items
+        // For lines not starting with a number, treat as sequential answers for remaining items
         sequentialAnswers.push({ index: null, answer: line.trim() })
       }
     })
@@ -718,7 +729,7 @@ Please conjugate the following **verbs for the given subjects**:
     currentBatch.forEach((exercise, actualIndex) => {
       if (!allAnswers[actualIndex]) {
         const prompt = getPrompt(exercise)
-        feedback += `${actualIndex + 1}. ${prompt}\n`
+        feedback += `*${actualIndex + 1}.* ${prompt}\n`
       }
     })
     

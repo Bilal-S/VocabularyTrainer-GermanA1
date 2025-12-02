@@ -113,7 +113,7 @@ export const letterG = {
       {
         german: 'Sie gibt ___ Kind ___ Geschenk.',
         english: 'She gives the child a gift.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

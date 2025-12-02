@@ -44,9 +44,9 @@ export const letterN = {
     ],
     dative: [
       {
-        german: 'Ich helfe ___ Mann mit ___ Namen.',
-        english: 'I help the man with the name.',
-        answer: 'dem',
+        german: 'Ich helfe ___ Mann mit ___ Auto.',
+        english: 'I help the man with the car.',
+        answer: 'dem dem',
         case: 'dative'
       },
       {

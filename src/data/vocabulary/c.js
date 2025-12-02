@@ -165,7 +165,7 @@ export const letterC = {
       {
         german: 'Sie gibt ___ Kind ___ Computer.',
         english: 'She gives the child the computer.',
-        answer: 'dem',
+        answer: 'dem den',
         case: 'dative'
       },
       {
@@ -189,7 +189,7 @@ export const letterC = {
       {
         german: 'Ich gebe ___ Chef ___ CD.',
         english: 'I give the boss the CD.',
-        answer: 'dem',
+        answer: 'dem die',
         case: 'dative'
       },
       {

@@ -686,7 +686,7 @@ export const letterE = {
       {
         german: 'Ich gebe ___ Empfänger ___ Brief.',
         english: 'I give the recipient the letter.',
-        answer: 'dem',
+        answer: 'dem den',
         case: 'dative'
       },
       {

@@ -3,7 +3,7 @@ export const letterR = {
     {"room": ["Raum", "Räume", "der", "die", "m"]},
     {"bill": ["Rechnung", "Rechnungen", "die", "die", "f"]},
     {"rain": ["Regen", "Regen", "der", "die", "m"]},
-    {"rice": ["Reis", "Reis", "der", "die", "m"]},
+    {"rice": ["Reis", "Reis", "der", "der", "m"]},
     {"trip": ["Reise", "Reisen", "die", "die", "f"]},
     {"travel agency": ["Reisebüro", "Reisebüros", "das", "die", "n"]},
     {"travel guide": ["Reiseführer", "Reiseführer", "der", "die", "m"]},

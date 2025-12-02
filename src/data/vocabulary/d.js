@@ -1,7 +1,6 @@
 export const letterD = {
   nouns: [
     {"lady": ["Dame", "Damen", "die", "die", "f"]},
-    {"thanks": ["Dank", "Dank", "der", "die", "m"]},
     {"date": ["Datum", "Daten", "das", "die", "n"]},
     {"disco": ["Disco", "Discos", "die", "die", "f"]},
     {"doctor": ["Doktor", "Doktoren", "der", "die", "m"]},
@@ -22,7 +21,7 @@ export const letterD = {
     {"teacher": ["Lehrer", "Lehrer", "der", "die", "m"]},
     {"tea": ["Tee", "Tees", "der", "die", "m"]},
     {"table": ["Tisch", "Tische", "der", "die", "m"]},
-    {"ten": ["zehn", "zehn", "die", "die", "f"]},
+    {"toe": ["Zeh", "Zehen", "der", "die", "f"]},
     {"taxi": ["Taxi", "Taxis", "das", "die", "n"]},
     {"toilet": ["Toilette", "Toiletten", "die", "die", "f"]},
     {"town": ["Stadt", "Städte", "die", "die", "f"]},
@@ -32,6 +31,7 @@ export const letterD = {
     {"text": ["Text", "Texte", "der", "die", "m"]},
     {"telephone": ["Telefon", "Telefone", "das", "die", "n"]},
     {"television": ["Fernsehen", "Fernseher", "das", "die", "n"]},
+    {"television": ["Fernseher", "Fernseher", "der", "die", "m"]},
     {"time": ["Zeit", "Zeiten", "die", "die", "f"]},
     {"daughter": ["Tochter", "Töchter", "die", "die", "f"]},
     {"dog": ["Hund", "Hunde", "der", "die", "m"]},
@@ -46,9 +46,19 @@ export const letterD = {
     {"development": ["Entwicklung", "Entwicklungen", "die", "die", "f"]},
     {"difficulty": ["Schwierigkeit", "Schwierigkeiten", "die", "die", "f"]},
     {"document": ["Dokument", "Dokumente", "das", "die", "n"]},
-    {"drink": ["Getränk", "Getränke", "das", "die", "n"]},
     {"dinner": ["Abendessen", "Abendessen", "das", "die", "n"]},
-    {"dress": ["Kleid", "Kleider", "das", "die", "n"]}
+    {"dress": ["Kleid", "Kleider", "das", "die", "n"]},
+    {"roof": ["Dach", "Dächer", "das", "die", "n"]},
+    {"thanks": ["Dank", "Dank", "der", "der", "m"]},
+    {"ceiling/blanket": ["Decke", "Decken", "die", "die", "f"]},
+    {"service": ["Dienst", "Dienste", "der", "die", "m"]},
+    {"thing": ["Ding", "Dinge", "das", "die", "n"]},
+    {"cathedral": ["Dom", "Dome", "der", "die", "m"]},
+    {"can/tin": ["Dose", "Dosen", "die", "die", "f"]},
+    {"pressure/print": ["Druck", "Drucke", "der", "die", "m"]},
+    {"passage": ["Durchgang", "Durchgänge", "der", "die", "m"]},
+    {"mess/confusion": ["Durcheinander", "Durcheinander", "das", "die", "n"]}
+
   ],
   verbs: [
     {"to thank": ["danken", "danke", "dankst", "dankt", "dankt", "dankt", "danken", "dankt", "danken", "danken"]},

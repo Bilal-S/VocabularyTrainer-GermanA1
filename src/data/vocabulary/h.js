@@ -105,7 +105,7 @@ export const letterH = {
       {
         german: 'Sie gibt ___ Kind ___ Haus.',
         english: 'She gives the child the house.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

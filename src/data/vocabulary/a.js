@@ -205,7 +205,7 @@ export const letterA = {
       {
         german: 'Er gibt ___ Kind ___ Apfel.',
         english: 'He gives the child the apple.',
-        answer: 'dem',
+        answer: 'dem den',
         case: 'dative'
       },
       {
@@ -241,7 +241,7 @@ export const letterA = {
       {
         german: 'Ich gab ___ Automat ___ Geld.',
         english: 'I gave the machine the money.',
-        answer: 'dem',
+        answer: 'dem das',
         case: 'dative'
       },
       {

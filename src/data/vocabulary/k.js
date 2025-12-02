@@ -168,7 +168,7 @@ export const letterK = {
       {
         german: 'Er gibt ___ Kind ___ Kuchen.',
         english: 'He gives the child the cake.',
-        answer: 'dem',
+        answer: 'dem den',
         case: 'dative'
       },
       {

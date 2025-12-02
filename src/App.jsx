@@ -109,7 +109,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - 🎯 Progress tracking and mastery system
 - 💾 Save/load your progress via JSON
 - 📱 Mobile-friendly chat interface
-- 📲 Install as a PWA for offline access
+- 📲 Install as a PWA for offline access from Menu (☰)
 
 Type **"Today is a new day"** to begin your German learning journey!`
     }

@@ -20,6 +20,7 @@ export class VocabularyManager {
   }
 
   // CRITICAL FIX: Add umlaut substitution helper
+  // the sss is for ß replacement as convenient shorthand
   normalizeUmlauts(text) {
     return text
       .replace(/ue/g, 'ü')
@@ -28,6 +29,7 @@ export class VocabularyManager {
       .replace(/Ue/g, 'Ü')
       .replace(/Oe/g, 'Ö')
       .replace(/Ae/g, 'Ä')
+      .replace(/sss/g, 'ß')
   }
 
   // Helper to find synonyms based on English translation
@@ -127,7 +129,7 @@ export class VocabularyManager {
               const example = articleExamples[0]
               return {
                 type: 'article',
-                question: `Fill in the blank: ${example.german.replace('___', '_____')}`,
+                question: `Fill in the blank(s): ${example.german.replace('___', '_____')}`,
                 answer: example.answer || example.german.match(/___\s*(\w+)/)?.[1] || example.answer,
               german: example.german,
               english: example.english,
@@ -519,11 +521,16 @@ export class VocabularyManager {
       return false
     }
 
-    // Use case-sensitive comparison for German answers
-    const normalizedUser = String(userAnswer).trim()
-    const normalizedCorrect = Array.isArray(correctAnswer)
-      ? correctAnswer
-      : String(correctAnswer).trim()
+    // CRITICAL FIX: Normalize umlauts for ALL input to handle ue -> ü etc.
+    const normalizedUser = this.normalizeUmlauts(String(userAnswer).trim())
+    
+    // Normalize correct answer(s) as well if needed (though database usually has ü)
+    // But keeping it consistent in case DB has alternative spellings
+    const normalizeCorrect = (val) => Array.isArray(val) 
+      ? val.map(v => this.normalizeUmlauts(String(v).trim())) 
+      : this.normalizeUmlauts(String(val).trim())
+
+    const normalizedCorrect = normalizeCorrect(correctAnswer)
 
     console.log('Validating answer:', { userAnswer: normalizedUser, correctAnswer: normalizedCorrect, type })
 
@@ -544,7 +551,8 @@ export class VocabularyManager {
            const synonyms = this.getSynonyms(exercise.english)
            // synonyms is array of noun objects. Check against their .german
            for (const syn of synonyms) {
-             if (this.caseSensitiveMatch(normalizedUser, syn.german)) return true
+             const normalizedSyn = this.normalizeUmlauts(syn.german)
+             if (this.caseSensitiveMatch(normalizedUser, normalizedSyn)) return true
            }
         }
         return false
