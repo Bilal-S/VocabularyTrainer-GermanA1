@@ -50,8 +50,8 @@ Simply visit the app URL and start learning immediately
 #### Option 3: Local Development
 ```bash
 # Clone the repository
-git clone https://github.com/Bilal-S/Vocab.git
-cd Vocab
+git clone https://github.com/Bilal-S/VocabularyTrainer-GermanA1.git
+cd VocabularyTrainer-GermanA1
 
 # Install dependencies
 npm install
@@ -324,8 +324,8 @@ This project is licensed under the ISC License.
 ## 🔗 Links
 
 - **Live Demo**: https://germanA1.boncode.net
-- **Repository**: https://github.com/Bilal-S/Vocab
-- **Issues**: https://github.com/Bilal-S/Vocab/issues
+- **Repository**: https://github.com/Bilal-S/VocabularyTrainer-GermanA1
+- **Issues**: https://github.com/Bilal-S/VocabularyTrainer-GermanA1/issues
 
 ## 📞 Support
 
