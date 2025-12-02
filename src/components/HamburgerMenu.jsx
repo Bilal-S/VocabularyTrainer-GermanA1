@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { deviceDetector } from '../utils/deviceDetector'
+import { updateChecker } from '../utils/updateChecker'
 
-const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable, onOpenHelp }) => {
+const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable, onOpenHelp, onCheckUpdates }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleImport = () => {
@@ -98,6 +99,18 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInst
               >
                 ⚙️ Settings
               </button>
+              {updateChecker.isPWA && (
+                <button
+                  onClick={() => {
+                    setIsOpen(false)
+                    onCheckUpdates()
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 transition-colors"
+                  title="Check for app updates"
+                >
+                  🔄 Check for Updates
+                </button>
+              )}
               <button
                 onClick={handleInstall}
                 className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors font-semibold"

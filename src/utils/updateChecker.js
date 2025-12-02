@@ -68,6 +68,37 @@ export class UpdateChecker {
     return hoursSinceLastCheck >= CHECK_INTERVAL_HOURS
   }
 
+  async forceCheckForUpdates() {
+    // Force update check regardless of time restrictions
+    try {
+      // Fetch latest version from a version endpoint
+      const latestVersion = await this.fetchLatestVersion()
+      
+      if (!latestVersion) {
+        return { shouldUpdate: false, reason: 'fetch_failed' }
+      }
+
+      const shouldUpdate = this.compareVersions(latestVersion, this.currentVersion) > 0
+
+      if (shouldUpdate) {
+        this.setLastKnownVersion(latestVersion)
+        localStorage.setItem(STORAGE_KEYS.UPDATE_AVAILABLE, 'true')
+        return { 
+          shouldUpdate: true, 
+          currentVersion: this.currentVersion,
+          latestVersion,
+          reason: 'update_available'
+        }
+      }
+
+      return { shouldUpdate: false, reason: 'up_to_date', currentVersion: this.currentVersion, latestVersion }
+      
+    } catch (error) {
+      console.error('Force update check failed:', error)
+      return { shouldUpdate: false, reason: 'error', error }
+    }
+  }
+
   async checkForUpdates() {
     if (!this.shouldCheckForUpdates()) {
       return { shouldUpdate: false, reason: 'not_time_yet' }

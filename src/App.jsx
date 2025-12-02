@@ -5,6 +5,7 @@ import HamburgerMenu from './components/HamburgerMenu'
 import ImportExportModal from './components/ImportExportModal'
 import SettingsModal from './components/SettingsModal'
 import HelpModal from './components/HelpModal'
+import UpdateModal from './components/UpdateModal'
 import { useVocabularyState } from './hooks/useVocabularyState'
 import { useDailyRoutine } from './hooks/useDailyRoutine'
 import { generateMessageId } from './utils/idGenerator'
@@ -25,6 +26,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [updateInfo, setUpdateInfo] = useState(null)
   const [messages, setMessages] = useState([])
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [isInstallable, setIsInstallable] = useState(false)
@@ -128,6 +131,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - 💾 Save/load your progress via JSON
 - 📱 Mobile-friendly chat interface
 - 📲 Install as PWA for offline access (Menu ☰ → Install)
+- 🔄 Check for updates manually (Menu ☰ → Check for Updates)
 
 Type **"Today is a new day"** to begin your German learning journey!`
     }
@@ -187,6 +191,26 @@ Type **"Today is a new day"** to begin your German learning journey!`
     }])
   }
 
+  const handleManualUpdateCheck = async () => {
+    try {
+      const updateResult = await updateChecker.forceCheckForUpdates()
+      setUpdateInfo(updateResult)
+      setIsUpdateModalOpen(true)
+    } catch (error) {
+      console.error('Manual update check failed:', error)
+      setUpdateInfo({
+        shouldUpdate: false,
+        reason: 'error',
+        error: error.message
+      })
+      setIsUpdateModalOpen(true)
+    }
+  }
+
+  const handleUpdateNow = async () => {
+    await updateChecker.refreshApp()
+  }
+
   const currentSection = getCurrentSection()
   const sectionInfo = SECTIONS[currentSection] || SECTIONS.INTRO
   const progress = getSectionProgress()
@@ -230,6 +254,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
           onOpenHelp={() => setIsHelpModalOpen(true)}
           onInstall={handleInstall}
           isInstallable={isInstallable}
+          onCheckUpdates={handleManualUpdateCheck}
         />
       </Header>
       
@@ -255,6 +280,13 @@ Type **"Today is a new day"** to begin your German learning journey!`
       <HelpModal
         isOpen={isHelpModalOpen}
         onClose={() => setIsHelpModalOpen(false)}
+      />
+      
+      <UpdateModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        onUpdate={handleUpdateNow}
+        updateInfo={updateInfo}
       />
     </div>
   )
