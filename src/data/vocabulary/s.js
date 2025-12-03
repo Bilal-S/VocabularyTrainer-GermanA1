@@ -31,7 +31,9 @@ export const letterS = {
     {"tram": ["Straßenbahn", "Straßenbahnen", "die", "die", "f"]},
     {"studies": ["Studium", "Studien", "das", "die", "n"]},
     {"student": ["Student", "Studenten", "der", "die", "m"]},
-    {"hour": ["Stunde", "Stunden", "die", "die", "f"]}
+    {"hour": ["Stunde", "Stunden", "die", "die", "f"]},
+    {"end": ["Schluss", "Schlüsse", "der", "die", "m"]},
+    {"conclusion": ["Schluss", "Schlüsse", "der", "die", "m"]}
   ],
   verbs: [
     {"to say": ["sagen", "sage", "sagst", "sagt", "sagt", "sagt", "sagen", "sagt", "sagen", "sagen"]},
