@@ -196,12 +196,22 @@ export class UpdateChecker {
     if ('serviceWorker' in navigator) {
       const registrations = await navigator.serviceWorker.getRegistrations()
       for (const registration of registrations) {
-        await registration.update()
+        // Update the service worker
+        try {
+          await registration.update()
+          // Wait a bit for the update to take effect
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        } catch (error) {
+          console.warn('Service worker update failed:', error)
+        }
       }
     }
     
     // Force a page reload to get the latest version
-    window.location.reload()
+    // Add a small delay to ensure any pending operations complete
+    setTimeout(() => {
+      window.location.reload()
+    }, 500)
   }
 
   getUpdateInfo() {

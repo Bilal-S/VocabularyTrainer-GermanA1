@@ -6,7 +6,9 @@ const UpdateModal = ({ isOpen, onClose, onUpdate, updateInfo }) => {
   const { currentVersion, latestVersion, shouldUpdate } = updateInfo
 
   const handleUpdate = () => {
+    // Show feedback that update is starting
     onClose()
+    // Call the update function directly to trigger the update process
     onUpdate()
   }
 

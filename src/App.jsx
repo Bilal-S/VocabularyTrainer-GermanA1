@@ -69,7 +69,26 @@ function App() {
 
     // Global functions for update buttons in chat messages
     window.updateApp = async () => {
-      await updateChecker.refreshApp()
+      // Show feedback that update is starting
+      setMessages(prev => [...prev, {
+        id: generateMessageId(),
+        type: 'system',
+        content: '🔄 Updating application... Please wait a moment while we refresh the app.'
+      }])
+      
+      // Wait a bit to show the message
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      try {
+        await updateChecker.refreshApp()
+      } catch (error) {
+        console.error('Update process failed:', error)
+        setMessages(prev => [...prev, {
+          id: generateMessageId(),
+          type: 'system',
+          content: '❌ Update failed. Please try again or refresh the page manually.'
+        }])
+      }
     }
 
     window.dismissUpdate = () => {
