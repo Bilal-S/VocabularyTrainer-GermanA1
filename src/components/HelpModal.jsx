@@ -1,5 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { useInstallInstructions } from '../hooks/useInstallInstructions'
+import VideoLink from './VideoLink'
+
+const videos = [
+  {
+    "platform": "Desktop (Windows / Chrome)",
+    "title": "Installing a PWA on your desktop or laptop",
+    "url": "https://www.youtube.com/watch?v=vaZCRZbV7Ok",
+    "duration": "0:30",
+    "views": 8945
+  },
+  {
+    "platform": "MacOS (Safari)",
+    "title": "How To Download YouTube App On Mac | macOs Sonoma Edition",
+    "url": "https://www.youtube.com/watch?v=WMx-33cchL8",
+    "duration": "1:13",
+    "views": 46736
+  },
+  {
+    "platform": "Android",
+    "title": "Installing a PWA on an Android Device",
+    "url": "https://www.youtube.com/watch?v=iJteraObjgs",
+    "duration": "0:39",
+    "views": 28760
+  },
+  {
+    "platform": "iOS (iPhone, iPad)",
+    "title": "Installing a PWA on your iPhone",
+    "url": "https://www.youtube.com/watch?v=AwfKUpq5seE",
+    "duration": "0:52",
+    "views": 45380
+  }
+]
 
 const HelpModal = ({ isOpen, onClose }) => {
   const [activeSection, setActiveSection] = useState('overview')
@@ -106,19 +138,45 @@ const HelpModal = ({ isOpen, onClose }) => {
         <div>
           <h4 className="font-semibold text-gray-800 mb-3">Instructions for Other Devices</h4>
           <div className="space-y-2">
-            {getAllDeviceInstructions().map((instruction, index) => (
-              <details key={index} className="bg-gray-50 rounded-lg p-3 cursor-pointer">
-                <summary className="font-medium text-gray-800 text-sm flex items-center gap-2 hover:text-blue-600">
-                  <span>{instruction.icon}</span>
-                  <span>{instruction.title}</span>
-                  <span className="text-gray-500 font-normal">- {instruction.description}</span>
-                </summary>
-                <div className="mt-2 pl-6 text-xs text-gray-600">
-                  {/* Detailed steps would go here based on instruction.method */}
-                  <p>Follow the specific steps for {instruction.title} to install the app.</p>
-                </div>
-              </details>
-            ))}
+            {getAllDeviceInstructions().map((instruction, index) => {
+              // Create a mapping function to match device instruction titles to video platforms
+              const getVideoForPlatform = (instructionTitle) => {
+                const platformMap = {
+                  'iPhone/iPad (Safari)': 'iOS (iPhone, iPad)',
+                  'Android (Chrome)': 'Android',
+                  'Android (Firefox)': 'Android',
+                  'Desktop (Chrome/Edge)': 'Desktop (Windows / Chrome)',
+                  'Desktop (Firefox/Safari)': 'MacOS (Safari)'
+                };
+                const mappedPlatform = platformMap[instructionTitle];
+                return videos.find(v => v.platform === mappedPlatform);
+              };
+
+              const video = getVideoForPlatform(instruction.title);
+              return (
+                <details key={index} className="bg-gray-50 rounded-lg p-3 cursor-pointer">
+                  <summary className="font-medium text-gray-800 text-sm flex items-center gap-2 hover:text-blue-600">
+                    <span>{instruction.icon}</span>
+                    <span>{instruction.title}</span>
+                    <span className="text-gray-500 font-normal">- {instruction.description}</span>
+                    {video && (
+                      <span className="ml-auto text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
+                        📹 Video Available
+                      </span>
+                    )}
+                  </summary>
+                  <div className="mt-3 pl-6">
+                    {video ? (
+                      <VideoLink video={video} />
+                    ) : (
+                      <div className="text-xs text-gray-500 italic">
+                        No video tutorial available for this platform. Follow the text instructions above.
+                      </div>
+                    )}
+                  </div>
+                </details>
+              );
+            })}
           </div>
         </div>
 
