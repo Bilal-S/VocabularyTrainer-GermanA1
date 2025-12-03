@@ -5,8 +5,8 @@
   <rect y="342" width="512" height="170" fill="#FFCE00"/>
   
   <!-- German text overlay -->
-  <text x="256" y="256" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">
-    DE
+  <text x="256" y="256" font-family="Arial, sans-serif" font-size="52" font-weight="bold" text-anchor="middle" fill="white">
+    A1
   </text>
   
   <!-- Book icon overlay -->

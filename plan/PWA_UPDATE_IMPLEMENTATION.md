@@ -68,8 +68,8 @@ define: {
 #### 6. `public/version.json` - Remote Version File
 ```json
 {
-  "version": "1.0.2",
-  "buildDate": "2025-12-02",
+  "version": "1.2.1",
+  "buildDate": "2025-12-03",
   "changelog": "Bug fixes and performance improvements"
 }
 ```

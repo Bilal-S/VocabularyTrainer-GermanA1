@@ -143,7 +143,7 @@ export class UpdateChecker {
       // In development, we'll simulate version checking with higher version
       if (import.meta.env.DEV) {
         // Simulate an update available in development
-        return '1.0.2'
+        return '3.2.1'
       }
       
       // Production version check - fetch from version.json

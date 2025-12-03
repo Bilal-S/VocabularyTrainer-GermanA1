@@ -1,6 +1,6 @@
 {
   "name": "vocab",
-  "version": "1.0.1",
+  "version": "1.2.1",
   "description": "Vocabulary Training German A1",
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Bilal Soylu",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "clsx": "^2.0.0",
     "marked": "^9.1.6",
