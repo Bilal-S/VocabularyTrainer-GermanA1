@@ -517,180 +517,165 @@ export class VocabularyManager {
   // CRITICAL FIX: Implement case-sensitive validation for German answers
   validateAnswer(userAnswer, correctAnswer, type, exercise = null) {
     if (userAnswer === undefined || userAnswer === null || correctAnswer === undefined || correctAnswer === null) {
-      console.warn('validateAnswer called with missing arguments', { userAnswer, correctAnswer, type })
-      return false
+      console.warn('validateAnswer called with missing arguments', { userAnswer, correctAnswer, type });
+      return false;
     }
-
+  
     // CRITICAL FIX: Normalize umlauts for ALL input to handle ue -> ü etc.
-    const normalizedUser = this.normalizeUmlauts(String(userAnswer).trim())
-    
+    const normalizedUser = this.normalizeUmlauts(String(userAnswer).trim());
+  
     // Normalize correct answer(s) as well if needed (though database usually has ü)
     // But keeping it consistent in case DB has alternative spellings
-    const normalizeCorrect = (val) => Array.isArray(val) 
-      ? val.map(v => this.normalizeUmlauts(String(v).trim())) 
-      : this.normalizeUmlauts(String(val).trim())
-
-    const normalizedCorrect = normalizeCorrect(correctAnswer)
-
-    console.log('Validating answer:', { userAnswer: normalizedUser, correctAnswer: normalizedCorrect, type })
-
+    const normalizeCorrect = (val) =>
+      Array.isArray(val)
+        ? val.map((v) => this.normalizeUmlauts(String(v).trim()))
+        : this.normalizeUmlauts(String(val).trim());
+  
+    const normalizedCorrect = normalizeCorrect(correctAnswer);
+  
+    console.log('Validating answer:', { userAnswer: normalizedUser, correctAnswer: normalizedCorrect, type });
+  
     switch (type) {
       case 'noun':
       case 'verb':
       case 'plural':
+      case 'article':
         // Case-sensitive comparison for German words
         if (Array.isArray(normalizedCorrect)) {
-          return normalizedCorrect.some(ans => this.caseSensitiveMatch(normalizedUser, ans))
+          return normalizedCorrect.some((ans) => this.caseSensitiveMatch(normalizedUser, ans));
         }
-        
+  
         // Check exact match first
-        if (this.caseSensitiveMatch(normalizedUser, normalizedCorrect)) return true
-        
+        if (this.caseSensitiveMatch(normalizedUser, normalizedCorrect)) return true;
+  
         // Check synonyms for nouns
         if (type === 'noun' && exercise && exercise.english) {
-           const synonyms = this.getSynonyms(exercise.english)
-           // synonyms is array of noun objects. Check against their .german
-           for (const syn of synonyms) {
-             const normalizedSyn = this.normalizeUmlauts(syn.german)
-             if (this.caseSensitiveMatch(normalizedUser, normalizedSyn)) return true
-           }
+          const synonyms = this.getSynonyms(exercise.english);
+          // synonyms is array of noun objects. Check against their .german
+          for (const syn of synonyms) {
+            const normalizedSyn = this.normalizeUmlauts(syn.german);
+            if (this.caseSensitiveMatch(normalizedUser, normalizedSyn)) return true;
+          }
         }
-        return false
-      
+        return false;
+  
       case 'conjugation':
         // Special handling for conjugation - expect "subject + verb" format
-        return this.validateConjugationAnswer(normalizedUser, normalizedCorrect, exercise)
-      
-      case 'article':
-        // Case-sensitive for German articles but allow case variations
-        const validArticles = ['der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem', 'eines']
-        return validArticles.includes(normalizedUser.toLowerCase()) && this.caseSensitiveMatch(normalizedUser, normalizedCorrect)
-      
+        return this.validateConjugationAnswer(normalizedUser, normalizedCorrect, exercise);
+  
       case 'translation':
         // Case-sensitive for German translations with some flexibility
         if (Array.isArray(normalizedCorrect)) {
-          return normalizedCorrect.some(ans => this.fuzzyMatch(normalizedUser, ans))
+          return normalizedCorrect.some((ans) => this.fuzzyMatch(normalizedUser, ans));
         }
-        return this.fuzzyMatch(normalizedUser, normalizedCorrect)
-      
+        return this.fuzzyMatch(normalizedUser, normalizedCorrect);
+  
       default:
-        return this.caseSensitiveMatch(normalizedUser, normalizedCorrect)
+        return this.caseSensitiveMatch(normalizedUser, normalizedCorrect);
     }
   }
-
+  
   // CRITICAL FIX: Case-sensitive matching for German answers
   caseSensitiveMatch(answer, correct) {
-    // Exact match first (preserves case)
-    if (answer === correct) {
-      return true
+    const answerWords = answer.split(' ').filter(Boolean);
+    const correctWords = correct.split(' ').filter(Boolean);
+  
+    if (answerWords.length !== correctWords.length) {
+      return false;
     }
-    
-    // For German nouns and proper nouns, case matters
-    // Allow case-insensitive comparison only for simple articles, prepositions, etc.
-    const isSimpleWord = /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines|und|oder|aber|in|an|auf|unter|über|mit|zu|bei|von|nach|vor|für|durch|gegen|ohne|während|bis|seit|wegen)$/.test(correct.toLowerCase())
-    
-    if (isSimpleWord) {
-      return answer.toLowerCase() === correct.toLowerCase()
-    }
-    
-    // For compound words and nouns, check case-sensitive
-    // Allow minor case differences in articles at beginning
-    if (answer.length > 3 && correct.length > 3) {
-      // Check if difference is just in the first word (article case)
-      const answerWords = answer.split(' ')
-      const correctWords = correct.split(' ')
-      
-      if (answerWords.length === correctWords.length) {
-        for (let i = 0; i < answerWords.length; i++) {
-          if (i === 0 && answerWords[i].toLowerCase() === correctWords[i].toLowerCase()) {
-            // First word is a case variation of article - allow
-            continue
-          }
-          if (answerWords[i] !== correctWords[i]) {
-            return false
-          }
+  
+    for (let i = 0; i < correctWords.length; i++) {
+      if (answerWords[i] !== correctWords[i]) {
+        // Allow for case variations in articles
+        const isArticle = /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines)$/i.test(correctWords[i]);
+        if (isArticle && answerWords[i].toLowerCase() === correctWords[i].toLowerCase()) {
+          continue;
         }
-        return true
+        return false;
       }
     }
-    
-    return false
+  
+    return true;
   }
-
+  
   // CRITICAL FIX: Enhanced conjugation answer validation with umlaut support
   validateConjugationAnswer(userAnswer, correctAnswer, exercise = null) {
     // Apply umlaut normalization to user input
-    const normalizedUser = this.normalizeUmlauts(userAnswer)
+    const normalizedUser = this.normalizeUmlauts(userAnswer);
     // Handle array of correct answers if passed (unlikely for conjugation currently but good practice)
-    const correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer]
-    
+    const correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+  
     for (const correct of correctAnswers) {
-        const normalizedCorrect = this.normalizeUmlauts(correct)
-        
-        console.log('Conjugation validation details:', { 
-          originalUser: userAnswer, 
-          normalizedUser, 
-          originalCorrect: correct, 
-          normalizedCorrect 
-        })
-
-        // Parse user input to separate subject and verb
-        const userParts = normalizedUser.split(' ')
-        const correctParts = normalizedCorrect.split(' ')
-        
-        if (userParts.length === 2 && correctParts.length === 2) {
-            const [userSubject, userVerb] = userParts
-            const [correctSubject, correctVerb] = correctParts
-            
-            // For conjugation exercises, use clean subject comparison if available
-            // Handle both new format (with cleanSubject) and old format (without)
-            let cleanCorrectSubject = correctSubject
-            if (exercise && exercise.cleanSubject) {
-              cleanCorrectSubject = exercise.cleanSubject
-            }
-            
-            // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
-            const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase()
-            const verbMatch = userVerb === correctVerb
-            
-            if (subjectMatch && verbMatch) return true
+      const normalizedCorrect = this.normalizeUmlauts(correct);
+  
+      console.log('Conjugation validation details:', {
+        originalUser: userAnswer,
+        normalizedUser,
+        originalCorrect: correct,
+        normalizedCorrect,
+      });
+  
+      // Parse user input to separate subject and verb
+      const userParts = normalizedUser.split(' ');
+      const correctParts = normalizedCorrect.split(' ');
+  
+      if (userParts.length === 2 && correctParts.length === 2) {
+        const [userSubject, userVerb] = userParts;
+        const [correctSubject, correctVerb] = correctParts;
+  
+        // For conjugation exercises, use clean subject comparison if available
+        // Handle both new format (with cleanSubject) and old format (without)
+        let cleanCorrectSubject = correctSubject;
+        if (exercise && exercise.cleanSubject) {
+          cleanCorrectSubject = exercise.cleanSubject;
         }
+  
+        // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
+        const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase();
+        const verbMatch = userVerb === correctVerb;
+  
+        if (subjectMatch && verbMatch) return true;
+      }
     }
-    
-    return false
+  
+    return false;
   }
-
+  
   fuzzyMatch(answer, correct) {
-    // Simple fuzzy matching for translations with case sensitivity
-    const answerWords = answer.split(' ')
-    const correctWords = correct.split(' ')
-    
-    if (answerWords.length !== correctWords.length) return false
-    
-    let matches = 0
-    for (let i = 0; i < answerWords.length; i++) {
-      const answerWord = answerWords[i]
-      const correctWord = correctWords[i]
-      
+    const answerWords = answer.split(' ').filter(Boolean);
+    const correctWords = correct.split(' ').filter(Boolean);
+  
+    if (answerWords.length !== correctWords.length) {
+      return false;
+    }
+  
+    let matches = 0;
+    for (let i = 0; i < correctWords.length; i++) {
+      const answerWord = answerWords[i];
+      const correctWord = correctWords[i];
+  
       // Try exact match first (case-sensitive)
       if (answerWord === correctWord) {
-        matches++
+        matches++;
       } else if (answerWord.toLowerCase() === correctWord.toLowerCase()) {
         // Allow case-insensitive for simple words
-        const isSimpleWord = /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines|und|oder|aber|in|an|auf|unter|über|mit|zu|bei|von|nach|vor|für|durch|gegen|ohne|während|bis|seit|wegen)$/.test(correctWord.toLowerCase())
+        const isSimpleWord =
+          /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines|und|oder|aber|in|an|auf|unter|über|mit|zu|bei|von|nach|vor|für|durch|gegen|ohne|während|bis|seit|wegen)$/.test(
+            correctWord.toLowerCase()
+          );
         if (isSimpleWord) {
-          matches++
+          matches++;
         } else if (this.levenshteinDistance(answerWord.toLowerCase(), correctWord.toLowerCase()) <= 1) {
           // Allow one character difference for more complex words
-          matches++
+          matches++;
         }
       } else if (this.levenshteinDistance(answerWord.toLowerCase(), correctWord.toLowerCase()) <= 1) {
         // Allow one character difference for typos
-        matches++
+        matches++;
       }
     }
-    
-    return matches === correctWords.length
+  
+    return matches === correctWords.length;
   }
 
   levenshteinDistance(str1, str2) {
