@@ -5,6 +5,7 @@ export const letterF = {
     {"bicycle": ["Fahrrad", "Fahrräder", "das", "die", "n"]},
     {"family": ["Familie", "Familien", "die", "die", "f"]},
     {"family name": ["Familienname", "Familiennamen", "der", "die", "m"]},
+    {"family name": ["Nachname", "Nachnamen", "der", "die", "m"]},
     {"marital status": ["Familienstand", "Familienstände", "der", "die", "m"]},
     {"color": ["Farbe", "Farben", "die", "die", "f"]},
     {"fax": ["Fax", "Faxe", "das", "die", "n"]},

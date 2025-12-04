@@ -17,7 +17,7 @@ export const letterD = {
     {"theater": ["Theater", "Theater", "das", "die", "n"]},
     {"dictionary": ["Wörterbuch", "Wörterbücher", "das", "die", "n"]},
     {"door": ["Tür", "Türen", "die", "die", "f"]},
-    {"thousand": ["tausend", "tausend", "das", "die", "n"]},
+    {"thousand": ["Tausend", "Tausende", "das", "die", "n"]},
     {"teacher": ["Lehrer", "Lehrer", "der", "die", "m"]},
     {"tea": ["Tee", "Tees", "der", "die", "m"]},
     {"table": ["Tisch", "Tische", "der", "die", "m"]},

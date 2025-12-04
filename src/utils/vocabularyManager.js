@@ -40,6 +40,26 @@ export class VocabularyManager {
     return allNouns.filter(n => n.english.toLowerCase() === englishWord.toLowerCase())
   }
 
+  // Helper to check if two German words are synonyms (same English meaning)
+  areGermanWordsSynonyms(germanWord1, germanWord2, englishWord) {
+    if (!englishWord) return false;
+    
+    // Get all nouns with the same English word
+    const synonyms = this.getSynonyms(englishWord);
+    
+    // Check if both words are in the synonyms list
+    const normalizedWord1 = this.normalizeUmlauts(germanWord1);
+    const normalizedWord2 = this.normalizeUmlauts(germanWord2);
+    
+    const foundWords = synonyms.filter(syn => {
+      const normalizedSyn = this.normalizeUmlauts(syn.german);
+      return normalizedSyn === normalizedWord1 || normalizedSyn === normalizedWord2;
+    });
+    
+    // If both words are found in the synonyms list, they are synonyms
+    return foundWords.length >= 2;
+  }
+
   // Generate Step 1: Review Previous Mistakes
   generateReviewBatch(reviewQueue, batchSize = 10) {
     if (!reviewQueue || reviewQueue.length === 0) {
@@ -548,13 +568,24 @@ export class VocabularyManager {
         // Check exact match first
         if (this.caseSensitiveMatch(normalizedUser, normalizedCorrect)) return true;
   
-        // Check synonyms for nouns
+        // Check synonyms for nouns - enhanced logic to handle multiple German forms of same English word
         if (type === 'noun' && exercise && exercise.english) {
+          // Get all nouns with the same English word (including synonyms)
           const synonyms = this.getSynonyms(exercise.english);
-          // synonyms is array of noun objects. Check against their .german
+          
+          // Check if user's answer matches any of the synonyms
           for (const syn of synonyms) {
             const normalizedSyn = this.normalizeUmlauts(syn.german);
             if (this.caseSensitiveMatch(normalizedUser, normalizedSyn)) return true;
+          }
+          
+          // Special case: if we have a correct answer that's different from what we're checking,
+          // check if the user's answer and the correct answer are synonyms of each other
+          if (exercise && exercise.english && correctAnswer && correctAnswer !== normalizedUser) {
+            // Check if user's answer and correct answer are synonyms for the same English word
+            if (this.areGermanWordsSynonyms(normalizedUser, correctAnswer, exercise.english)) {
+              return true;
+            }
           }
         }
         return false;
