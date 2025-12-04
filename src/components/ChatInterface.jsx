@@ -103,6 +103,7 @@ const ChatInterface = ({ messages, onCommand }) => {
 
   const suggestedCommands = [
     'Today is a new day',
+    'progress summary',
     'Next Step',
     'clear all progress data'
   ]

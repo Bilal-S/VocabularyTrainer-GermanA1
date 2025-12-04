@@ -141,6 +141,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 
 ## Available Commands:
 - **"Today is a new day"** (or **"tiand"**) - Start your daily learning routine
+- **"progress summary"** - Display current learning progress
 - **"Next Step"** - Skip to the next exercise
 - **"clear all progress data"** - Reset all your progress
 

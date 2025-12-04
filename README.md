@@ -80,6 +80,7 @@ or the shortcut:
 | Command | Description |
 |---------|-------------|
 | `Today is a new day` / `tiand` | Start daily learning routine |
+| `progress summary` | Display current learning progress and statistics |
 | `Next Step` | Skip to next exercise |
 | `clear all progress data` | Reset all progress and start fresh |
 

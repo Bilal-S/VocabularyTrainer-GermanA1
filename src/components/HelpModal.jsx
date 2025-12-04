@@ -318,6 +318,16 @@ const HelpModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
+              <div className="bg-orange-50 border-l-4 border-orange-500 p-4">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                  <div>
+                    <h3 className="font-semibold text-orange-800">"progress summary"</h3>
+                    <p className="text-sm text-orange-700">Displays your current learning progress and statistics, similar to the daily recap in Step 7.</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-red-50 border-l-4 border-red-500 p-4">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-sm">!</span>

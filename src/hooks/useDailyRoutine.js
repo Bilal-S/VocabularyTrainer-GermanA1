@@ -106,6 +106,8 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
       } else {
         await skipToNextStep()
       }
+    } else if (normalizedCommand === 'progress summary') {
+      await generateProgressSummary()
     } else if (normalizedCommand === 'clear all progress data') {
       // This is handled in App component
       return
@@ -119,6 +121,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     } else {
       addSystemMessage(`I didn't understand that command. Available commands:
 - **"Today is a new day"** (or **"tiand"**) - Start your daily routine
+- **"progress summary"** - Display current learning progress
 - **"Next Step"** - Skip to next exercise
 - **"clear all progress data"** - Reset all progress`)
     }
@@ -800,6 +803,32 @@ Type **"Today is a new day"** tomorrow to continue your learning journey!`)
     
     setCurrentStep(0)
     setBatchProgress({ completed: 0, total: 0 })
+  }
+
+  const generateProgressSummary = async () => {
+    console.log('Generating progress summary...')
+    const sessionStats = getCurrentSessionStats()
+    console.log('Session stats for progress summary:', sessionStats)
+    
+    addSystemMessage(`# 📊 Current Progress Summary
+
+## Learning Session Summary:
+- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Verbs introduced:** ${sessionStats.verbsIntroduced}
+- **Items added to review queue:** ${sessionStats.itemsAddedToReview}
+- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+
+## Overall Progress Overview:
+- **Total mastered words:** ${sessionStats.totalMastered}
+- **Remaining A1 words:** ${sessionStats.totalRemaining}
+- **Initial review queue size:** ${sessionStats.initialReviewQueueSize}
+- **Mistakes made today:** ${sessionStats.mistakesMade}
+
+${currentStep > 0 && currentStep < 7 ? `### **Current Status:** Step ${currentStep} of 7 - ${STEP_CONFIG[STEPS[currentStep]].name}**` : ''}
+${currentStep === 0 ? '### **Current Status:** Not started - Type "Today is a new day" to begin!' : ''}
+${currentStep === 7 ? '### **Current Status:** Daily routine complete!' : ''}
+
+Keep up the great work! You're making steady progress with your German learning.`)
   }
 
   return {

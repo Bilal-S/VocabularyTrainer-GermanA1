@@ -81,6 +81,7 @@ START
         |
 COMMANDS (Available Anytime):
   • "Next Step" → Skip current step immediately (no grading, no summary)
+  • "progress summary" → Display current learning progress and statistics
   • "clear all progress data" → Reset all pools and progress
   • Import JSON → Load previous state before starting
   • Export JSON → Save current state after session

@@ -38,6 +38,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
 *   Conversational UI for interaction.
 *   Commands:
     *   **"Today is a new day"** → triggers full daily routine.
+    *   **"progress summary"** → displays current learning progress and statistics.
     *   **"Next Step"** → skips current step and moves to next.
     *   **"clear all progress data"** → resets user progress.
 *   Static Section Headers banners. As you move to next section the section header description, colors should update to reflect the new section. The banner should display progress inside the current section.
@@ -352,7 +353,3 @@ The `src/data/vocabulary/index.js` loader transforms this compact data into usab
 * **Styling**: Tailwind CSS 3.3.6 (unchanged - see upgrade note)
 * **TypeScript Types**: @types/react 19.0.0, @types/react-dom 19.0.0
 * **Development**: PostCSS 8.5.1, Autoprefixer 10.4.20
-
-
-
-
