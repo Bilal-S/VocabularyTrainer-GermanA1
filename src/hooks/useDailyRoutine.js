@@ -395,7 +395,7 @@ Please translate the following **sentences from English to German**:
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let verbsMessage = `### **Step 6: Verb Conjugation (30 Items)**
+        let verbsMessage = `### **Step 6: Verb Conjugation (10 Items)**
 **[Step 6 | Batch 1 | Remaining: ${batch.length}]**
 
 Please conjugate the following **verbs for the given subjects**:

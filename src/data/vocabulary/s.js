@@ -105,24 +105,6 @@ export const letterS = {
         case: 'nominative'
       },
       {
-        english: 'The student learns quickly.',
-        german: ['Der Schüler lernt schnell.', 'Der Student lernt schnell.'],
-        type: 'translation',
-        case: 'nominative'
-      },
-      {
-        english: 'She speaks with the student.',
-        german: ['Sie spricht mit dem Schüler.', 'Sie spricht mit dem Studenten.'],
-        type: 'translation',
-        case: 'dative'
-      },
-      {
-        english: 'The student searches for the book.',
-        german: ['Der Schüler sucht das Buch.', 'Der Student sucht das Buch.'],
-        type: 'translation',
-        case: 'accusative'
-      },
-      {
         german: '___ Schwester hilft.',
         english: 'The sister helps.',
         answer: 'Die',
@@ -260,6 +242,24 @@ export const letterS = {
         type: 'translation',
         case: 'nominative'
       },
+      {
+        english: 'The student learns quickly.',
+        german: ['Der Schüler lernt schnell.', 'Der Student lernt schnell.'],
+        type: 'translation',
+        case: 'nominative'
+      },
+      {
+        english: 'She speaks with the student.',
+        german: ['Sie spricht mit dem Schüler.', 'Sie spricht mit dem Studenten.'],
+        type: 'translation',
+        case: 'dative'
+      },
+      {
+        english: 'The student searches for the book.',
+        german: ['Der Schüler sucht das Buch.', 'Der Student sucht das Buch.'],
+        type: 'translation',
+        case: 'accusative'
+      },      
       {
         english: 'She eats the salad.',
         german: 'Sie isst den Salat.',
