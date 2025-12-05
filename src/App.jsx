@@ -51,7 +51,9 @@ function App() {
     sectionProgress,
     processCommand,
     getCurrentSection,
-    getSectionProgress
+    getSectionProgress,
+    isStepComplete,
+    getRemainingQuestions
   } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats)
 
   // PWA Install Prompt Handler
@@ -281,6 +283,9 @@ Type **"Today is a new day"** to begin your German learning journey!`
       <ChatInterface 
         messages={messages}
         onCommand={handleCommand}
+        isStepComplete={isStepComplete}
+        getRemainingQuestions={getRemainingQuestions}
+        currentStep={currentStep}
       />
       
       <ImportExportModal

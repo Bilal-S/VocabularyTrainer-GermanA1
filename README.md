@@ -6,6 +6,11 @@ A progressive web application (PWA) designed to help German language learners ma
 
 Other languages can be implemented by changing the language files `a.js` to `z.js`; this is the database of all exercises. You will also need to change all references to `German` to your target language.
 
+This was a testbed for using a variety of LLMS and working through the nonsensical to actually useful outputs each of them provided.
+It still seemed faster at many times to change the code directly overall the output is usable and now available to all 😊
+
+December 2025 / Bilal
+
 ## ✨ Features
 
 ### 🎯 Core Learning System

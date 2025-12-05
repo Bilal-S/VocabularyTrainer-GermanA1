@@ -1,11 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { marked } from 'marked'
 import Message from './Message'
+import VerificationModal from './VerificationModal'
 
-const ChatInterface = ({ messages, onCommand }) => {
+const ChatInterface = ({ 
+  messages, 
+  onCommand, 
+  isStepComplete, 
+  getRemainingQuestions, 
+  currentStep 
+}) => {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState('Processing...')
+  const [showVerificationModal, setShowVerificationModal] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -75,6 +83,34 @@ const ChatInterface = ({ messages, onCommand }) => {
   const handleNextStep = async () => {
     if (isLoading) return
     
+    // Check if step is complete
+    if (isStepComplete && isStepComplete()) {
+      // Step is complete, proceed normally
+      setIsLoading(true)
+      setLoadingMessage('Skipping to next step...')
+
+      try {
+        await onCommand('next step')
+      } catch (error) {
+        console.error('Error processing next step:', error)
+        setLoadingMessage('Error occurred')
+      } finally {
+        setIsLoading(false)
+        // Reset loading message after a short delay
+        setTimeout(() => {
+          setLoadingMessage('Processing...')
+          inputRef.current?.focus()
+        }, 100)
+      }
+    } else {
+      // Step is not complete, show verification modal
+      const remainingQuestions = getRemainingQuestions ? getRemainingQuestions() : 0
+      setShowVerificationModal(true)
+    }
+  }
+
+  const handleVerificationConfirm = async () => {
+    setShowVerificationModal(false)
     setIsLoading(true)
     setLoadingMessage('Skipping to next step...')
 
@@ -195,6 +231,14 @@ const ChatInterface = ({ messages, onCommand }) => {
           </button>
         </form>
       </div>
+
+      {/* Verification Modal */}
+      <VerificationModal
+        isOpen={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        onConfirm={handleVerificationConfirm}
+        remainingQuestions={getRemainingQuestions ? getRemainingQuestions() : 0}
+      />
     </div>
   )
 }

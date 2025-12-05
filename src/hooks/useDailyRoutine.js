@@ -85,6 +85,36 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     }
   }, [currentStep, batchProgress])
 
+  const isStepComplete = useCallback(() => {
+    // Intro and Recap steps are always considered complete
+    if (currentStep === 0 || currentStep === 7) {
+      return true
+    }
+    
+    // For batch mode, check if all items in current batch have been answered
+    if (isBatchMode && currentBatch.length > 0) {
+      return Object.keys(batchAnswers).length >= currentBatch.length
+    }
+    
+    // For single question mode, check if batch progress is complete
+    return batchProgress.completed >= batchProgress.total && batchProgress.total > 0
+  }, [currentStep, isBatchMode, currentBatch, batchAnswers, batchProgress])
+
+  const getRemainingQuestions = useCallback(() => {
+    // Intro and Recap steps have no questions
+    if (currentStep === 0 || currentStep === 7) {
+      return 0
+    }
+    
+    // For batch mode, count unanswered items in current batch
+    if (isBatchMode && currentBatch.length > 0) {
+      return currentBatch.length - Object.keys(batchAnswers).length
+    }
+    
+    // For single question mode, use batch progress
+    return Math.max(0, batchProgress.total - batchProgress.completed)
+  }, [currentStep, isBatchMode, currentBatch, batchAnswers, batchProgress])
+
   const addSystemMessage = useCallback((content) => {
     const message = {
       id: generateMessageId(),
@@ -837,6 +867,8 @@ Keep up the great work! You're making steady progress with your German learning.
     processCommand,
     getCurrentSection,
     getSectionProgress,
+    isStepComplete,
+    getRemainingQuestions,
     completeStep,
     startDailyRoutine,
     skipToNextStep

@@ -3,7 +3,7 @@
 * **Project Name:** A1 German Coach 
 * **Type:** Progressive Web Application (PWA)  
 * **Primary Goal:** Help learners practice German at A1 level using a structured daily routine without AI-generated content.
-* **Author:** Boncode
+* **Author:** BonCode (Bilal Soylu)
 
 ***
 
