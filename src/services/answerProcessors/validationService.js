@@ -105,7 +105,7 @@ export class ValidationService {
       // Get all German words that translate to the same English word
       const synonyms = this.getSynonyms(exercise.english)
       
-      // Check if user's answer matches any synonym
+      // ENHANCED: Check if user's answer matches any synonym
       for (const synonym of synonyms) {
         const normalizedSynonym = this.normalizeUmlauts(synonym.german)
         console.log(`Checking synonym: "${normalizedSynonym}" against user answer: "${normalizedUser}"`)
