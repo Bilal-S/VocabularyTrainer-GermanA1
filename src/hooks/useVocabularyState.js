@@ -257,24 +257,40 @@ export const useVocabularyState = () => {
         typeof item === 'string' ? item === word : item.word === word
       ) > -1
       
+      // change which threshold to use based on review queue status
       const masteringThreshold = isInReviewQueue 
         ? newState.settings.maxReviewCount 
         : newState.settings.masteringCount
       
-      // Check if noun is fully mastered (both singular and plural forms)
-      const isNounFullyMastered = (wordData) => {
+      // Check if word is mastered based on section and form
+      const isWordMastered = (wordData) => {
         if (!wordData || wordData.singular === undefined || wordData.plural === undefined) {
           return false
         }
         
+        // For review queue items, only the form that caused the failure needs to reach maxReviewCount
+        if (isInReviewQueue) {
+          if (form === 'singular') {
+            return wordData.singular.correctCount >= masteringThreshold
+          } else if (form === 'plural') {
+            return wordData.plural.correctCount >= masteringThreshold
+          }
+        }
+        
+        // For new items (not in review queue), require both forms to be mastered
         const singularMastered = wordData.singular.correctCount >= masteringThreshold
         const pluralMastered = wordData.plural.correctCount >= masteringThreshold
         
-        return singularMastered && pluralMastered
+        if (section === 'VOCABULARY' || section === 'PLURAL') {
+          return singularMastered && pluralMastered
+        }
+        
+        // For verbs and other word types, only require tested form
+        return singularMastered
       }
       
-      // Move to mastered if noun is fully mastered
-      if (isNounFullyMastered(newState.progress[word])) {
+      // Move to mastered if word is mastered
+      if (isWordMastered(newState.progress[word])) {
         // Remove from review queue if present
         const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
           typeof item === 'string' ? item === word : item.word === word
