@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useInstallInstructions } from '../hooks/useInstallInstructions'
+import { updateChecker } from '../utils/updateChecker'
 import VideoLink from './VideoLink'
 
 const videos = [
@@ -35,6 +36,7 @@ const videos = [
 
 const HelpModal = ({ isOpen, onClose }) => {
   const [activeSection, setActiveSection] = useState('overview')
+  const [version, setVersion] = useState('1.2.5')
   const { 
     deviceInfo, 
     isLoading, 
@@ -45,6 +47,23 @@ const HelpModal = ({ isOpen, onClose }) => {
     getPWABenefits,
     getTroubleshootingSteps
   } = useInstallInstructions()
+
+  // Load version from version.json on mount
+  useEffect(() => {
+    const loadVersion = async () => {
+      try {
+        const versionData = await updateChecker.getDisplayedVersion()
+        setVersion(versionData)
+      } catch (error) {
+        console.warn('Failed to load version:', error)
+        // Fallback to hardcoded version if loading fails
+      }
+    }
+    
+    if (isOpen) {
+      loadVersion()
+    }
+  }, [isOpen])
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -208,7 +227,10 @@ const HelpModal = ({ isOpen, onClose }) => {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
         <div className="px-4 py-3 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-800">Help: A1 German Coach</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-gray-800">Help: A1 German Coach</h1>
+            <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">v{version}</span>
+          </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
@@ -221,67 +243,72 @@ const HelpModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="px-4 pb-3 flex gap-2 overflow-x-auto">
-          <button
-            onClick={() => scrollToSection('overview')}
-            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-              activeSection === 'overview' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => scrollToSection('commands')}
-            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-              activeSection === 'commands' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Commands
-          </button>
-          <button
-            onClick={() => scrollToSection('answering')}
-            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-              activeSection === 'answering' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Answering
-          </button>
-          <button
-            onClick={() => scrollToSection('learning-system')}
-            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-              activeSection === 'learning-system' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Learning System
-          </button>
-          <button
-            onClick={() => scrollToSection('installation')}
-            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-              activeSection === 'installation' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Install App
-          </button>
-          <button
-            onClick={() => scrollToSection('settings')}
-            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-              activeSection === 'settings' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Settings
-          </button>
+        <nav className="px-4 pb-3 flex gap-2 overflow-x-auto justify-between items-center">
+          <div className="flex gap-2">
+            <button
+              onClick={() => scrollToSection('overview')}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                activeSection === 'overview' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => scrollToSection('commands')}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                activeSection === 'commands' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Commands
+            </button>
+            <button
+              onClick={() => scrollToSection('answering')}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                activeSection === 'answering' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Answering
+            </button>
+            <button
+              onClick={() => scrollToSection('learning-system')}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                activeSection === 'learning-system' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Learning System
+            </button>
+            <button
+              onClick={() => scrollToSection('installation')}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                activeSection === 'installation' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Install App
+            </button>
+            <button
+              onClick={() => scrollToSection('settings')}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                activeSection === 'settings' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Settings
+            </button>
+          </div>
+          <div className="ml-2">
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full whitespace-nowrap">v{version}</span>
+          </div>
         </nav>
       </header>
 
@@ -386,7 +413,7 @@ die Frau <br></br>
             <div className="border-l-4 border-purple-500 pl-4">
               <h2 className="text-2xl font-bold text-gray-800">The Learning System</h2>
               <p className="text-gray-600 mt-2">
-                Our 7-step daily routine is designed to build comprehensive German vocabulary skills through structured, progressive learning.
+                Our 7-step daily routine is designed to build comprehensive German vocabulary skills through structured, progressive learning. Defaults question counts for each of the Steps can be changed in Settings.
               </p>
             </div>
 
@@ -458,7 +485,7 @@ die Frau <br></br>
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">📖</span>
-                <h3 className="text-xl font-bold text-green-800">Step 3: New Vocabulary (20 Nouns)</h3>
+                <h3 className="text-xl font-bold text-green-800">Step 3: New Vocabulary (default 20 Nouns)</h3>
               </div>
               <div className="space-y-3">
                 <div>
@@ -468,7 +495,7 @@ die Frau <br></br>
                 <div>
                   <h4 className="font-semibold text-green-700">Process:</h4>
                   <ul className="text-sm text-green-600 list-disc list-inside space-y-1">
-                    <li>Randomly selects 20 nouns from unselected pool (alphabetical order avoided)</li>
+                    <li>Randomly selects 20 nouns (default) from unselected pool (alphabetical order avoided)</li>
                     <li>Displays all 20 English nouns at once for efficient learning</li>
                     <li>User provides German translations (article + noun) for each</li>
                     <li>Supports partial responses - user can answer some items, resubmit others</li>
@@ -488,7 +515,7 @@ die Frau <br></br>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">🔢</span>
-                <h3 className="text-xl font-bold text-blue-800">Step 4: Plural Practice (20 Nouns)</h3>
+                <h3 className="text-xl font-bold text-blue-800">Step 4: Plural Practice (default 20 Nouns)</h3>
               </div>
               <div className="space-y-3">
                 <div>
@@ -498,7 +525,7 @@ die Frau <br></br>
                 <div>
                   <h4 className="font-semibold text-blue-700">Process:</h4>
                   <ul className="text-sm text-blue-600 list-disc list-inside space-y-1">
-                    <li>Randomly selects 20 different nouns from unselected pool (different from Step 3)</li>
+                    <li>Randomly selects 20 (default) different nouns from unselected pool (different from Step 3)</li>
                     <li>Displays German singular noun, user provides correct plural form</li>
                     <li>Handles irregular plurals and exceptions from A1 vocabulary</li>
                     <li>Supports batch responses with numbered or sequential format</li>
@@ -517,7 +544,7 @@ die Frau <br></br>
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">📝</span>
-                <h3 className="text-xl font-bold text-purple-800">Step 5: Articles in Context (30 Sentences)</h3>
+                <h3 className="text-xl font-bold text-purple-800">Step 5: Articles in Context (default 30 Sentences)</h3>
               </div>
               <div className="space-y-3">
                 <div>
@@ -546,7 +573,7 @@ die Frau <br></br>
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">🔄</span>
-                <h3 className="text-xl font-bold text-red-800">Step 6: Case Translations (10 Sentences)</h3>
+                <h3 className="text-xl font-bold text-red-800">Step 6: Case Translations (default 10 Sentences)</h3>
               </div>
               <div className="space-y-3">
                 <div>

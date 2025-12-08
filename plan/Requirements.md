@@ -26,6 +26,15 @@ It should use modern web standards with response behavior and attractive designs
     * All items to be reviewed will be presented once a day and need to be completed before moving on to step 2. If we have 17 items in the queue we will present 17 items one at time for user to answer.
     * By default the `maxReviewCount` is set to `3`
 
+* In the hamburger menu there should be step-specific question limits for steps 2-6.
+    * An input box will be presented for each step with an integer value between 1 and 40.
+    * **Step 2: New Vocabulary Questions** - Maximum questions for vocabulary practice (1-40, default: 20)
+    * **Step 3: Plural Practice Questions** - Maximum questions for plural practice (1-40, default: 20)
+    * **Step 4: Articles in Context Questions** - Maximum questions for articles practice (1-40, default: 30)
+    * **Step 5: Case Translations Questions** - Maximum questions for translation practice (1-40, default: 30)
+    * **Step 6: Verb Conjugation Questions** - Maximum questions for verb conjugation (1-40, default: 30)
+    * All step-specific settings should be exported in Export and Imported in JSON format in the `settings` key.
+
 All entered values should be exported in Export and Imported in JSON format in the `settings` key.
 Once an item is in the mastered pool it should not be used in any of the questions.
 
@@ -190,7 +199,16 @@ This is the export/import JSON structure that needs to be exported from local st
 ```json
 {
   "userId": "string",
-  "settings": {"masteringCount":1,"maxReviewBatchSize":50, "maxReviewCount":3},
+  "settings": {
+    "masteringCount":1,
+    "maxReviewBatchSize":50, 
+    "maxReviewCount":3,
+    "maxVocabularyQuestions":20,
+    "maxPluralQuestions":20,
+    "maxArticlesQuestions":30,
+    "maxTranslationsQuestions":30,
+    "maxVerbsQuestions":30
+  },
   "progress": {
     "items": {
       "word": {

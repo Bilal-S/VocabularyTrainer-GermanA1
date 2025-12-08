@@ -26,8 +26,8 @@ export const letterU = {
   examples: {
     nominative: [
       {
-        german: '___ Unterricht ist interessant.',
-        english: 'The lesson is interesting.',
+        german: '___ Lehrer ist interessant.',
+        english: 'The teacher is interesting.',
         answer: 'Der',
         case: 'nominative'
       },

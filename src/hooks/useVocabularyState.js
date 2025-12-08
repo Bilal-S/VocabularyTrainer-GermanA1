@@ -48,7 +48,12 @@ const getInitialState = () => {
     settings: {
       masteringCount: 1,
       maxReviewBatchSize: 50,
-      maxReviewCount: 3
+      maxReviewCount: 3,
+      maxVocabularyQuestions: 20,
+      maxPluralQuestions: 20,
+      maxArticlesQuestions: 30,
+      maxTranslationsQuestions: 30,
+      maxVerbsQuestions: 30
     },
     progress: {},
     pools: {
@@ -168,7 +173,12 @@ export const useVocabularyState = () => {
         settings: {
           masteringCount: jsonData.settings?.masteringCount || 1,
           maxReviewBatchSize: jsonData.settings?.maxReviewBatchSize || 50,
-          maxReviewCount: jsonData.settings?.maxReviewCount || 3
+          maxReviewCount: jsonData.settings?.maxReviewCount || 3,
+          maxVocabularyQuestions: jsonData.settings?.maxVocabularyQuestions || 20,
+          maxPluralQuestions: jsonData.settings?.maxPluralQuestions || 20,
+          maxArticlesQuestions: jsonData.settings?.maxArticlesQuestions || 30,
+          maxTranslationsQuestions: jsonData.settings?.maxTranslationsQuestions || 30,
+          maxVerbsQuestions: jsonData.settings?.maxVerbsQuestions || 30
         },
         // Ensure pools exist - only import permanent data, reset session-specific data
         pools: {
@@ -250,6 +260,12 @@ export const useVocabularyState = () => {
   }
 
   const updateProgress = (word, isCorrect, section = 'Unknown', form = 'singular') => {
+    // CRITICAL FIX: Ensure word is defined before updating progress
+    if (!word) {
+      console.error(`updateProgress called with invalid word: ${word} (Section: ${section})`)
+      return state // Return current state without modification
+    }
+
     const newState = { ...state }
     if (!newState.progress[word]) {
       newState.progress[word] = {
@@ -315,6 +331,9 @@ export const useVocabularyState = () => {
         } else if (section === 'VERBS' && newState.progress[word].singular.correctCount >= masteringThreshold) {
           // Verbs currently use singular structure for tracking
           shouldRemoveFromReview = true
+        } else if ((section === 'ARTICLES' || section === 'TRANSLATIONS') && newState.progress[word].singular.correctCount >= masteringThreshold) {
+          // CRITICAL FIX: ARTICLES and TRANSLATIONS are single-form items that should be removed from review queue when mastered
+          shouldRemoveFromReview = true
         }
       }
 
@@ -325,6 +344,10 @@ export const useVocabularyState = () => {
         const singularMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
         const pluralMastered = newState.progress[word].plural.correctCount >= newState.settings.masteringCount
         isFullyMastered = singularMastered && pluralMastered
+      } else if (section === 'ARTICLES' || section === 'TRANSLATIONS') {
+        // CRITICAL FIX: ARTICLES and TRANSLATIONS are single-form items that reach mastery after maxReviewCount
+        // They don't need to reach the full masteringCount threshold since they're review items
+        isFullyMastered = newState.progress[word].singular.correctCount >= masteringThreshold
       } else {
         // For verbs/others, basic check
         isFullyMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
@@ -337,6 +360,7 @@ export const useVocabularyState = () => {
         )
         if (reviewIndex > -1) {
           newState.pools.reviewQueue.splice(reviewIndex, 1)
+          console.log(`Removed "${word}" from review queue - ${section} mastered`)
         }
       }
 
@@ -366,6 +390,10 @@ export const useVocabularyState = () => {
             newState.pools.mastered.nouns.push(word)
           } else if (section === 'VERBS') {
             newState.pools.mastered.verbs.push(word)
+          } else if (section === 'ARTICLES' || section === 'TRANSLATIONS') {
+            // CRITICAL FIX: ARTICLES and TRANSLATIONS go to the words pool
+            newState.pools.mastered.words.push(word)
+            console.log(`Added "${word}" to mastered.words - ${section} fully mastered`)
           } else {
             newState.pools.mastered.words.push(word)
           }
@@ -440,6 +468,21 @@ export const useVocabularyState = () => {
     return newState
   }
 
+  const resetSessionStats = () => {
+    const newState = {
+      ...state,
+      currentSessionStats: {
+        nounsLearnedToday: 0,
+        verbsIntroducedToday: 0,
+        mistakesMadeToday: 0,
+        itemsAddedToReviewToday: 0,
+        initialReviewQueueSize: state.pools.reviewQueue.length
+      }
+    }
+    saveState(newState)
+    return newState
+  }
+
   const getCurrentSessionStats = () => {
     // Calculate mastered count from new structure
     const masteredCount = Array.isArray(state.pools.mastered) 
@@ -491,6 +534,7 @@ export const useVocabularyState = () => {
     trackSessionLearning,
     isNewDay,
     updateSessionStats,
+    resetSessionStats,
     getCurrentSessionStats,
     updateSettings,
     getSettings

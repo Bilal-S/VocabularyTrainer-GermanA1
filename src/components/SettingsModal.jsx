@@ -4,7 +4,12 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
   const [localSettings, setLocalSettings] = useState({
     masteringCount: settings?.masteringCount || 1,
     maxReviewBatchSize: settings?.maxReviewBatchSize || 50,
-    maxReviewCount: settings?.maxReviewCount || 3
+    maxReviewCount: settings?.maxReviewCount || 3,
+    maxVocabularyQuestions: settings?.maxVocabularyQuestions || 20,
+    maxPluralQuestions: settings?.maxPluralQuestions || 20,
+    maxArticlesQuestions: settings?.maxArticlesQuestions || 30,
+    maxTranslationsQuestions: settings?.maxTranslationsQuestions || 30,
+    maxVerbsQuestions: settings?.maxVerbsQuestions || 30
   })
 
   // Update local settings when props change
@@ -13,7 +18,12 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
       setLocalSettings({
         masteringCount: settings.masteringCount || 1,
         maxReviewBatchSize: settings.maxReviewBatchSize || 50,
-        maxReviewCount: settings.maxReviewCount || 3
+        maxReviewCount: settings.maxReviewCount || 3,
+        maxVocabularyQuestions: settings.maxVocabularyQuestions || 20,
+        maxPluralQuestions: settings.maxPluralQuestions || 20,
+        maxArticlesQuestions: settings.maxArticlesQuestions || 30,
+        maxTranslationsQuestions: settings.maxTranslationsQuestions || 30,
+        maxVerbsQuestions: settings.maxVerbsQuestions || 30
       })
     }
   }, [settings])
@@ -25,7 +35,12 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
     const newSettings = {
       masteringCount: Math.max(1, Math.min(9, parseInt(localSettings.masteringCount) || 1)),
       maxReviewBatchSize: Math.max(10, Math.min(99, parseInt(localSettings.maxReviewBatchSize) || 50)),
-      maxReviewCount: Math.max(1, Math.min(9, parseInt(localSettings.maxReviewCount) || 3))
+      maxReviewCount: Math.max(1, Math.min(9, parseInt(localSettings.maxReviewCount) || 3)),
+      maxVocabularyQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVocabularyQuestions) || 20)),
+      maxPluralQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxPluralQuestions) || 20)),
+      maxArticlesQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxArticlesQuestions) || 30)),
+      maxTranslationsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxTranslationsQuestions) || 30)),
+      maxVerbsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVerbsQuestions) || 30))
     }
     
     onSave(newSettings)
@@ -111,6 +126,106 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                   onChange={(e) => handleInputChange('maxReviewBatchSize', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+              </div>
+
+              {/* Step-specific Settings */}
+              <div className="pt-4 border-t border-gray-200">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Step 2-6 Question Limits</h3>
+                
+                {/* Step 2: Vocabulary Questions */}
+                <div>
+                  <label htmlFor="maxVocabularyQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                    Step 2: New Vocabulary Questions
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Maximum questions for vocabulary practice (1-40, default: 20)
+                  </p>
+                  <input
+                    type="number"
+                    id="maxVocabularyQuestions"
+                    min="1"
+                    max="40"
+                    value={localSettings.maxVocabularyQuestions}
+                    onChange={(e) => handleInputChange('maxVocabularyQuestions', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Step 3: Plural Questions */}
+                <div className="mt-4">
+                  <label htmlFor="maxPluralQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                    Step 3: Plural Practice Questions
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Maximum questions for plural practice (1-40, default: 20)
+                  </p>
+                  <input
+                    type="number"
+                    id="maxPluralQuestions"
+                    min="1"
+                    max="40"
+                    value={localSettings.maxPluralQuestions}
+                    onChange={(e) => handleInputChange('maxPluralQuestions', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Step 4: Articles Questions */}
+                <div className="mt-4">
+                  <label htmlFor="maxArticlesQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                    Step 4: Articles in Context Questions
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Maximum questions for articles practice (1-40, default: 30)
+                  </p>
+                  <input
+                    type="number"
+                    id="maxArticlesQuestions"
+                    min="1"
+                    max="40"
+                    value={localSettings.maxArticlesQuestions}
+                    onChange={(e) => handleInputChange('maxArticlesQuestions', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Step 5: Translations Questions */}
+                <div className="mt-4">
+                  <label htmlFor="maxTranslationsQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                    Step 5: Case Translations Questions
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Maximum questions for translation practice (1-40, default: 30)
+                  </p>
+                  <input
+                    type="number"
+                    id="maxTranslationsQuestions"
+                    min="1"
+                    max="40"
+                    value={localSettings.maxTranslationsQuestions}
+                    onChange={(e) => handleInputChange('maxTranslationsQuestions', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Step 6: Verbs Questions */}
+                <div className="mt-4">
+                  <label htmlFor="maxVerbsQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                    Step 6: Verb Conjugation Questions
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Maximum questions for verb conjugation (1-40, default: 30)
+                  </p>
+                  <input
+                    type="number"
+                    id="maxVerbsQuestions"
+                    min="1"
+                    max="40"
+                    value={localSettings.maxVerbsQuestions}
+                    onChange={(e) => handleInputChange('maxVerbsQuestions', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
               </div>
 
               {/* Buttons */}

@@ -43,7 +43,8 @@ function App() {
     trackSessionLearning,
     getCurrentSessionStats,
     updateSettings,
-    getSettings
+    getSettings,
+    resetSessionStats
   } = useVocabularyState()
 
   const {
@@ -54,7 +55,7 @@ function App() {
     getSectionProgress,
     isStepComplete,
     getRemainingQuestions
-  } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats)
+  } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats)
 
   // PWA Install Prompt Handler
   useEffect(() => {

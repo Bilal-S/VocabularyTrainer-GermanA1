@@ -21,23 +21,23 @@ export const STEP_CONFIG = {
   },
   VOCABULARY: {
     name: 'New Vocabulary',
-    totalItems: 20
+    totalItems: 20 // Default, will be overridden by settings
   },
   PLURAL: {
     name: 'Plural Practice',
-    totalItems: 20
+    totalItems: 20 // Default, will be overridden by settings
   },
   ARTICLES: {
     name: 'Articles in Context',
-    totalItems: 30
+    totalItems: 30 // Default, will be overridden by settings
   },
   TRANSLATIONS: {
     name: 'Case Translations',
-    totalItems: 30
+    totalItems: 30 // Default, will be overridden by settings
   },
   VERBS: {
     name: 'Verb Conjugation',
-    totalItems: 30
+    totalItems: 30 // Default, will be overridden by settings
   },
   RECAP: {
     name: 'Daily Recap',
@@ -76,11 +76,38 @@ export const getStepInstructions = (stepKey) => {
 /**
  * Get step configuration for a given step number
  * @param {number} currentStep - Current step number
+ * @param {Object} settings - User settings containing question limits
  * @returns {Object} Step configuration
  */
-export const getStepConfig = (currentStep) => {
+export const getStepConfig = (currentStep, settings = {}) => {
   const stepKey = STEPS[currentStep]
-  return STEP_CONFIG[stepKey] || STEP_CONFIG.INTRO
+  const baseConfig = STEP_CONFIG[stepKey] || STEP_CONFIG.INTRO
+  
+  // Override totalItems for steps 2-6 with settings values
+  const configWithSettings = { ...baseConfig }
+  
+  switch (stepKey) {
+    case 'VOCABULARY':
+      configWithSettings.totalItems = settings.maxVocabularyQuestions || 20
+      break
+    case 'PLURAL':
+      configWithSettings.totalItems = settings.maxPluralQuestions || 20
+      break
+    case 'ARTICLES':
+      configWithSettings.totalItems = settings.maxArticlesQuestions || 30
+      break
+    case 'TRANSLATIONS':
+      configWithSettings.totalItems = settings.maxTranslationsQuestions || 30
+      break
+    case 'VERBS':
+      configWithSettings.totalItems = settings.maxVerbsQuestions || 30
+      break
+    default:
+      // Keep default totalItems for other steps
+      break
+  }
+  
+  return configWithSettings
 }
 
 /**

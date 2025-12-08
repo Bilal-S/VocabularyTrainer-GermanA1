@@ -378,7 +378,7 @@ export class VocabularyManager {
   }
 
   // Generate Step 4: Articles in Context (30 sentences: 10 each case)
-  generateArticlesBatch() {
+  generateArticlesBatch(batchSize = 30) {
     console.log('Generating articles batch with TRUE RANDOMIZATION')
     
     // CRITICAL FIX: Use ALL examples from ALL letters for true randomization
@@ -391,10 +391,14 @@ export class VocabularyManager {
       return []
     }
 
+    // Calculate items per case based on batch size (divide by 3 for equal distribution)
+    const itemsPerCase = Math.floor(batchSize / 3)
+    const remainingItems = batchSize - (itemsPerCase * 3)
+    
     this.currentBatch = [
-      ...nominative.slice(0, 10).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'nominative' })),
-      ...accusative.slice(0, 10).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'accusative' })),
-      ...dative.slice(0, 10).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'dative' }))
+      ...nominative.slice(0, itemsPerCase + (remainingItems > 0 ? remainingItems : 0)).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'nominative' })),
+      ...accusative.slice(0, itemsPerCase + (remainingItems > 1 ? 1 : 0)).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'accusative' })),
+      ...dative.slice(0, itemsPerCase + (remainingItems > 2 ? 1 : 0)).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'dative' }))
     ]
 
     this.currentBatchIndex = 0
@@ -410,7 +414,7 @@ export class VocabularyManager {
   }
 
   // Generate Step 5: Case Translations (30 sentences: 10 each case)
-  generateTranslationBatch() {
+  generateTranslationBatch(batchSize = 30) {
     console.log('Generating translation batch with TRUE RANDOMIZATION')
     
     // CRITICAL FIX: Use ALL translations from ALL letters for true randomization
@@ -421,7 +425,7 @@ export class VocabularyManager {
       return []
     }
 
-    this.currentBatch = translations.slice(0, 30).map(t => ({
+    this.currentBatch = translations.slice(0, batchSize).map(t => ({
       ...t,
       word: t.english, // Use English prompt as ID for translations
       answer: t.german, // Ensure answer property exists

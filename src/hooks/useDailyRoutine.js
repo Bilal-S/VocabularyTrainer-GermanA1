@@ -2,54 +2,9 @@ import { useState, useCallback } from 'react'
 import { VocabularyManager } from '../utils/vocabularyManager'
 import { generateMessageId } from '../utils/idGenerator'
 import { updateChecker } from '../utils/updateChecker'
+import { getStepConfig, getCurrentSection as getCurrentStepSection, STEPS, STEP_CONFIG } from '../services/stepService'
 
-const STEPS = {
-  0: 'INTRO',
-  1: 'REVIEW',
-  2: 'VOCABULARY',
-  3: 'PLURAL',
-  4: 'ARTICLES',
-  5: 'TRANSLATIONS',
-  6: 'VERBS',
-  7: 'RECAP'
-}
-
-const STEP_CONFIG = {
-  INTRO: {
-    name: 'Introduction',
-    totalItems: 0
-  },
-  REVIEW: {
-    name: 'Review Previous Mistakes',
-    totalItems: 10
-  },
-  VOCABULARY: {
-    name: 'New Vocabulary',
-    totalItems: 20
-  },
-  PLURAL: {
-    name: 'Plural Practice',
-    totalItems: 20
-  },
-  ARTICLES: {
-    name: 'Articles in Context',
-    totalItems: 30
-  },
-  TRANSLATIONS: {
-    name: 'Case Translations',
-    totalItems: 30
-  },
-  VERBS: {
-    name: 'Verb Conjugation',
-    totalItems: 30
-  },
-  RECAP: {
-    name: 'Daily Recap',
-    totalItems: 0
-  }
-}
-
-export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats) => {
+export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [batchProgress, setBatchProgress] = useState({
     completed: 0,
@@ -62,7 +17,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
   const [isBatchMode, setIsBatchMode] = useState(false)
 
   const getCurrentSection = useCallback(() => {
-    return STEPS[currentStep] || 'INTRO'
+    return getCurrentStepSection(currentStep) || 'INTRO'
   }, [currentStep])
 
   const getSectionProgress = useCallback(() => {
@@ -70,8 +25,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
       return { completed: 0, total: 1, percentage: 100 }
     }
     
-    const stepKey = STEPS[currentStep]
-    const config = STEP_CONFIG[stepKey]
+    const config = getStepConfig(currentStep, state.settings)
     
     // Use batchProgress.total if available (corrects count for variable-length batches like Review)
     const total = batchProgress.total > 0 ? batchProgress.total : config.totalItems
@@ -83,7 +37,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
         ? Math.round((batchProgress.completed / total) * 100)
         : 100
     }
-  }, [currentStep, batchProgress])
+  }, [currentStep, batchProgress, state.settings])
 
   const isStepComplete = useCallback(() => {
     // Intro and Recap steps are always considered complete
@@ -160,6 +114,9 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
   const startDailyRoutine = async () => {
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+    // CRITICAL FIX: Reset session stats when starting a new day
+    resetSessionStats()
+    
     // CRITICAL FIX: Reset batch answers when starting a new day
     setBatchAnswers({})
     
@@ -276,14 +233,13 @@ Type your answer below:`)
     const nextStep = fromStep + 1
     setCurrentStep(nextStep)
     
-    const stepKey = STEPS[nextStep]
-    const config = STEP_CONFIG[stepKey]
+    const config = getStepConfig(nextStep, state.settings)
     
     // Generate exercises for the specific step
     let batch = []
     let exercise = null
     
-    switch (stepKey) {
+    switch (STEPS[nextStep]) {
       case 'VOCABULARY':
         // Generate exclude list from mastered and review queue words (handle new structure)
         const masteredWords = Array.isArray(state.pools.mastered) 
@@ -307,7 +263,7 @@ Type your answer below:`)
         ]
         
         // Generate vocabulary batch and ensure state synchronization
-        batch = vocabManager.generateVocabularyBatch(excludeList)
+        batch = vocabManager.generateVocabularyBatch(excludeList, state.settings.maxVocabularyQuestions)
         
         // Validate that we have a proper batch
         if (!batch || batch.length === 0) {
@@ -327,7 +283,7 @@ Type your answer below:`)
         setBatchAnswers({})
         
         // Generate initial batch message
-        let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from the Goethe-Institut A1 list.
+        let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from Goethe-Institut A1 list.
 
 ***
 
@@ -338,10 +294,10 @@ Type your answer below:`)
 
 ---
 
-### **Step 2: New Vocabulary (20 Nouns)**
+### **Step 2: New Vocabulary (${config.totalItems} Nouns)**
 **[Step 2 | Batch 1 | Remaining: ${batch.length}]**
 
-Please translate the following **English nouns** into **German** (Article + Noun) singular form:
+Please translate to following **English nouns** into **German** (Article + Noun) singular form:
 *Example: 1. house -> das Haus*
 
 `
@@ -379,17 +335,17 @@ Please translate the following **English nouns** into **German** (Article + Noun
           ...pluralMastered
         ]
 
-        batch = vocabManager.generatePluralBatch(pluralExcludeList)
+        batch = vocabManager.generatePluralBatch(pluralExcludeList, state.settings.maxPluralQuestions)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let pluralMessage = `### **Step 3: Plural Practice (20 Nouns)**
+        let pluralMessage = `### **Step 3: Plural Practice (${config.totalItems} Nouns)**
 **[Step 3 | Batch 1 | Remaining: ${batch.length}]**
 
-Please provide the **plural forms** for the following German nouns:
+Please provide to **plural forms** for the following German nouns:
 *Example: 1. das Haus -> die Häuser*
 
 `
@@ -400,14 +356,14 @@ Please provide the **plural forms** for the following German nouns:
         addSystemMessage(pluralMessage)
         return
       case 'ARTICLES':
-        batch = vocabManager.generateArticlesBatch()
+        batch = vocabManager.generateArticlesBatch(state.settings.maxArticlesQuestions)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let articlesMessage = `### **Step 4: Articles in Context (30 Items)**
+        let articlesMessage = `### **Step 4: Articles in Context (${config.totalItems} Items)**
 **[Step 4 | Batch 1 | Remaining: ${batch.length}]**
 
 Please fill in the blanks with the **correct articles** (der, die, das, ein, eine):
@@ -420,17 +376,17 @@ Please fill in the blanks with the **correct articles** (der, die, das, ein, ein
         addSystemMessage(articlesMessage)
         return
       case 'TRANSLATIONS':
-        batch = vocabManager.generateTranslationBatch()
+        batch = vocabManager.generateTranslationBatch(state.settings.maxTranslationsQuestions)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let translationsMessage = `### **Step 5: Case Translations (30 Items)**
+        let translationsMessage = `### **Step 5: Case Translations (${config.totalItems} Items)**
 **[Step 5 | Batch 1 | Remaining: ${batch.length}]**
 
-Please translate the following **sentences from English to German**:
+Please translate to following **sentences from English to German**:
 
 `
         // Number the items sequentially starting from 1
@@ -440,7 +396,7 @@ Please translate the following **sentences from English to German**:
         addSystemMessage(translationsMessage)
         return
       case 'VERBS':
-        batch = vocabManager.generateVerbBatch()
+        batch = vocabManager.generateVerbBatch([], state.settings.maxVerbsQuestions)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
@@ -452,7 +408,7 @@ Please translate the following **sentences from English to German**:
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let verbsMessage = `### **Step 6: Verb Conjugation (10 Items)**
+        let verbsMessage = `### **Step 6: Verb Conjugation (${config.totalItems} Items)**
 **[Step 6 | Batch 1 | Remaining: ${batch.length}]**
 
 Please conjugate the following **verbs for the given subjects**:
@@ -478,7 +434,7 @@ Please conjugate the following **verbs for the given subjects**:
     setIsBatchMode(false)
     
     let message = `# ⏭️ Skipping to Step ${nextStep}: ${config.name}\n\n`
-    message += await getStepInstructions(stepKey)
+    message += await getStepInstructions(STEPS[nextStep])
     
     if (exercise) {
       message += `\n\n**Question:** ${exercise.question}\nType your answer below:`
@@ -739,10 +695,21 @@ Please conjugate the following **verbs for the given subjects**:
         const isCorrect = vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type, exercise)
         const prompt = getPrompt(exercise)
         
+        // Ensure word is defined for progress tracking
+        // For Articles (Step 4), word is the german sentence
+        // For Translations (Step 5), word is the english sentence
+        const wordToTrack = exercise.word || exercise.german || exercise.english || exercise.question
+        
+        if (!wordToTrack) {
+          console.warn('Missing word for progress tracking:', exercise)
+        }
+
         if (isCorrect) {
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** ✅\n`
           // Update progress for correct answers with form information
-          updateProgress(exercise.word, true, `${stepName}`, exercise.form || 'singular')
+          if (wordToTrack) {
+            updateProgress(wordToTrack, true, `${stepName}`, exercise.form || 'singular')
+          }
         } else {
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${prompt}" in German?`)
           const correctDisplay = Array.isArray(exercise.answer) 
@@ -751,7 +718,9 @@ Please conjugate the following **verbs for the given subjects**:
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${correctDisplay}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
           // Update progress for incorrect answers with form information
-          updateProgress(exercise.word, false, `${stepName}`, exercise.form || 'singular')
+          if (wordToTrack) {
+            updateProgress(wordToTrack, false, `${stepName}`, exercise.form || 'singular')
+          }
         }
       })
       

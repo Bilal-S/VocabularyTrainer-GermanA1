@@ -214,6 +214,32 @@ export class UpdateChecker {
     }, 500)
   }
 
+  async getDisplayedVersion() {
+    // PWA mode: use build-time version (no network requests to avoid cached data issues)
+    if (this.isPWA) {
+      return this.currentVersion
+    }
+    
+    // Browser mode: fetch from server for latest version
+    try {
+      const response = await fetch('/version.json', { 
+        cache: 'no-cache',
+        headers: { 'Cache-Control': 'no-cache' }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+      
+      const data = await response.json()
+      return data.version
+      
+    } catch (error) {
+      console.warn('Failed to fetch displayed version:', error)
+      return this.currentVersion // fallback to build version
+    }
+  }
+
   getUpdateInfo() {
     return {
       currentVersion: this.currentVersion,
