@@ -30,6 +30,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 
 ## Available Commands:
 - **"Today is a new day"** - Start your daily learning routine
+- **"progress summary"** - Display current learning progress
 - **"Next Step"** - Skip to the next exercise
 - **"clear all progress data"** - Reset all your progress
 
@@ -82,7 +83,7 @@ export const generatePreviousSessionSummary = (sessionStats) => {
 - **Nouns learned:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
-- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+- **Total items in review queue:** ${sessionStats.itemsRemainingInReview}
 
 ---`
 }
@@ -186,7 +187,7 @@ export const generateDailyRecap = (sessionStats) => {
 - **Nouns learned:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
-- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+- **Total items in review queue:** ${sessionStats.itemsRemainingInReview}
 
 ## Progress Overview:
 - **Total mastered words:** ${sessionStats.totalMastered}
@@ -211,7 +212,7 @@ export const generateProgressSummary = (progressSummary) => {
 - **Nouns learned:** ${progressSummary.nounsLearned}
 - **Verbs introduced:** ${progressSummary.verbsIntroduced}
 - **Items added to review queue:** ${progressSummary.itemsAddedToReview}
-- **Items remaining in review queue:** ${progressSummary.itemsRemainingInReview}
+- **Total items in review queue:** ${progressSummary.itemsRemainingInReview}
 
 ## Overall Progress Overview:
 - **Total mastered words:** ${progressSummary.totalMastered}

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import VocabularyManager from '../utils/vocabularyManager'
+import { VocabularyManager } from '../utils/vocabularyManager'
 import { generateMessageId } from '../utils/idGenerator'
 import { updateChecker } from '../utils/updateChecker'
 
@@ -223,7 +223,7 @@ Type **"Today is a new day"** to begin your German learning journey!${updateMess
 - **Nouns learned:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
-- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+- **Items in review queue:** ${sessionStats.itemsRemainingInReview}
 
 ---
 
@@ -294,10 +294,16 @@ Type your answer below:`)
               ...(state.pools.mastered.words || [])
             ]
         
+        // Add words with mastered singular form to exclude list
+        const singularMastered = Object.keys(state.progress).filter(word => 
+            state.progress[word].singular?.correctCount >= state.settings.masteringCount
+        )
+
         const excludeList = [
           ...masteredWords,
           ...state.pools.reviewQueue.map(item => typeof item === 'string' ? item : item.word),
-          ...state.pools.unselected // Also exclude words already used in this session
+          ...state.pools.unselected, // Also exclude words already used in this session
+          ...singularMastered
         ]
         
         // Generate vocabulary batch and ensure state synchronization
@@ -352,7 +358,28 @@ Please translate the following **English nouns** into **German** (Article + Noun
         })
         return
       case 'PLURAL':
-        batch = vocabManager.generatePluralBatch(state.pools.unselected)
+        // Build exclude list for Plural step
+        const masteredForPlural = Array.isArray(state.pools.mastered) 
+          ? state.pools.mastered 
+          : [
+              ...(state.pools.mastered.nouns || []),
+              ...(state.pools.mastered.verbs || []),
+              ...(state.pools.mastered.words || [])
+            ]
+
+        // Add words with mastered plural form
+        const pluralMastered = Object.keys(state.progress).filter(word => 
+            state.progress[word].plural?.correctCount >= state.settings.masteringCount
+        )
+
+        const pluralExcludeList = [
+          ...masteredForPlural,
+          ...state.pools.reviewQueue.map(item => typeof item === 'string' ? item : item.word),
+          ...state.pools.unselected,
+          ...pluralMastered
+        ]
+
+        batch = vocabManager.generatePluralBatch(pluralExcludeList)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
@@ -819,7 +846,7 @@ Please conjugate the following **verbs for the given subjects**:
 - **Nouns learned:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
-- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+- **Items in review queue:** ${sessionStats.itemsRemainingInReview}
 
 ## Progress Overview:
 - **Total mastered words:** ${sessionStats.totalMastered}
@@ -846,7 +873,7 @@ Type **"Today is a new day"** tomorrow to continue your learning journey!`)
 - **Nouns learned:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
-- **Items remaining in review queue:** ${sessionStats.itemsRemainingInReview}
+- **Items in review queue:** ${sessionStats.itemsRemainingInReview}
 
 ## Overall Progress Overview:
 - **Total mastered words:** ${sessionStats.totalMastered}

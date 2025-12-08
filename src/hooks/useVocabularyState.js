@@ -97,16 +97,30 @@ export const useVocabularyState = () => {
       const savedState = localStorage.getItem(STORAGE_KEY)
       if (savedState) {
         const parsedState = JSON.parse(savedState)
-        // Initialize current session stats when loading
-        const stateWithSession = {
-          ...parsedState,
-          currentSessionStats: {
+        
+        // Check if same day to preserve session stats
+        const today = new Date().toISOString().split('T')[0]
+        const isSameDay = parsedState.lastSessionDate === today
+        
+        let currentSessionStats
+        
+        if (isSameDay && parsedState.currentSessionStats) {
+          // Preserve stats if reloading on the same day
+          currentSessionStats = parsedState.currentSessionStats
+        } else {
+          // New day or no stats: Reset
+          currentSessionStats = {
             nounsLearnedToday: 0,
             verbsIntroducedToday: 0,
             mistakesMadeToday: 0,
             itemsAddedToReviewToday: 0,
             initialReviewQueueSize: parsedState.pools.reviewQueue.length
           }
+        }
+
+        const stateWithSession = {
+          ...parsedState,
+          currentSessionStats
         }
         setState(stateWithSession)
         return stateWithSession
@@ -289,16 +303,53 @@ export const useVocabularyState = () => {
         return singularMastered
       }
       
-      // Move to mastered if word is mastered
-      if (isWordMastered(newState.progress[word])) {
-        // Remove from review queue if present
+      // Check if word should be removed from review queue (specific form mastered)
+      // This is distinct from full mastery (all forms mastered)
+      let shouldRemoveFromReview = false
+      if (isInReviewQueue) {
+        // Only consider the form that was being tested/failed
+        if (form === 'singular' && newState.progress[word].singular.correctCount >= masteringThreshold) {
+          shouldRemoveFromReview = true
+        } else if (form === 'plural' && newState.progress[word].plural.correctCount >= masteringThreshold) {
+          shouldRemoveFromReview = true
+        } else if (section === 'VERBS' && newState.progress[word].singular.correctCount >= masteringThreshold) {
+          // Verbs currently use singular structure for tracking
+          shouldRemoveFromReview = true
+        }
+      }
+
+      // Check if word is FULLY mastered (all required forms meet criteria)
+      // For Nouns (VOCABULARY/PLURAL sections), this requires BOTH Singular and Plural
+      let isFullyMastered = false
+      if (section === 'VOCABULARY' || section === 'PLURAL') {
+        const singularMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
+        const pluralMastered = newState.progress[word].plural.correctCount >= newState.settings.masteringCount
+        isFullyMastered = singularMastered && pluralMastered
+      } else {
+        // For verbs/others, basic check
+        isFullyMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
+      }
+
+      // 1. Remove from Review Queue if specific form is mastered
+      if (shouldRemoveFromReview) {
         const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
           typeof item === 'string' ? item === word : item.word === word
         )
         if (reviewIndex > -1) {
           newState.pools.reviewQueue.splice(reviewIndex, 1)
         }
-        
+      }
+
+      // 2. Add to Mastered Pool ONLY if fully mastered
+      if (isFullyMastered) {
+        // Ensure removed from review queue (redundant safety)
+        const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
+          typeof item === 'string' ? item === word : item.word === word
+        )
+        if (reviewIndex > -1) {
+          newState.pools.reviewQueue.splice(reviewIndex, 1)
+        }
+
         // Remove from unselected if present
         const unselectedIndex = newState.pools.unselected.indexOf(word)
         if (unselectedIndex > -1) {

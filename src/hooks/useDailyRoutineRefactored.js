@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import VocabularyManager from '../utils/vocabularyManager'
+import { VocabularyManager } from '../utils/vocabularyManager'
 import { 
   getCurrentSection, 
   getNextStep, 

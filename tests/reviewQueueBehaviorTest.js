@@ -129,38 +129,36 @@ export const testReviewQueueBehavior = () => {
         
         console.log(`   📊 Progress for "${word}" (${form}): ${newState.progress[word][form].correctCount}/${masteringThreshold} required`)
         
-        // Check if word is mastered based on section and form (matching the corrected implementation)
-        const isWordMastered = (wordData) => {
-          if (!wordData || wordData.singular === undefined || wordData.plural === undefined) {
-            return false
+        // Check if word should be removed from review queue (specific form mastered)
+        // This is distinct from full mastery (all forms mastered)
+        let shouldRemoveFromReview = false
+        if (isInReviewQueue) {
+          // Only consider the form that was being tested/failed
+          if (form === 'singular' && newState.progress[word].singular.correctCount >= masteringThreshold) {
+            shouldRemoveFromReview = true
+          } else if (form === 'plural' && newState.progress[word].plural.correctCount >= masteringThreshold) {
+            shouldRemoveFromReview = true
+          } else if (section === 'VERBS' && newState.progress[word].singular.correctCount >= masteringThreshold) {
+            // Verbs currently use singular structure for tracking
+            shouldRemoveFromReview = true
           }
-          
-          const singularMastered = wordData.singular.correctCount >= masteringThreshold
-          const pluralMastered = wordData.plural.correctCount >= masteringThreshold
-          
-          // For review queue items, only form that caused failure needs to reach maxReviewCount
-          if (isInReviewQueue) {
-            if (form === 'singular') {
-              return wordData.singular.correctCount >= masteringThreshold
-            } else if (form === 'plural') {
-              return wordData.plural.correctCount >= masteringThreshold
-            }
-          }
-          
-          // For new items (not in review queue), require both forms to be mastered
-          if (section === 'VOCABULARY' || section === 'PLURAL') {
-            return singularMastered && pluralMastered
-          }
-          
-          // For verbs and other word types, only require tested form
-          return singularMastered
         }
-        
-        // Move to mastered if word is mastered
-        if (isWordMastered(newState.progress[word])) {
-          console.log(`   🎯 Item "${word}" is fully mastered, moving from review to mastered pool`)
-          
-          // Remove from review queue if present
+
+        // Check if word is FULLY mastered (all required forms meet criteria)
+        // For Nouns (VOCABULARY/PLURAL sections), this requires BOTH Singular and Plural
+        let isFullyMastered = false
+        if (section === 'VOCABULARY' || section === 'PLURAL') {
+          const singularMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
+          const pluralMastered = newState.progress[word].plural.correctCount >= newState.settings.masteringCount
+          isFullyMastered = singularMastered && pluralMastered
+        } else {
+          // For verbs/others, basic check
+          isFullyMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
+        }
+
+        // 1. Remove from Review Queue if specific form is mastered
+        if (shouldRemoveFromReview) {
+          console.log(`   🎯 Item "${word}" form (${form}) mastered in review, removing from queue`)
           const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
             typeof item === 'string' ? item === word : item.word === word
           )
@@ -168,7 +166,20 @@ export const testReviewQueueBehavior = () => {
             newState.pools.reviewQueue.splice(reviewIndex, 1)
             console.log(`   ✅ Removed "${word}" from review queue`)
           }
+        }
+
+        // 2. Add to Mastered Pool ONLY if fully mastered
+        if (isFullyMastered) {
+          console.log(`   🎯 Item "${word}" is FULLY mastered (all forms), adding to mastered pool`)
           
+          // Ensure removed from review queue (redundant safety)
+          const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
+            typeof item === 'string' ? item === word : item.word === word
+          )
+          if (reviewIndex > -1) {
+            newState.pools.reviewQueue.splice(reviewIndex, 1)
+          }
+
           // Remove from unselected if present
           const unselectedIndex = newState.pools.unselected.indexOf(word)
           if (unselectedIndex > -1) {
@@ -260,12 +271,16 @@ export const testReviewQueueBehavior = () => {
     console.log('   Mastered nouns count:', currentState.pools.mastered.nouns.length)
     console.log('   Progress for "der Tisch":', currentState.progress['der Tisch'])
     
-    // Should move to mastered because singular form (the form that caused failure) reached maxReviewCount
-    if (currentState.pools.reviewQueue.length === 2 && currentState.pools.mastered.nouns.includes('der Tisch')) {
-      console.log('   ✅ PASS: Review item moved to mastered after failing form reached threshold')
+    // Should move out of review queue because failing form reached threshold
+    // BUT should NOT move to mastered because plural form is not yet mastered
+    const isInReview = currentState.pools.reviewQueue.some(item => (item.word || item) === 'der Tisch')
+    const isInMastered = currentState.pools.mastered.nouns.includes('der Tisch')
+    
+    if (!isInReview && !isInMastered) {
+      console.log('   ✅ PASS: Review item removed from queue but NOT added to mastered (plural needed)')
       testResults.test3 = true
     } else {
-      console.log('   ❌ FAIL: Review item did not move to mastered after failing form reached threshold')
+      console.log(`   ❌ FAIL: Incorrect state. In Review: ${isInReview}, In Mastered: ${isInMastered}`)
     }
 
     console.log('\n📋 Test 4: New item should NOT move to mastered after 1 correct singular answer (plural not tested)')
@@ -304,30 +319,38 @@ export const testReviewQueueBehavior = () => {
     updateProgress('die Katze', true, 'VOCABULARY', 'singular') // 1st correct
     updateProgress('die Katze', true, 'VOCABULARY', 'singular') // 2nd correct  
     updateProgress('die Katze', true, 'VOCABULARY', 'singular') // 3rd correct (singular mastered)
-    updateProgress('die Katze', true, 'PLURAL', 'plural')       // 1st correct (plural)
     
-    console.log('   Review queue size after dual-form test:', currentState.pools.reviewQueue.length)
+    console.log('   Review queue size after singular mastery:', currentState.pools.reviewQueue.length)
     console.log('   Progress for "die Katze":', currentState.progress['die Katze'])
     console.log('   Is "die Katze" in mastered?', currentState.pools.mastered.nouns.includes('die Katze'))
     
-    // 'die Katze' should still be in review because plural form is not yet mastered (needs 3 correct)
-    if (currentState.pools.reviewQueue.length === 2 && !currentState.pools.mastered.nouns.includes('die Katze')) {
-      console.log('   ✅ PASS: Dual-form tracking working - item stays in review until both forms are mastered')
+    // 'die Katze' should be removed from review (singular mastered) but NOT in mastered (plural missing)
+    let catInReview = currentState.pools.reviewQueue.some(item => (item.word || item) === 'die Katze')
+    let catInMastered = currentState.pools.mastered.nouns.includes('die Katze')
+
+    if (!catInReview && !catInMastered) {
+      console.log('   ✅ PASS: Dual-form tracking working - item left review but waiting for plural mastery')
       testResults.test5 = true
     } else {
-      console.log('   ❌ FAIL: Dual-form tracking not working correctly')
+      console.log(`   ❌ FAIL: Dual-form tracking error. In Review: ${catInReview}, In Mastered: ${catInMastered}`)
+      testResults.test5 = false
     }
 
-    // Complete the dual-form test by mastering plural form
-    updateProgress('die Katze', true, 'PLURAL', 'plural')       // 2nd correct (plural)
-    updateProgress('die Katze', true, 'PLURAL', 'plural')       // 3rd correct (plural mastered)
+    // Now test plural form to complete mastery
+    updateProgress('die Katze', true, 'PLURAL', 'plural')       // 1st correct (plural mastered)
     
     console.log('   Review queue size after completing dual-form:', currentState.pools.reviewQueue.length)
     console.log('   Is "die Katze" now in mastered?', currentState.pools.mastered.nouns.includes('die Katze'))
     
-    if (currentState.pools.reviewQueue.length === 1 && currentState.pools.mastered.nouns.includes('die Katze')) {
+    catInReview = currentState.pools.reviewQueue.some(item => (item.word || item) === 'die Katze')
+    catInMastered = currentState.pools.mastered.nouns.includes('die Katze')
+
+    if (!catInReview && catInMastered) {
       console.log('   ✅ PASS: Item moved to mastered after both forms completed')
-      testResults.test5 = true
+      testResults.test5 = testResults.test5 && true // Keep previous result
+    } else {
+      console.log(`   ❌ FAIL: Final mastery check failed. In Review: ${catInReview}, In Mastered: ${catInMastered}`)
+      testResults.test5 = false
     }
 
   } catch (error) {

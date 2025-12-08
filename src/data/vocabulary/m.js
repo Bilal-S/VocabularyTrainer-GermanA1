@@ -280,7 +280,7 @@ export const letterM = {
       },
       {
         english: 'I want to rent the apartment.',
-        german: 'Ich möchte die Wohnung mieten.',
+        german: ['Ich möchte die Wohnung mieten.','Ich will das Apartment mieten','Ich möchte das Apartment mieten','Ich will die Wohnung mieten.'],
         type: 'translation',
         caseType: 'accusative'
       },

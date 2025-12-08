@@ -69,6 +69,7 @@ export class ValidationService {
   
     switch (type) {
       case 'noun':
+      case 'vocabulary':
       case 'verb':
       case 'plural':
       case 'article':
@@ -169,21 +170,30 @@ export class ValidationService {
       const userParts = normalizedUser.split(' ')
       const correctParts = correct.split(' ')
   
-      if (userParts.length === 2 && correctParts.length === 2) {
-        const [userSubject, userVerb] = userParts
-        const [correctSubject, correctVerb] = correctParts
-  
-        // Use clean subject comparison if available
-        let cleanCorrectSubject = correctSubject
-        if (exercise && exercise.cleanSubject) {
-          cleanCorrectSubject = exercise.cleanSubject
-        }
-  
-        const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase()
-        const verbMatch = userVerb === correctVerb
-  
-        if (subjectMatch && verbMatch) return true
+      // Check that the number of words matches exactly first ("match as a whole")
+      if (userParts.length !== correctParts.length) {
+        continue
       }
+
+      // Check Subject (first word) - case insensitive
+      const userSubject = userParts[0]
+      const correctSubject = correctParts[0]
+      
+      // Use clean subject comparison if available
+      let cleanCorrectSubject = correctSubject
+      if (exercise && exercise.cleanSubject) {
+        cleanCorrectSubject = exercise.cleanSubject
+      }
+
+      const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase()
+
+      // Check Verb Phrase (remaining words) - case sensitive
+      const userVerbPhrase = userParts.slice(1).join(' ')
+      const correctVerbPhrase = correctParts.slice(1).join(' ')
+      
+      const verbMatch = userVerbPhrase === correctVerbPhrase
+
+      if (subjectMatch && verbMatch) return true
     }
   
     return false

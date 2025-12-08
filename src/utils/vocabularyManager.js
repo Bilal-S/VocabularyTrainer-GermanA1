@@ -85,6 +85,12 @@ export class VocabularyManager {
       
       const letterData = this.findWordInLetters(itemWord, allLetters)
       
+      // If noun/verb lookup failed, try finding an example if it's a sentence
+      if (!letterData && itemWord && itemWord.includes(' ')) {
+        // This is likely an Article or Translation sentence
+        // We handle this inside the switch cases below now using findExample
+      }
+      
       if (letterData) {
         // CRITICAL FIX: Generate section-aware review questions based on original mistake
         switch (section) {
@@ -142,40 +148,6 @@ export class VocabularyManager {
             }
             break
             
-          case 'ARTICLES':
-            // Generate article context question using existing examples
-            const articleExamples = getExamplesByTypeAndLetters('articles', getRandomLetters(2), 1)
-            if (articleExamples && articleExamples.length > 0) {
-              const example = articleExamples[0]
-              return {
-                type: 'article',
-                question: `Fill in the blank(s): ${example.german.replace('___', '_____')}`,
-                answer: example.answer || example.german.match(/___\s*(\w+)/)?.[1] || example.answer,
-              german: example.german,
-              english: example.english,
-              caseType: example.caseType || example.case || 'nominative',
-              originSection: section
-            }
-          }
-          break
-            
-          case 'TRANSLATIONS':
-            // Generate translation question using existing examples
-            const translationExamples = getExamplesByTypeAndLetters('translations', getRandomLetters(2), 1)
-            if (translationExamples && translationExamples.length > 0) {
-              const example = translationExamples[0]
-              return {
-                type: 'translation',
-                question: `Translate to German: "${example.english}"`,
-                answer: example.german,
-                german: example.german,
-                english: example.english,
-                caseType: example.caseType || example.case || 'nominative',
-                originSection: section
-              }
-            }
-            break
-            
           case 'VOCABULARY':
           default:
             // Default: vocabulary translation question
@@ -198,6 +170,61 @@ export class VocabularyManager {
                 answer: letterData.german,
                 word: letterData.german,
                 english: letterData.english,
+                originSection: section
+              }
+            }
+            break
+        }
+      } else {
+        // Handle non-letter data (Articles, Translations)
+        switch (section) {
+          case 'ARTICLES':
+            // Try to find the specific failed example using the stored sentence
+            let articleExample = null
+            if (itemWord && itemWord.includes(' ')) {
+              articleExample = this.findExample(itemWord)
+            }
+            
+            // Fallback to random if not found (or if itemWord was missing)
+            if (!articleExample) {
+              const randomExamples = getExamplesByTypeAndLetters('articles', getRandomLetters(2), 1)
+              articleExample = randomExamples[0]
+            }
+
+            if (articleExample) {
+              return {
+                type: 'article',
+                question: `Fill in the blank(s): ${articleExample.german.replace('___', '_____')}`,
+                answer: articleExample.answer || articleExample.german.match(/___\s*(\w+)/)?.[1] || articleExample.answer,
+                german: articleExample.german,
+                english: articleExample.english,
+                caseType: articleExample.caseType || articleExample.case || 'nominative',
+                originSection: section
+              }
+            }
+            break
+            
+          case 'TRANSLATIONS':
+            // Try to find the specific failed example using the stored sentence
+            let transExample = null
+            if (itemWord && itemWord.includes(' ')) {
+              transExample = this.findExample(itemWord)
+            }
+
+            // Fallback to random if not found
+            if (!transExample) {
+              const randomExamples = getExamplesByTypeAndLetters('translations', getRandomLetters(2), 1)
+              transExample = randomExamples[0]
+            }
+
+            if (transExample) {
+              return {
+                type: 'translation',
+                question: `Translate to German: "${transExample.english}"`,
+                answer: transExample.german,
+                german: transExample.german,
+                english: transExample.english,
+                caseType: transExample.caseType || transExample.case || 'nominative',
                 originSection: section
               }
             }
@@ -365,9 +392,9 @@ export class VocabularyManager {
     }
 
     this.currentBatch = [
-      ...nominative.slice(0, 10).map(s => ({ ...s, type: 'article', caseType: 'nominative' })),
-      ...accusative.slice(0, 10).map(s => ({ ...s, type: 'article', caseType: 'accusative' })),
-      ...dative.slice(0, 10).map(s => ({ ...s, type: 'article', caseType: 'dative' }))
+      ...nominative.slice(0, 10).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'nominative' })),
+      ...accusative.slice(0, 10).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'accusative' })),
+      ...dative.slice(0, 10).map(s => ({ ...s, word: s.german, type: 'article', caseType: 'dative' }))
     ]
 
     this.currentBatchIndex = 0
@@ -396,6 +423,7 @@ export class VocabularyManager {
 
     this.currentBatch = translations.slice(0, 30).map(t => ({
       ...t,
+      word: t.english, // Use English prompt as ID for translations
       answer: t.german, // Ensure answer property exists
       type: 'translation'
     }))
@@ -495,6 +523,27 @@ export class VocabularyManager {
     return null
   }
 
+  // Find example by sentence (german or english)
+  findExample(sentence) {
+    const letters = getAvailableLetters()
+    for (const letter of letters) {
+      const letterData = this.getLetterData(letter)
+      if (letterData && letterData.examples) {
+        // Search in all example types
+        for (const type of Object.keys(letterData.examples)) {
+          const examples = letterData.examples[type] || []
+          const found = examples.find(ex => 
+            ex.german === sentence || ex.english === sentence
+          )
+          if (found) {
+            return { ...found, type: 'example', exampleType: type }
+          }
+        }
+      }
+    }
+    return null
+  }
+
   addToExcludeList(words) {
     this.excludeList = [...new Set([...this.excludeList, ...words])]
   }
@@ -557,6 +606,7 @@ export class VocabularyManager {
   
     switch (type) {
       case 'noun':
+      case 'vocabulary':
       case 'verb':
       case 'plural':
       case 'article':
@@ -650,23 +700,37 @@ export class VocabularyManager {
       const userParts = normalizedUser.split(' ');
       const correctParts = normalizedCorrect.split(' ');
   
-      if (userParts.length === 2 && correctParts.length === 2) {
-        const [userSubject, userVerb] = userParts;
-        const [correctSubject, correctVerb] = correctParts;
-  
-        // For conjugation exercises, use clean subject comparison if available
-        // Handle both new format (with cleanSubject) and old format (without)
-        let cleanCorrectSubject = correctSubject;
-        if (exercise && exercise.cleanSubject) {
-          cleanCorrectSubject = exercise.cleanSubject;
-        }
-  
-        // Check both subject and verb match (case-sensitive for verb, case-insensitive for subject)
-        const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase();
-        const verbMatch = userVerb === correctVerb;
-  
-        if (subjectMatch && verbMatch) return true;
+      // CRITICAL FIX: Support multi-word verbs (separable verbs, etc.)
+      // Check that the number of words matches exactly first ("match as a whole")
+      if (userParts.length !== correctParts.length) {
+        continue;
       }
+
+      // Check Subject (first word) - case insensitive
+      const userSubject = userParts[0];
+      const correctSubject = correctParts[0];
+      
+      // Use clean subject comparison if available
+      let cleanCorrectSubject = correctSubject;
+      if (exercise && exercise.cleanSubject) {
+        // Only use clean subject if it matches the first word of correct answer (sanity check)
+        // or just trust it. For standard conjugations, correctParts[0] IS the clean subject.
+        cleanCorrectSubject = exercise.cleanSubject;
+      }
+
+      // If correctSubject from string doesn't match cleanSubject, it means answer format might be different
+      // But assuming standard format "subject verb...", correctParts[0] is the subject.
+      
+      const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase();
+
+      // Check Verb Phrase (remaining words) - case sensitive
+      // We join the remaining parts to compare the full verb phrase
+      const userVerbPhrase = userParts.slice(1).join(' ');
+      const correctVerbPhrase = correctParts.slice(1).join(' ');
+      
+      const verbMatch = userVerbPhrase === correctVerbPhrase;
+
+      if (subjectMatch && verbMatch) return true;
     }
   
     return false;
@@ -737,5 +801,3 @@ export class VocabularyManager {
     return matrix[str2.length][str1.length]
   }
 }
-
-export default VocabularyManager
