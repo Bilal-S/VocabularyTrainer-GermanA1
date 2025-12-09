@@ -15,6 +15,7 @@ export const letterP = {
     {"postal code": ["Postleitzahl", "Postleitzahlen", "die", "die", "f"]},
     {"internship": ["Praktikum", "Praktika", "das", "die", "n"]},
     {"doctor\'s office": ["Praxis", "Praxen", "die", "die", "f"]},
+    {"doctor\'s office": ["Arztpraxis", "Arztpraxen", "die", "die", "f"]},
     {"price": ["Preis", "Preise", "der", "die", "m"]},
     {"problem": ["Problem", "Probleme", "das", "die", "n"]},
     {"prospectus": ["Prospekt", "Prospekte", "der", "die", "m"]},

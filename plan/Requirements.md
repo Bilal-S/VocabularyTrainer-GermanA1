@@ -120,7 +120,7 @@ Once an item is in the mastered pool it should not be used in any of the questio
 #### **Step 7: Daily Recap**
 
 *   Summary in English:
-    *   Nouns learned.
+    *   Nouns introduced.
     *   Verbs introduced.
     *   Items added to review queue.
     *   Items remaining in review queue.

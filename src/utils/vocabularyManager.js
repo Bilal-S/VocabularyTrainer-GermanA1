@@ -1,15 +1,14 @@
 import { 
   getRandomLetters, 
-  getNounsFromLetters, 
-  getVerbsFromLetters, 
-  getExamplesByTypeAndLetters,
   getAllNounsFromAllLetters,
   getAllVerbsFromAllLetters,
   getAllExamplesFromAllLetters,
-  initializeVocabularyPools,
   getVocabularyByLetter,
-  getAvailableLetters
+  getAvailableLetters,
+  getExamplesByTypeAndLetters
 } from '../data/vocabulary/index.js'
+import { validationService } from '../services/answerProcessors/validationService.js'
+import { generateVocabularyBatch } from '../services/exerciseGenerators/vocabularyGenerator.js'
 
 export class VocabularyManager {
   constructor() {
@@ -54,47 +53,6 @@ export class VocabularyManager {
   getAvailableExercisesForStep(exercises, state, stepType) {
     // Filter out exercises that are already mastered
     return exercises.filter(exercise => !this.isExerciseMastered(exercise.german || exercise.english, state))
-  }
-
-  // CRITICAL FIX: Add umlaut substitution helper
-  // the sss is for ß replacement as convenient shorthand
-  normalizeUmlauts(text) {
-    return text
-      .replace(/ue/g, 'ü')
-      .replace(/oe/g, 'ö')
-      .replace(/ae/g, 'ä')
-      .replace(/Ue/g, 'Ü')
-      .replace(/Oe/g, 'Ö')
-      .replace(/Ae/g, 'Ä')
-      .replace(/sss/g, 'ß')
-  }
-
-  // Helper to find synonyms based on English translation
-  getSynonyms(englishWord) {
-    if (!englishWord) return []
-    // CRITICAL FIX: Use getAllNounsFromAllLetters to find potential synonyms
-    const allNouns = getAllNounsFromAllLetters()
-    return allNouns.filter(n => n.english.toLowerCase() === englishWord.toLowerCase())
-  }
-
-  // Helper to check if two German words are synonyms (same English meaning)
-  areGermanWordsSynonyms(germanWord1, germanWord2, englishWord) {
-    if (!englishWord) return false;
-    
-    // Get all nouns with the same English word
-    const synonyms = this.getSynonyms(englishWord);
-    
-    // Check if both words are in the synonyms list
-    const normalizedWord1 = this.normalizeUmlauts(germanWord1);
-    const normalizedWord2 = this.normalizeUmlauts(germanWord2);
-    
-    const foundWords = synonyms.filter(syn => {
-      const normalizedSyn = this.normalizeUmlauts(syn.german);
-      return normalizedSyn === normalizedWord1 || normalizedSyn === normalizedWord2;
-    });
-    
-    // If both words are found in the synonyms list, they are synonyms
-    return foundWords.length >= 2;
   }
 
   // Generate Step 1: Review Previous Mistakes
@@ -280,78 +238,22 @@ export class VocabularyManager {
   // Generate Step 2: New Vocabulary (20 nouns)
   generateVocabularyBatch(exclude = [], batchSize = 20, state = null) {
     const combinedExclude = [...exclude, ...this.excludeList]
-    console.log('Generating vocabulary batch with TRUE RANDOMIZATION:', { 
-      exclude: exclude.slice(0, 5), 
-      excludeListSize: this.excludeList.length,
-      totalCombinedExclude: combinedExclude.length,
-      batchSize 
-    })
     
-    // CRITICAL FIX: Filter out nouns with mastered singular forms if state is provided
-    let availableNouns
+    // Check if we need to filter by mastery
+    let availableNouns = null
     if (state) {
       availableNouns = this.getAvailableNounsForStep(combinedExclude, state, 'VOCABULARY')
-      console.log('After filtering mastered singular forms:', {
-        originalCount: getAllNounsFromAllLetters(combinedExclude).length,
-        filteredCount: availableNouns.length,
-        batchSize
-      })
-    } else {
-      availableNouns = getAllNounsFromAllLetters(combinedExclude)
+      console.log('Using state-filtered nouns for vocabulary batch')
     }
     
-    if (!availableNouns || availableNouns.length === 0) {
-      console.warn('No nouns available for vocabulary batch (all may be mastered)')
-      return []
-    }
-
-    // Take the requested batch size from the filtered array
-    const selectedNouns = availableNouns.slice(0, batchSize)
-
-    // CRITICAL FIX: Add debugging to see letter distribution
-    const letterDistribution = {}
-    selectedNouns.forEach(noun => {
-      // Use the full german word (including article) for letter distribution
-      const germanWord = noun.german || noun.word || ''
-      const firstLetter = germanWord.charAt(0).toLowerCase()
-      letterDistribution[firstLetter] = (letterDistribution[firstLetter] || 0) + 1
-    })
-
-    console.log('DEBUG: Letter distribution in selected nouns:', letterDistribution)
-
-    // Ensure we have proper noun structure
-    const validNouns = selectedNouns.filter(noun => 
-      noun && 
-      noun.german && 
-      noun.english && 
-      noun.article
-    )
-
-    if (validNouns.length === 0) {
-      console.error('No valid nouns found in generated batch')
-      return []
-    }
-
-    this.currentBatch = validNouns.map(noun => ({
-      type: 'vocabulary',
-      form: 'singular', // Track that this is singular form practice
-      question: `Provide German translation for "${noun.english}" (include article)`,
-      answer: noun.german,
-      word: noun.german,
-      english: noun.english,
-      gender: noun.gender,
-      article: noun.article,
-      plural: noun.plural
-    }))
+    // Delegate to the vocabulary generator service
+    // If availableNouns is null, the service will fetch from all letters
+    this.currentBatch = generateVocabularyBatch(combinedExclude, batchSize, availableNouns)
 
     this.currentBatchIndex = 0
-    this.addToExcludeList(validNouns.map(n => n.german))
-    
-    console.log('Generated vocabulary batch with TRUE RANDOMIZATION:', {
-      totalAvailable: availableNouns.length,
-      batchSize: this.currentBatch.length,
-      firstItem: this.currentBatch[0]
-    })
+    if (this.currentBatch.length > 0) {
+      this.addToExcludeList(this.currentBatch.map(item => item.word))
+    }
     
     return this.currentBatch
   }
@@ -658,221 +560,7 @@ export class VocabularyManager {
     this.currentBatchIndex = 0
   }
 
-  // CRITICAL FIX: Implement case-sensitive validation for German answers
   validateAnswer(userAnswer, correctAnswer, type, exercise = null) {
-    if (userAnswer === undefined || userAnswer === null || correctAnswer === undefined || correctAnswer === null) {
-      console.warn('validateAnswer called with missing arguments', { userAnswer, correctAnswer, type });
-      return false;
-    }
-  
-    // CRITICAL FIX: Normalize umlauts for ALL input to handle ue -> ü etc.
-    const normalizedUser = this.normalizeUmlauts(String(userAnswer).trim());
-  
-    // Normalize correct answer(s) as well if needed (though database usually has ü)
-    // But keeping it consistent in case DB has alternative spellings
-    const normalizeCorrect = (val) =>
-      Array.isArray(val)
-        ? val.map((v) => this.normalizeUmlauts(String(v).trim()))
-        : this.normalizeUmlauts(String(val).trim());
-  
-    const normalizedCorrect = normalizeCorrect(correctAnswer);
-  
-    console.log('Validating answer:', { userAnswer: normalizedUser, correctAnswer: normalizedCorrect, type });
-  
-    switch (type) {
-      case 'noun':
-      case 'vocabulary':
-      case 'verb':
-      case 'plural':
-      case 'article':
-        // Case-sensitive comparison for German words
-        if (Array.isArray(normalizedCorrect)) {
-          return normalizedCorrect.some((ans) => this.caseSensitiveMatch(normalizedUser, ans));
-        }
-  
-        // Check exact match first
-        if (this.caseSensitiveMatch(normalizedUser, normalizedCorrect)) return true;
-  
-        // Check synonyms for nouns - enhanced logic to handle multiple German forms of same English word
-        if (type === 'noun' && exercise && exercise.english) {
-          // Get all nouns with the same English word (including synonyms)
-          const synonyms = this.getSynonyms(exercise.english);
-          
-          // Check if user's answer matches any of the synonyms
-          for (const syn of synonyms) {
-            const normalizedSyn = this.normalizeUmlauts(syn.german);
-            if (this.caseSensitiveMatch(normalizedUser, normalizedSyn)) return true;
-          }
-          
-          // Special case: if we have a correct answer that's different from what we're checking,
-          // check if the user's answer and the correct answer are synonyms of each other
-          if (exercise && exercise.english && correctAnswer && correctAnswer !== normalizedUser) {
-            // Check if user's answer and correct answer are synonyms for the same English word
-            if (this.areGermanWordsSynonyms(normalizedUser, correctAnswer, exercise.english)) {
-              return true;
-            }
-          }
-        }
-        return false;
-  
-      case 'conjugation':
-        // Special handling for conjugation - expect "subject + verb" format
-        return this.validateConjugationAnswer(normalizedUser, normalizedCorrect, exercise);
-  
-      case 'translation':
-        // Case-sensitive for German translations with some flexibility
-        if (Array.isArray(normalizedCorrect)) {
-          return normalizedCorrect.some((ans) => this.fuzzyMatch(normalizedUser, ans));
-        }
-        return this.fuzzyMatch(normalizedUser, normalizedCorrect);
-  
-      default:
-        return this.caseSensitiveMatch(normalizedUser, normalizedCorrect);
-    }
-  }
-  
-  // CRITICAL FIX: Case-sensitive matching for German answers
-  caseSensitiveMatch(answer, correct) {
-    const answerWords = answer.split(' ').filter(Boolean);
-    const correctWords = correct.split(' ').filter(Boolean);
-  
-    if (answerWords.length !== correctWords.length) {
-      return false;
-    }
-  
-    for (let i = 0; i < correctWords.length; i++) {
-      if (answerWords[i] !== correctWords[i]) {
-        // Allow for case variations in articles
-        const isArticle = /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines)$/i.test(correctWords[i]);
-        if (isArticle && answerWords[i].toLowerCase() === correctWords[i].toLowerCase()) {
-          continue;
-        }
-        return false;
-      }
-    }
-  
-    return true;
-  }
-  
-  // CRITICAL FIX: Enhanced conjugation answer validation with umlaut support
-  validateConjugationAnswer(userAnswer, correctAnswer, exercise = null) {
-    // Apply umlaut normalization to user input
-    const normalizedUser = this.normalizeUmlauts(userAnswer);
-    // Handle array of correct answers if passed (unlikely for conjugation currently but good practice)
-    const correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
-  
-    for (const correct of correctAnswers) {
-      const normalizedCorrect = this.normalizeUmlauts(correct);
-  
-      console.log('Conjugation validation details:', {
-        originalUser: userAnswer,
-        normalizedUser,
-        originalCorrect: correct,
-        normalizedCorrect,
-      });
-  
-      // Parse user input to separate subject and verb
-      const userParts = normalizedUser.split(' ');
-      const correctParts = normalizedCorrect.split(' ');
-  
-      // CRITICAL FIX: Support multi-word verbs (separable verbs, etc.)
-      // Check that the number of words matches exactly first ("match as a whole")
-      if (userParts.length !== correctParts.length) {
-        continue;
-      }
-
-      // Check Subject (first word) - case insensitive
-      const userSubject = userParts[0];
-      const correctSubject = correctParts[0];
-      
-      // Use clean subject comparison if available
-      let cleanCorrectSubject = correctSubject;
-      if (exercise && exercise.cleanSubject) {
-        // Only use clean subject if it matches the first word of correct answer (sanity check)
-        // or just trust it. For standard conjugations, correctParts[0] IS the clean subject.
-        cleanCorrectSubject = exercise.cleanSubject;
-      }
-
-      // If correctSubject from string doesn't match cleanSubject, it means answer format might be different
-      // But assuming standard format "subject verb...", correctParts[0] is the subject.
-      
-      const subjectMatch = userSubject.toLowerCase() === cleanCorrectSubject.toLowerCase();
-
-      // Check Verb Phrase (remaining words) - case sensitive
-      // We join the remaining parts to compare the full verb phrase
-      const userVerbPhrase = userParts.slice(1).join(' ');
-      const correctVerbPhrase = correctParts.slice(1).join(' ');
-      
-      const verbMatch = userVerbPhrase === correctVerbPhrase;
-
-      if (subjectMatch && verbMatch) return true;
-    }
-  
-    return false;
-  }
-  
-  fuzzyMatch(answer, correct) {
-    const answerWords = answer.split(' ').filter(Boolean);
-    const correctWords = correct.split(' ').filter(Boolean);
-  
-    if (answerWords.length !== correctWords.length) {
-      return false;
-    }
-  
-    let matches = 0;
-    for (let i = 0; i < correctWords.length; i++) {
-      const answerWord = answerWords[i];
-      const correctWord = correctWords[i];
-  
-      // Try exact match first (case-sensitive)
-      if (answerWord === correctWord) {
-        matches++;
-      } else if (answerWord.toLowerCase() === correctWord.toLowerCase()) {
-        // Allow case-insensitive for simple words
-        const isSimpleWord =
-          /^(der|die|das|den|dem|des|ein|eine|einen|einem|eines|und|oder|aber|in|an|auf|unter|über|mit|zu|bei|von|nach|vor|für|durch|gegen|ohne|während|bis|seit|wegen)$/.test(
-            correctWord.toLowerCase()
-          );
-        if (isSimpleWord) {
-          matches++;
-        } else if (this.levenshteinDistance(answerWord.toLowerCase(), correctWord.toLowerCase()) <= 1) {
-          // Allow one character difference for more complex words
-          matches++;
-        }
-      } else if (this.levenshteinDistance(answerWord.toLowerCase(), correctWord.toLowerCase()) <= 1) {
-        // Allow one character difference for typos
-        matches++;
-      }
-    }
-  
-    return matches === correctWords.length;
-  }
-
-  levenshteinDistance(str1, str2) {
-    const matrix = []
-
-    for (let i = 0; i <= str2.length; i++) {
-      matrix[i] = [i]
-    }
-
-    for (let j = 0; j <= str1.length; j++) {
-      matrix[0][j] = j
-    }
-
-    for (let i = 1; i <= str2.length; i++) {
-      for (let j = 1; j <= str1.length; j++) {
-        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1]
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1
-          )
-        }
-      }
-    }
-
-    return matrix[str2.length][str1.length]
+    return validationService.validateAnswer(userAnswer, correctAnswer, type, exercise)
   }
 }

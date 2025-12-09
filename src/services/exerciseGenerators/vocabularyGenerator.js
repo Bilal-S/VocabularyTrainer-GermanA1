@@ -8,14 +8,16 @@ import {
  * @param {number} batchSize - Number of items to generate (default: 20)
  * @returns {Array} Array of vocabulary exercises
  */
-export const generateVocabularyBatch = (exclude = [], batchSize = 20) => {
+export const generateVocabularyBatch = (exclude = [], batchSize = 20, preFilteredNouns = null) => {
   console.log('Generating vocabulary batch with TRUE RANDOMIZATION:', { 
     exclude: exclude.slice(0, 5), 
-    batchSize 
+    batchSize,
+    hasPreFiltered: !!preFilteredNouns
   })
   
   // CRITICAL FIX: Use ALL nouns from ALL letters for true randomization
-  const allNouns = getAllNounsFromAllLetters(exclude)
+  // If pre-filtered nouns are provided (e.g. for mastery filtering), use those
+  const allNouns = preFilteredNouns || getAllNounsFromAllLetters(exclude)
   
   if (!allNouns || allNouns.length === 0) {
     console.error('No nouns available from vocabulary database')

@@ -177,7 +177,7 @@ Type **"Today is a new day"** to begin your German learning journey!${updateMess
     if (state.lastSessionDate && state.lastSessionDate !== new Date().toISOString().split('T')[0]) {
       const sessionStats = getCurrentSessionStats()
       const summaryMessage = `## Previous Session Summary:
-- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Nouns introduced:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
 - **Items in review queue:** ${sessionStats.itemsRemainingInReview}
@@ -874,7 +874,7 @@ Please conjugate the following **verbs for the given subjects**:
     addSystemMessage(`# 🎉 Daily Routine Complete!
 
 ## Today's Summary in English:
-- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Nouns introduced:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
 - **Items in review queue:** ${sessionStats.itemsRemainingInReview}
@@ -901,7 +901,7 @@ Type **"Today is a new day"** tomorrow to continue your learning journey!`)
     addSystemMessage(`# 📊 Current Progress Summary
 
 ## Learning Session Summary:
-- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Nouns introduced:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
 - **Items in review queue:** ${sessionStats.itemsRemainingInReview}

@@ -3,7 +3,7 @@ export const letterA = {
     {"evening": ["Abend", "Abende", "der", "die", "m"]},
     {"address": ["Adresse", "Adressen", "die", "die", "f"]},
     {"age": ["Alter", "Alter", "das", "die", "n"]},
-    {"arrival": ["Ankunft", "Ankünfte", "der", "die", "m"]},
+    {"arrival": ["Ankunft", "Ankünfte", "die", "die", "m"]},
     {"answer": ["Antwort", "Antworten", "die", "die", "f"]},
     {"apple": ["Apfel", "Äpfel", "der", "die", "m"]},
     {"work": ["Arbeit", "Arbeiten", "die", "die", "f"]},

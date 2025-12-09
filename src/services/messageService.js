@@ -80,7 +80,7 @@ export const generateUpdateMessage = (updateInfo) => {
  */
 export const generatePreviousSessionSummary = (sessionStats) => {
   return `## Previous Session Summary:
-- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Nouns introduced:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
 - **Total items in review queue:** ${sessionStats.itemsRemainingInReview}
@@ -184,7 +184,7 @@ export const generateDailyRecap = (sessionStats) => {
   return `# 🎉 Daily Routine Complete!
 
 ## Today's Summary in English:
-- **Nouns learned:** ${sessionStats.nounsLearned}
+- **Nouns introduced:** ${sessionStats.nounsLearned}
 - **Verbs introduced:** ${sessionStats.verbsIntroduced}
 - **Items added to review queue:** ${sessionStats.itemsAddedToReview}
 - **Total items in review queue:** ${sessionStats.itemsRemainingInReview}
@@ -209,7 +209,7 @@ export const generateProgressSummary = (progressSummary) => {
   return `# 📊 Current Progress Summary
 
 ## Learning Session Summary:
-- **Nouns learned:** ${progressSummary.nounsLearned}
+- **Nouns introduced:** ${progressSummary.nounsLearned}
 - **Verbs introduced:** ${progressSummary.verbsIntroduced}
 - **Items added to review queue:** ${progressSummary.itemsAddedToReview}
 - **Total items in review queue:** ${progressSummary.itemsRemainingInReview}

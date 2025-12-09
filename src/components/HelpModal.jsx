@@ -612,7 +612,7 @@ die Frau <br></br>
                 <div>
                   <h4 className="font-semibold text-yellow-700">Content Displayed:</h4>
                   <ul className="text-sm text-yellow-600 list-disc list-inside space-y-1">
-                    <li><strong>Nouns Learned:</strong> Count and specific words introduced in Steps 3-4</li>
+                    <li><strong>Nouns introduced:</strong> Count and specific words introduced in Steps 3-4</li>
                     <li><strong>Verbs Introduced:</strong> New verbs practiced during the session</li>
                     <li><strong>Review Progress:</strong> Items moved from review queue to mastered</li>
                     <li><strong>Remaining Work:</strong> Items still in review queue for future sessions</li>

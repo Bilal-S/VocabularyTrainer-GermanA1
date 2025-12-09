@@ -74,7 +74,7 @@ START
         |
         ├── [Step 7: Daily Recap]
         │       ├── Output Summary in English:
-        │           - Nouns learned today
+        │           - Nouns introduced today
         │           - Verbs introduced
         │           - Items remaining in Review Queue
         │       └── END OF ROUTINE

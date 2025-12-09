@@ -173,7 +173,7 @@ or the shortcut:
 - **Purpose**: Consolidate learning and track daily progress
 - **What Happens**: Comprehensive summary of today's achievements
 - **Content Displayed**:
-  - **Nouns Learned**: Count and specific words introduced in Steps 3-4
+  - **Nouns introduced**: Count and specific words introduced in Steps 3-4
   - **Verbs Introduced**: New verbs practiced during the session
   - **Review Progress**: Items moved from `reviewQueue` to `mastered`
   - **Remaining Work**: Items still in review queue for future sessions
