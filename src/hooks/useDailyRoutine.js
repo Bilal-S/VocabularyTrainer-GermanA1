@@ -123,7 +123,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     // Check for PWA updates if running as PWA
     let updateMessage = ''
     if (updateChecker.isPWA) {
-      const updateResult = await updateChecker.checkForUpdates()
+      const updateResult = updateChecker.checkForUpdates()
       if (updateResult.shouldUpdate && !updateChecker.isUpdateDismissed()) {
         updateMessage = `
 ---
@@ -263,7 +263,22 @@ Type your answer below:`)
         ]
         
         // Generate vocabulary batch and ensure state synchronization
-        batch = vocabManager.generateVocabularyBatch(excludeList, state.settings.maxVocabularyQuestions)
+        batch = vocabManager.generateVocabularyBatch(excludeList, state.settings.maxVocabularyQuestions, state)
+        
+        // Check if all singular forms are mastered
+        if (batch.length === 0) {
+          addSystemMessage(`🎉 **All vocabulary items have been mastered!**
+
+All singular noun forms have been answered correctly ${state.settings.masteringCount} times and are now in your mastered pool.
+
+Moving to **Step 3: Plural Practice**...`)
+          
+          // Automatically move to next step after brief delay
+          setTimeout(() => {
+            skipToNextStepFromStep(2)
+          }, 1000)
+          return
+        }
         
         // Validate that we have a proper batch
         if (!batch || batch.length === 0) {
@@ -335,7 +350,22 @@ Please translate to following **English nouns** into **German** (Article + Noun)
           ...pluralMastered
         ]
 
-        batch = vocabManager.generatePluralBatch(pluralExcludeList, state.settings.maxPluralQuestions)
+        batch = vocabManager.generatePluralBatch(pluralExcludeList, state.settings.maxPluralQuestions, state)
+        
+        // Check if all plural forms are mastered
+        if (batch.length === 0) {
+          addSystemMessage(`🎉 **All plural forms have been mastered!**
+
+All plural noun forms have been answered correctly ${state.settings.masteringCount} times and are now in your mastered pool.
+
+Moving to **Step 4: Articles in Context**...`)
+          
+          // Automatically move to next step after brief delay
+          setTimeout(() => {
+            skipToNextStepFromStep(3)
+          }, 1000)
+          return
+        }
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
@@ -356,7 +386,23 @@ Please provide to **plural forms** for the following German nouns:
         addSystemMessage(pluralMessage)
         return
       case 'ARTICLES':
-        batch = vocabManager.generateArticlesBatch(state.settings.maxArticlesQuestions)
+        batch = vocabManager.generateArticlesBatch(state.settings.maxArticlesQuestions, state)
+        
+        // Check if all article exercises are mastered
+        if (batch.length === 0) {
+          addSystemMessage(`🎉 **All article exercises have been mastered!**
+
+All article exercises have been answered correctly ${state.settings.maxReviewCount} times and are now in your mastered pool.
+
+Moving to **Step 5: Case Translations**...`)
+          
+          // Automatically move to next step after brief delay
+          setTimeout(() => {
+            skipToNextStepFromStep(4)
+          }, 1500)
+          return
+        }
+        
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
@@ -366,7 +412,7 @@ Please provide to **plural forms** for the following German nouns:
         let articlesMessage = `### **Step 4: Articles in Context (${config.totalItems} Items)**
 **[Step 4 | Batch 1 | Remaining: ${batch.length}]**
 
-Please fill in the blanks with the **correct articles** (der, die, das, ein, eine):
+Please fill in the blanks with **correct articles** (der, die, das, ein, eine):
 
 `
         // Number the items sequentially starting from 1
@@ -376,7 +422,23 @@ Please fill in the blanks with the **correct articles** (der, die, das, ein, ein
         addSystemMessage(articlesMessage)
         return
       case 'TRANSLATIONS':
-        batch = vocabManager.generateTranslationBatch(state.settings.maxTranslationsQuestions)
+        batch = vocabManager.generateTranslationBatch(state.settings.maxTranslationsQuestions, state)
+        
+        // Check if all translation exercises are mastered
+        if (batch.length === 0) {
+          addSystemMessage(`🎉 **All translation exercises have been mastered!**
+
+All translation exercises have been answered correctly ${state.settings.maxReviewCount} times and are now in your mastered pool.
+
+Moving to **Step 6: Verb Conjugation**...`)
+          
+          // Automatically move to next step after brief delay
+          setTimeout(() => {
+            skipToNextStepFromStep(5)
+          }, 2000)
+          return
+        }
+        
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)

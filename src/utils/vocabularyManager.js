@@ -19,6 +19,43 @@ export class VocabularyManager {
     this.excludeList = []
   }
 
+  // Helper methods for mastery checking
+  isSingularFormMastered(word, state) {
+    const progress = state.progress[word]
+    return progress && progress.singular && progress.singular.correctCount >= state.settings.masteringCount
+  }
+
+  isPluralFormMastered(word, state) {
+    const progress = state.progress[word]
+    return progress && progress.plural && progress.plural.correctCount >= state.settings.masteringCount
+  }
+
+  isExerciseMastered(exerciseKey, state) {
+    const progress = state.progress[exerciseKey]
+    return progress && progress.singular && progress.singular.correctCount >= state.settings.maxReviewCount
+  }
+
+  // Helper to get available nouns filtered by step-specific mastery
+  getAvailableNounsForStep(excludeList, state, stepType) {
+    const allNouns = getAllNounsFromAllLetters(excludeList)
+    
+    if (stepType === 'VOCABULARY') {
+      // Filter out nouns with mastered singular forms
+      return allNouns.filter(noun => !this.isSingularFormMastered(noun.german, state))
+    } else if (stepType === 'PLURAL') {
+      // Filter out nouns with mastered plural forms
+      return allNouns.filter(noun => !this.isPluralFormMastered(noun.german, state))
+    }
+    
+    return allNouns
+  }
+
+  // Helper to get available exercises filtered by mastery
+  getAvailableExercisesForStep(exercises, state, stepType) {
+    // Filter out exercises that are already mastered
+    return exercises.filter(exercise => !this.isExerciseMastered(exercise.german || exercise.english, state))
+  }
+
   // CRITICAL FIX: Add umlaut substitution helper
   // the sss is for ß replacement as convenient shorthand
   normalizeUmlauts(text) {
@@ -241,7 +278,7 @@ export class VocabularyManager {
   }
 
   // Generate Step 2: New Vocabulary (20 nouns)
-  generateVocabularyBatch(exclude = [], batchSize = 20) {
+  generateVocabularyBatch(exclude = [], batchSize = 20, state = null) {
     const combinedExclude = [...exclude, ...this.excludeList]
     console.log('Generating vocabulary batch with TRUE RANDOMIZATION:', { 
       exclude: exclude.slice(0, 5), 
@@ -250,16 +287,26 @@ export class VocabularyManager {
       batchSize 
     })
     
-    // CRITICAL FIX: Use ALL nouns from ALL letters for true randomization
-    const allNouns = getAllNounsFromAllLetters(combinedExclude)
+    // CRITICAL FIX: Filter out nouns with mastered singular forms if state is provided
+    let availableNouns
+    if (state) {
+      availableNouns = this.getAvailableNounsForStep(combinedExclude, state, 'VOCABULARY')
+      console.log('After filtering mastered singular forms:', {
+        originalCount: getAllNounsFromAllLetters(combinedExclude).length,
+        filteredCount: availableNouns.length,
+        batchSize
+      })
+    } else {
+      availableNouns = getAllNounsFromAllLetters(combinedExclude)
+    }
     
-    if (!allNouns || allNouns.length === 0) {
-      console.error('No nouns available from vocabulary database')
+    if (!availableNouns || availableNouns.length === 0) {
+      console.warn('No nouns available for vocabulary batch (all may be mastered)')
       return []
     }
 
-    // Take the requested batch size from the shuffled all-nouns array
-    const selectedNouns = allNouns.slice(0, batchSize)
+    // Take the requested batch size from the filtered array
+    const selectedNouns = availableNouns.slice(0, batchSize)
 
     // CRITICAL FIX: Add debugging to see letter distribution
     const letterDistribution = {}
@@ -301,7 +348,7 @@ export class VocabularyManager {
     this.addToExcludeList(validNouns.map(n => n.german))
     
     console.log('Generated vocabulary batch with TRUE RANDOMIZATION:', {
-      totalAvailable: allNouns.length,
+      totalAvailable: availableNouns.length,
       batchSize: this.currentBatch.length,
       firstItem: this.currentBatch[0]
     })
@@ -310,7 +357,7 @@ export class VocabularyManager {
   }
 
   // Generate Step 3: Plural Practice (20 nouns)
-  generatePluralBatch(exclude = [], batchSize = 20) {
+  generatePluralBatch(exclude = [], batchSize = 20, state = null) {
     const combinedExclude = [...exclude, ...this.excludeList]
     console.log('Generating plural batch with TRUE RANDOMIZATION:', { 
       exclude: exclude.slice(0, 5), 
@@ -319,29 +366,26 @@ export class VocabularyManager {
       batchSize 
     })
     
-    // CRITICAL FIX: Use ALL nouns from ALL letters for true randomization
-    const allNouns = getAllNounsFromAllLetters(combinedExclude)
-    
-    if (!allNouns || allNouns.length === 0) {
-      console.error('No nouns available for plural batch')
-      console.error('DEBUG: Exclude list might be too large. Available letters check:')
-      
-      // DEBUG: Check what's available across all letters
-      const availableLetters = getAvailableLetters()
-      const debugInfo = {}
-      availableLetters.forEach(letter => {
-        const letterData = getVocabularyByLetter(letter)
-        const availableNouns = (letterData.nouns || []).filter(noun => 
-          !combinedExclude.includes(noun.german)
-        )
-        debugInfo[letter] = availableNouns.length
+    // CRITICAL FIX: Filter out nouns with mastered plural forms if state is provided
+    let availableNouns
+    if (state) {
+      availableNouns = this.getAvailableNounsForStep(combinedExclude, state, 'PLURAL')
+      console.log('After filtering mastered plural forms:', {
+        originalCount: getAllNounsFromAllLetters(combinedExclude).length,
+        filteredCount: availableNouns.length,
+        batchSize
       })
-      console.error('DEBUG: Available nouns by letter after exclude filtering:', debugInfo)
+    } else {
+      availableNouns = getAllNounsFromAllLetters(combinedExclude)
+    }
+    
+    if (!availableNouns || availableNouns.length === 0) {
+      console.warn('No nouns available for plural batch (all may be mastered)')
       return []
     }
 
-    // Take the requested batch size from the shuffled all-nouns array
-    const selectedNouns = allNouns.slice(0, batchSize)
+    // Take the requested batch size from the filtered array
+    const selectedNouns = availableNouns.slice(0, batchSize)
 
     // CRITICAL FIX: Add debugging to see letter distribution
     const letterDistribution = {}
@@ -370,7 +414,7 @@ export class VocabularyManager {
     this.addToExcludeList(selectedNouns.map(n => n.german))
     
     console.log('Generated plural batch with TRUE RANDOMIZATION:', {
-      totalAvailable: allNouns.length,
+      totalAvailable: availableNouns.length,
       batchSize: this.currentBatch.length
     })
     
@@ -378,16 +422,33 @@ export class VocabularyManager {
   }
 
   // Generate Step 4: Articles in Context (30 sentences: 10 each case)
-  generateArticlesBatch(batchSize = 30) {
+  generateArticlesBatch(batchSize = 30, state = null) {
     console.log('Generating articles batch with TRUE RANDOMIZATION')
     
     // CRITICAL FIX: Use ALL examples from ALL letters for true randomization
-    const nominative = getAllExamplesFromAllLetters('nominative')
-    const accusative = getAllExamplesFromAllLetters('accusative')
-    const dative = getAllExamplesFromAllLetters('dative')
+    let nominative = getAllExamplesFromAllLetters('nominative')
+    let accusative = getAllExamplesFromAllLetters('accusative')
+    let dative = getAllExamplesFromAllLetters('dative')
+    
+    // Filter out mastered exercises if state is provided
+    if (state) {
+      nominative = this.getAvailableExercisesForStep(nominative, state, 'ARTICLES')
+      accusative = this.getAvailableExercisesForStep(accusative, state, 'ARTICLES')
+      dative = this.getAvailableExercisesForStep(dative, state, 'ARTICLES')
+      
+      console.log('After filtering mastered article exercises:', {
+        originalNominative: getAllExamplesFromAllLetters('nominative').length,
+        filteredNominative: nominative.length,
+        originalAccusative: getAllExamplesFromAllLetters('accusative').length,
+        filteredAccusative: accusative.length,
+        originalDative: getAllExamplesFromAllLetters('dative').length,
+        filteredDative: dative.length,
+        batchSize
+      })
+    }
     
     if (!nominative || !accusative || !dative) {
-      console.error('No examples available for articles batch')
+      console.warn('No examples available for articles batch (all may be mastered)')
       return []
     }
 
@@ -414,14 +475,24 @@ export class VocabularyManager {
   }
 
   // Generate Step 5: Case Translations (30 sentences: 10 each case)
-  generateTranslationBatch(batchSize = 30) {
+  generateTranslationBatch(batchSize = 30, state = null) {
     console.log('Generating translation batch with TRUE RANDOMIZATION')
     
     // CRITICAL FIX: Use ALL translations from ALL letters for true randomization
-    const translations = getAllExamplesFromAllLetters('translations')
+    let translations = getAllExamplesFromAllLetters('translations')
+    
+    // Filter out mastered exercises if state is provided
+    if (state) {
+      translations = this.getAvailableExercisesForStep(translations, state, 'TRANSLATIONS')
+      console.log('After filtering mastered translation exercises:', {
+        originalCount: getAllExamplesFromAllLetters('translations').length,
+        filteredCount: translations.length,
+        batchSize
+      })
+    }
     
     if (!translations || translations.length === 0) {
-      console.error('No translations available for translation batch')
+      console.warn('No translations available for translation batch (all may be mastered)')
       return []
     }
 
