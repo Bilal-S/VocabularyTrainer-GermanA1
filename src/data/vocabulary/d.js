@@ -487,8 +487,8 @@ export const letterD = {
         case: 'dative'
       },
       {
-        german: 'Wir haben keine ___ Zeit.',
-        english: 'We have no time.',
+        german: '___ Zeit fuer den Termin ist da.',
+        english: 'It is time for the appointment.',
         answer: 'die',
         case: 'dative'
       },

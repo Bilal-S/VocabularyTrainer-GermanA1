@@ -141,7 +141,7 @@ export const letterK = {
       },
       {
         german: 'Er kennt ___ Kollegen.',
-        english: 'He knows the colleague.',
+        english: 'He knows the colleague (male).',
         answer: 'den',
         case: 'accusative'
       },
@@ -160,9 +160,9 @@ export const letterK = {
         case: 'dative'
       },
       {
-        german: 'Sie spricht mit ___ Kollegen.',
-        english: 'She speaks with the colleague.',
-        answer: 'dem',
+        german: 'Sie spricht mit ___ Kollegin.',
+        english: 'She speaks with the colleague (female).',
+        answer: 'der',
         case: 'dative'
       },
       {
@@ -288,8 +288,8 @@ export const letterK = {
         caseType: 'nominative'
       },
       {
-        english: 'They speak with the colleague.',
-        german: 'Sie sprechen mit dem Kollegen.',
+        english: 'They speak with the colleagues.',
+        german: 'Sie sprechen mit den Kollegen.',
         type: 'translation',
         caseType: 'dative'
       },
