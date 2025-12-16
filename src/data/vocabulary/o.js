@@ -143,7 +143,7 @@ export const letterO = {
       },
       {
         english: 'I help the grandma.',
-        german: 'Ich helfe der Oma.',
+        german: ['Ich helfe der Oma.', 'Ich helfe der Großmutter.'],
         type: 'translation',
         caseType: 'dative'
       },
