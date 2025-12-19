@@ -201,13 +201,13 @@ This is the export/import JSON structure that needs to be exported from local st
   "userId": "string",
   "settings": {
     "masteringCount":1,
-    "maxReviewBatchSize":50, 
+    "maxReviewBatchSize":10, 
     "maxReviewCount":3,
-    "maxVocabularyQuestions":20,
-    "maxPluralQuestions":20,
-    "maxArticlesQuestions":30,
-    "maxTranslationsQuestions":30,
-    "maxVerbsQuestions":30
+    "maxVocabularyQuestions":10,
+    "maxPluralQuestions":10,
+    "maxArticlesQuestions":10,
+    "maxTranslationsQuestions":10,
+    "maxVerbsQuestions":10
   },
   "progress": {
     "items": {

@@ -15,6 +15,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
   const [currentBatch, setCurrentBatch] = useState([])
   const [batchAnswers, setBatchAnswers] = useState({})
   const [isBatchMode, setIsBatchMode] = useState(false)
+  const [isCompleting, setIsCompleting] = useState(false)
 
   const getCurrentSection = useCallback(() => {
     return getCurrentStepSection(currentStep) || 'INTRO'
@@ -271,9 +272,9 @@ Type your answer below:`)
 
 All singular noun forms have been answered correctly ${state.settings.masteringCount} times and are now in your mastered pool.
 
-Moving to **Step 3: Plural Practice**...`)
+Moving to **Step 3: Plural Practice** in 1 second...`)
           
-          // Automatically move to next step after brief delay
+          // Automatically move to next step after standardized delay
           setTimeout(() => {
             skipToNextStepFromStep(2)
           }, 1000)
@@ -358,12 +359,12 @@ Please translate to following **English nouns** into **German** (Article + Noun)
 
 All plural noun forms have been answered correctly ${state.settings.masteringCount} times and are now in your mastered pool.
 
-Moving to **Step 4: Articles in Context**...`)
+Moving to **Step 4: Articles in Context** in 1 second...`)
           
-          // Automatically move to next step after brief delay
+          // Automatically move to next step after standardized delay
           setTimeout(() => {
             skipToNextStepFromStep(3)
-          }, 1000)
+          }, 2000)
           return
         }
         setCurrentBatch(batch)
@@ -394,12 +395,12 @@ Please provide to **plural forms** for the following German nouns:
 
 All article exercises have been answered correctly ${state.settings.maxReviewCount} times and are now in your mastered pool.
 
-Moving to **Step 5: Case Translations**...`)
+Moving to **Step 5: Case Translations** in 1 second...`)
           
-          // Automatically move to next step after brief delay
+          // Automatically move to next step after standardized delay
           setTimeout(() => {
             skipToNextStepFromStep(4)
-          }, 1500)
+          }, 2000)
           return
         }
         
@@ -827,18 +828,18 @@ Please conjugate the following **verbs for the given subjects**:
       if (currentStep < 7) {
         const nextStepKey = STEPS[currentStep + 1]
         const nextConfig = STEP_CONFIG[nextStepKey]
-        nextStepInfo = `Moving to **Step ${currentStep + 1}: ${nextConfig.name}**...`
+        nextStepInfo = `Moving to **Step ${currentStep + 1}: ${nextConfig.name}** in 1 second...`
       } else {
-        nextStepInfo = `Moving to **Daily Recap**...`
+        nextStepInfo = `Moving to **Daily Recap** in 1 second...`
       }
       
       feedback += `${nextStepInfo}\n\n`
-      feedback += `Type **"Next Step"** to continue or wait for automatic progression.`
+      feedback += `⏳ *Auto-advancing to next step...*`
       
-      // Auto-advance to next step after brief delay
+      // Standardized auto-advance to next step after 1 second
       setTimeout(() => {
         completeStep()
-      }, 3000)
+      }, 2000)
       
       return feedback
     }
@@ -858,11 +859,25 @@ Please conjugate the following **verbs for the given subjects**:
   }
 
   const completeStep = async () => {
-    if (currentStep < 7) {
-      // Automatically proceed to generate and display the next step's batch
-      await skipToNextStepFromStep(currentStep)
-    } else {
-      await generateDailyRecap()
+    // Prevent duplicate completion calls
+    if (isCompleting) {
+      return
+    }
+    
+    setIsCompleting(true)
+    
+    try {
+      if (currentStep < 7) {
+        // Automatically proceed to generate and display the next step's batch
+        await skipToNextStepFromStep(currentStep)
+      } else {
+        await generateDailyRecap()
+      }
+    } finally {
+      // Reset completion state after a brief delay to allow UI to settle
+      setTimeout(() => {
+        setIsCompleting(false)
+      }, 500)
     }
   }
 
@@ -929,6 +944,7 @@ Keep up the great work! You're making steady progress with your German learning.
     getRemainingQuestions,
     completeStep,
     startDailyRoutine,
-    skipToNextStep
+    skipToNextStep,
+    isCompleting
   }
 }

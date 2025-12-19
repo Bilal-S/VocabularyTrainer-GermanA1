@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react'
 const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
   const [localSettings, setLocalSettings] = useState({
     masteringCount: settings?.masteringCount || 1,
-    maxReviewBatchSize: settings?.maxReviewBatchSize || 50,
+    maxReviewBatchSize: settings?.maxReviewBatchSize || 10,
     maxReviewCount: settings?.maxReviewCount || 3,
-    maxVocabularyQuestions: settings?.maxVocabularyQuestions || 20,
-    maxPluralQuestions: settings?.maxPluralQuestions || 20,
-    maxArticlesQuestions: settings?.maxArticlesQuestions || 30,
-    maxTranslationsQuestions: settings?.maxTranslationsQuestions || 30,
-    maxVerbsQuestions: settings?.maxVerbsQuestions || 30
+    maxVocabularyQuestions: settings?.maxVocabularyQuestions || 10,
+    maxPluralQuestions: settings?.maxPluralQuestions || 10,
+    maxArticlesQuestions: settings?.maxArticlesQuestions || 10,
+    maxTranslationsQuestions: settings?.maxTranslationsQuestions || 10,
+    maxVerbsQuestions: settings?.maxVerbsQuestions || 10
   })
 
   // Update local settings when props change
@@ -17,13 +17,13 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
     if (settings) {
       setLocalSettings({
         masteringCount: settings.masteringCount || 1,
-        maxReviewBatchSize: settings.maxReviewBatchSize || 50,
+        maxReviewBatchSize: settings.maxReviewBatchSize || 10,
         maxReviewCount: settings.maxReviewCount || 3,
-        maxVocabularyQuestions: settings.maxVocabularyQuestions || 20,
-        maxPluralQuestions: settings.maxPluralQuestions || 20,
-        maxArticlesQuestions: settings.maxArticlesQuestions || 30,
-        maxTranslationsQuestions: settings.maxTranslationsQuestions || 30,
-        maxVerbsQuestions: settings.maxVerbsQuestions || 30
+        maxVocabularyQuestions: settings.maxVocabularyQuestions || 10,
+        maxPluralQuestions: settings.maxPluralQuestions || 10,
+        maxArticlesQuestions: settings.maxArticlesQuestions || 10,
+        maxTranslationsQuestions: settings.maxTranslationsQuestions || 10,
+        maxVerbsQuestions: settings.maxVerbsQuestions || 10
       })
     }
   }, [settings])
@@ -34,13 +34,13 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
     // Validate inputs
     const newSettings = {
       masteringCount: Math.max(1, Math.min(9, parseInt(localSettings.masteringCount) || 1)),
-      maxReviewBatchSize: Math.max(10, Math.min(99, parseInt(localSettings.maxReviewBatchSize) || 50)),
+      maxReviewBatchSize: Math.max(10, Math.min(99, parseInt(localSettings.maxReviewBatchSize) || 10)),
       maxReviewCount: Math.max(1, Math.min(9, parseInt(localSettings.maxReviewCount) || 3)),
-      maxVocabularyQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVocabularyQuestions) || 20)),
-      maxPluralQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxPluralQuestions) || 20)),
-      maxArticlesQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxArticlesQuestions) || 30)),
-      maxTranslationsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxTranslationsQuestions) || 30)),
-      maxVerbsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVerbsQuestions) || 30))
+      maxVocabularyQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVocabularyQuestions) || 10)),
+      maxPluralQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxPluralQuestions) || 10)),
+      maxArticlesQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxArticlesQuestions) || 10)),
+      maxTranslationsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxTranslationsQuestions) || 10)),
+      maxVerbsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVerbsQuestions) || 10))
     }
     
     onSave(newSettings)

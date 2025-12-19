@@ -47,13 +47,13 @@ const getInitialState = () => {
     userId: 'user-' + Math.random().toString(36).substr(2, 9),
     settings: {
       masteringCount: 1,
-      maxReviewBatchSize: 50,
+      maxReviewBatchSize: 10,
       maxReviewCount: 3,
-      maxVocabularyQuestions: 20,
-      maxPluralQuestions: 20,
-      maxArticlesQuestions: 30,
-      maxTranslationsQuestions: 30,
-      maxVerbsQuestions: 30
+      maxVocabularyQuestions: 10,
+      maxPluralQuestions: 10,
+      maxArticlesQuestions: 10,
+      maxTranslationsQuestions: 10,
+      maxVerbsQuestions: 10
     },
     progress: {},
     pools: {

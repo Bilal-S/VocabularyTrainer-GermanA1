@@ -8,7 +8,8 @@ const ChatInterface = ({
   onCommand, 
   isStepComplete, 
   getRemainingQuestions, 
-  currentStep 
+  currentStep,
+  isCompleting
 }) => {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -47,7 +48,7 @@ const ChatInterface = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!input.trim() || isLoading) return
+    if (!input.trim() || isLoading || isCompleting) return
 
     const command = input.trim()
     setInput('')
@@ -81,7 +82,7 @@ const ChatInterface = ({
   }
 
   const handleNextStep = async () => {
-    if (isLoading) return
+    if (isLoading || isCompleting) return
     
     // Check if step is complete
     if (isStepComplete && isStepComplete()) {
@@ -197,16 +198,16 @@ const ChatInterface = ({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your command or answer... (Ctrl+Enter to send)"
+              placeholder={isCompleting ? "Moving to next step..." : "Type your command or answer... (Ctrl+Enter to send)"}
               className="flex-1 py-3 pl-4 pr-2 resize-none border-none focus:ring-0 outline-none focus:outline-none bg-transparent min-h-[48px] text-sm md:text-base"
-              disabled={isLoading}
+              disabled={isLoading || isCompleting}
               rows={1}
               style={{ maxHeight: '120px', overflowY: 'hidden' }}
             />
             <button
               type="submit"
-              disabled={!input.trim() || isLoading}
-              className={`p-2 mb-1 mr-1 text-blue-500 hover:bg-blue-50 rounded-full transition-colors flex-shrink-0 ${isLoading ? 'opacity-100 cursor-wait' : 'disabled:opacity-50 disabled:cursor-not-allowed'}`}
+              disabled={!input.trim() || isLoading || isCompleting}
+              className={`p-2 mb-1 mr-1 text-blue-500 hover:bg-blue-50 rounded-full transition-colors flex-shrink-0 ${(isLoading || isCompleting) ? 'opacity-100 cursor-wait' : 'disabled:opacity-50 disabled:cursor-not-allowed'}`}
               title="Send answer"
             >
               {isLoading ? (
@@ -223,7 +224,7 @@ const ChatInterface = ({
           <button
             type="button"
             onClick={handleNextStep}
-            disabled={isLoading}
+            disabled={isLoading || isCompleting}
             className="btn btn-secondary h-[48px] hidden md:block"
             title="Skip to next step"
           >

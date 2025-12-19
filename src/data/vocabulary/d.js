@@ -12,7 +12,7 @@ export const letterD = {
     {"shower": ["Dusche", "Duschen", "die", "die", "f"]},
     {"Tuesday": ["Dienstag", "Dienstage", "der", "die", "m"]},
     {"German": ["Deutsch", "Deutsch", "das", "die", "n"]},
-    {"Germany": ["Deutschland", "Deutschlande", "das", "die", "n"]},
+    {"Germany": ["Deutschland", "Deutschländer", "das", "die", "n"]},
     {"December": ["Dezember", "Dezembers", "der", "die", "m"]},
     {"theater": ["Theater", "Theater", "das", "die", "n"]},
     {"dictionary": ["Wörterbuch", "Wörterbücher", "das", "die", "n"]},

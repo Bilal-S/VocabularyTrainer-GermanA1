@@ -49,12 +49,13 @@ function App() {
 
   const {
     currentStep,
-    sectionProgress,
+    batchProgress,
     processCommand,
     getCurrentSection,
     getSectionProgress,
     isStepComplete,
-    getRemainingQuestions
+    getRemainingQuestions,
+    isCompleting
   } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats)
 
   // PWA Install Prompt Handler
@@ -287,6 +288,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
         isStepComplete={isStepComplete}
         getRemainingQuestions={getRemainingQuestions}
         currentStep={currentStep}
+        isCompleting={isCompleting}
       />
       
       <ImportExportModal
