@@ -10,6 +10,7 @@ dist/
 build/
 *.tsbuildinfo
 .clinerules/
+src-sp/
 
 # Environment variables
 .env

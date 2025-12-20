@@ -83,7 +83,7 @@ export class VocabularyManager {
       // If noun/verb lookup failed, try finding an example if it's a sentence
       if (!letterData && itemWord && itemWord.includes(' ')) {
         // This is likely an Article or Translation sentence
-        // We handle this inside the switch cases below now using findExample
+        // We handle this inside the switch cases below now using findExampleByType
       }
       
       if (letterData) {
@@ -174,10 +174,13 @@ export class VocabularyManager {
         // Handle non-letter data (Articles, Translations)
         switch (section) {
           case 'ARTICLES':
-            // Try to find the specific failed example using the stored sentence
+            // CRITICAL FIX: Try to find the specific failed example using the stored sentence in the correct example type
             let articleExample = null
             if (itemWord && itemWord.includes(' ')) {
-              articleExample = this.findExample(itemWord)
+              // Search in nominative first, then accusative, then dative
+              articleExample = this.findExampleByType(itemWord, 'nominative') ||
+                              this.findExampleByType(itemWord, 'accusative') ||
+                              this.findExampleByType(itemWord, 'dative')
             }
             
             // Fallback to random if not found (or if itemWord was missing)
@@ -200,10 +203,10 @@ export class VocabularyManager {
             break
             
           case 'TRANSLATIONS':
-            // Try to find the specific failed example using the stored sentence
+            // CRITICAL FIX: Try to find the specific failed example using the stored sentence in the 'translations' array only
             let transExample = null
             if (itemWord && itemWord.includes(' ')) {
-              transExample = this.findExample(itemWord)
+              transExample = this.findExampleByType(itemWord, 'translations')
             }
 
             // Fallback to random if not found
@@ -247,7 +250,7 @@ export class VocabularyManager {
     }
     
     // Delegate to the vocabulary generator service
-    // If availableNouns is null, the service will fetch from all letters
+    // If availableNouns is null, service will fetch from all letters
     this.currentBatch = generateVocabularyBatch(combinedExclude, batchSize, availableNouns)
 
     this.currentBatchIndex = 0
@@ -477,7 +480,7 @@ export class VocabularyManager {
 
   // Helper methods
   getLetterData(letter) {
-    // Use the actual alphabet-based vocabulary data
+    // Use actual alphabet-based vocabulary data
     return getVocabularyByLetter(letter)
   }
 
@@ -515,6 +518,24 @@ export class VocabularyManager {
           if (found) {
             return { ...found, type: 'example', exampleType: type }
           }
+        }
+      }
+    }
+    return null
+  }
+
+  // CRITICAL FIX: Find example by sentence and specific type (e.g., only search in 'translations')
+  findExampleByType(sentence, exampleType) {
+    const letters = getAvailableLetters()
+    for (const letter of letters) {
+      const letterData = this.getLetterData(letter)
+      if (letterData && letterData.examples && letterData.examples[exampleType]) {
+        const examples = letterData.examples[exampleType] || []
+        const found = examples.find(ex => 
+          ex.german === sentence || ex.english === sentence
+        )
+        if (found) {
+          return { ...found, type: 'example', exampleType: exampleType }
         }
       }
     }
