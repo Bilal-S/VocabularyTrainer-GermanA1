@@ -466,7 +466,7 @@ die Frau <br></br>
                 <div>
                   <h4 className="font-semibold text-orange-700">Process:</h4>
                   <ul className="text-sm text-orange-600 list-disc list-inside space-y-1">
-                    <li>Presents up to your selected maximum review batch size items (default: 50, configurable 10-99)</li>
+                    <li>Presents up to your selected maximum review batch size items (default: 10, configurable 10-99)</li>
                     <li>Shows one item at a time with English→German translation prompts</li>
                     <li>During review items must be answered correctly a certain number of times. This is based on your max review count setting (default: 3) to be considered mastered</li>
                     <li>Once you have mastered an item it moves mastered from review queue to mastered pool</li>
@@ -485,7 +485,7 @@ die Frau <br></br>
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">📖</span>
-                <h3 className="text-xl font-bold text-green-800">Step 3: New Vocabulary (default 20 Nouns)</h3>
+                <h3 className="text-xl font-bold text-green-800">Step 3: New Vocabulary (default 10 Nouns)</h3>
               </div>
               <div className="space-y-3">
                 <div>
@@ -515,7 +515,7 @@ die Frau <br></br>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">🔢</span>
-                <h3 className="text-xl font-bold text-blue-800">Step 4: Plural Practice (default 20 Nouns)</h3>
+                <h3 className="text-xl font-bold text-blue-800">Step 4: Plural Practice (default 10 Nouns)</h3>
               </div>
               <div className="space-y-3">
                 <div>
@@ -525,7 +525,7 @@ die Frau <br></br>
                 <div>
                   <h4 className="font-semibold text-blue-700">Process:</h4>
                   <ul className="text-sm text-blue-600 list-disc list-inside space-y-1">
-                    <li>Randomly selects 20 (default) different nouns from unselected pool (different from Step 3)</li>
+                    <li>Randomly selects 10 (default) different nouns from unselected pool (different from Step 3)</li>
                     <li>Displays German singular noun, user provides correct plural form</li>
                     <li>Handles irregular plurals and exceptions from A1 vocabulary</li>
                     <li>Supports batch responses with numbered or sequential format</li>
@@ -544,7 +544,7 @@ die Frau <br></br>
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">📝</span>
-                <h3 className="text-xl font-bold text-purple-800">Step 5: Articles in Context (default 30 Sentences)</h3>
+                <h3 className="text-xl font-bold text-purple-800">Step 5: Articles in Context (default 10 Sentences)</h3>
               </div>
               <div className="space-y-3">
                 <div>

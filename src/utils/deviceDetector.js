@@ -115,7 +115,7 @@ export class DeviceDetector {
         browser: 'Safari',
         steps: [
           '1. Open this page in Safari browser',
-          '2. Tap the Share button (square with arrow)',
+          '2. Tap Share button (square with arrow)',
           '3. Scroll down and tap "Add to Home Screen"',
           '4. Tap "Add" to confirm installation'
         ],
@@ -134,9 +134,9 @@ export class DeviceDetector {
         browser: 'Chrome',
         steps: [
           '1. Open this page in Chrome',
-          '2. Tap the three dots (⋮) menu',
+          '2. Tap three dots (⋮) menu',
           '3. Tap "Install app" or "Add to Home screen"',
-          '4. Follow the on-screen prompts'
+          '4. Follow on-screen prompts'
         ],
         benefits: [
           'Offline functionality',
@@ -153,7 +153,7 @@ export class DeviceDetector {
         browser: 'Firefox',
         steps: [
           '1. Open this page in Firefox',
-          '2. Tap the three dots (⋮) menu',
+          '2. Tap three dots (⋮) menu',
           '3. Tap "Add to Home screen"',
           '4. Enter a name and tap "OK"'
         ],
@@ -171,9 +171,9 @@ export class DeviceDetector {
         browser: this.browserInfo.name,
         steps: [
           '1. Open this page in ' + this.browserInfo.name,
-          '2. Look for the install icon (📲) in address bar',
+          '2. Look for install icon (📲) in address bar',
           '3. Click "Install app" when prompted',
-          '4. Follow the installation dialog'
+          '4. Follow installation dialog'
         ],
         benefits: [
           'Desktop shortcut',

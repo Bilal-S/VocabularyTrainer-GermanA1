@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { deviceDetector } from '../utils/deviceDetector'
 import { updateChecker } from '../utils/updateChecker'
 
-const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable, onOpenHelp, onCheckUpdates }) => {
+const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable, onOpenHelp, onCheckUpdates, onOpenDatabaseInfo }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleImport = () => {
@@ -121,6 +121,15 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInst
                 </button>
               )}
               <hr className="my-1 border-gray-200" />
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  onOpenDatabaseInfo()
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                📊 Database Info
+              </button>
               <button
                 onClick={handleReset}
                 className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import SpeechIcon from './SpeechIcon'
+import { germanSpeechConfig } from '../config/language'
 
 const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
   const [localSettings, setLocalSettings] = useState({
@@ -9,8 +11,22 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
     maxPluralQuestions: settings?.maxPluralQuestions || 10,
     maxArticlesQuestions: settings?.maxArticlesQuestions || 10,
     maxTranslationsQuestions: settings?.maxTranslationsQuestions || 10,
-    maxVerbsQuestions: settings?.maxVerbsQuestions || 10
+    maxVerbsQuestions: settings?.maxVerbsQuestions || 10,
+    speechSettings: {
+      enabled: settings?.speechSettings?.enabled !== false,
+      rate: settings?.speechSettings?.rate || 0.9,
+      pitch: settings?.speechSettings?.pitch || 1.0,
+      volume: settings?.speechSettings?.volume || 1.0,
+      voiceUri: settings?.speechSettings?.voiceUri || null,
+      autoPronounce: settings?.speechSettings?.autoPronounce || false
+    }
   })
+
+  // State for speech synthesis
+  const [speechVoices, setSpeechVoices] = useState([])
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false)
+  const [isPreviewingVoice, setIsPreviewingVoice] = useState(false)
+  const [voicesLoaded, setVoicesLoaded] = useState(false)
 
   // Update local settings when props change
   useEffect(() => {
@@ -23,10 +39,90 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
         maxPluralQuestions: settings.maxPluralQuestions || 10,
         maxArticlesQuestions: settings.maxArticlesQuestions || 10,
         maxTranslationsQuestions: settings.maxTranslationsQuestions || 10,
-        maxVerbsQuestions: settings.maxVerbsQuestions || 10
+        maxVerbsQuestions: settings.maxVerbsQuestions || 10,
+        speechSettings: {
+          enabled: settings.speechSettings?.enabled !== false,
+          rate: settings.speechSettings?.rate || 0.9,
+          pitch: settings.speechSettings?.pitch || 1.0,
+          volume: settings.speechSettings?.volume || 1.0,
+          voiceUri: settings.speechSettings?.voiceUri || null,
+          autoPronounce: settings.speechSettings?.autoPronounce || false
+        }
       })
     }
   }, [settings])
+
+  // Initialize speech synthesis and load voices
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) {
+      setIsSpeechSupported(false)
+      return
+    }
+
+    setIsSpeechSupported(true)
+    
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices()
+      console.log('Available voices:', voices)
+      setSpeechVoices(voices)
+      setVoicesLoaded(true)
+    }
+
+    // Initial load
+    loadVoices()
+
+    // Set up voice change listener for browsers that need it
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = loadVoices
+    }
+
+    // Fallback timeout for browsers that don't fire the event properly
+    const timeoutId = setTimeout(() => {
+      if (!voicesLoaded) {
+        console.log('Voice loading timeout - forcing reload')
+        loadVoices()
+      }
+    }, 1000)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = null
+      }
+    }
+  }, [voicesLoaded])
+
+  // Handle initial voice selection when component mounts
+  useEffect(() => {
+    if (voicesLoaded && speechVoices.length > 0 && !localSettings.speechSettings.voiceUri) {
+      console.log('Performing initial voice selection...')
+
+      // German voice priority: de-DE -> de_* -> default
+      const germanVoices = speechVoices.filter(voice =>
+        germanSpeechConfig.languages.includes(voice.lang) ||
+        voice.lang.startsWith('de-') ||
+        voice.lang.startsWith('de_')
+      )
+      
+      let selectedVoice = null
+      if (germanVoices.length > 0) {
+        selectedVoice = germanVoices[0]
+        console.log('Auto-selecting initial German voice:', selectedVoice.name)
+      } else {
+        console.log('No German voice found for initial selection, using browser default.')
+      }
+
+      if (selectedVoice) {
+        setLocalSettings(prev => ({
+          ...prev,
+          speechSettings: {
+            ...prev.speechSettings,
+            voiceUri: selectedVoice.voiceURI
+          }
+        }))
+      }
+    }
+  }, [voicesLoaded, speechVoices, localSettings.speechSettings.voiceUri])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -43,6 +139,9 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
       maxVerbsQuestions: Math.max(1, Math.min(40, parseInt(localSettings.maxVerbsQuestions) || 10))
     }
     
+    // Include speech settings in the saved settings
+    newSettings.speechSettings = localSettings.speechSettings
+    
     onSave(newSettings)
     onClose()
   }
@@ -52,6 +151,54 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
       ...prev,
       [field]: value
     }))
+  }
+
+  const handleSpeechSettingChange = (field, value) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      speechSettings: {
+        ...prev.speechSettings,
+        [field]: value
+      }
+    }))
+  }
+
+  const handlePreviewVoice = async () => {
+    if (!localSettings.speechSettings.voiceUri || !isSpeechSupported) return
+    
+    const selectedVoice = speechVoices.find(v => v.voiceURI === localSettings.speechSettings.voiceUri)
+    if (!selectedVoice) return
+    
+    setIsPreviewingVoice(true)
+    try {
+      // Use a sample German text for testing
+      const sampleText = "Hallo, dies ist ein Sprachtest. Wie geht es dir heute? "
+      
+      // Create utterance for preview
+      const utterance = new SpeechSynthesisUtterance(sampleText)
+      utterance.voice = selectedVoice
+      utterance.lang = selectedVoice.lang || 'de-DE' || 'de_DE'
+      utterance.rate = localSettings.speechSettings.rate || 0.9
+      utterance.pitch = localSettings.speechSettings.pitch || 1.0
+      utterance.volume = localSettings.speechSettings.volume || 1.0
+      
+      // Event handlers
+      utterance.onend = () => {
+        setIsPreviewingVoice(false)
+      }
+      
+      utterance.onerror = (event) => {
+        console.error('Voice preview error:', event.error)
+        setIsPreviewingVoice(false)
+      }
+      
+      // Cancel any ongoing speech and speak
+      window.speechSynthesis.cancel()
+      window.speechSynthesis.speak(utterance)
+    } catch (error) {
+      console.error('Voice preview error:', error)
+      setIsPreviewingVoice(false)
+    }
   }
 
   if (!isOpen) return null
@@ -149,6 +296,17 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                     onChange={(e) => handleInputChange('maxVocabularyQuestions', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={() => window.speakText && window.speakText('Vocabulary practice example', 2)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                      title="Test speech for vocabulary step"
+                    >
+                      <SpeechIcon isPlaying={false} />
+                      <span className="text-sm">Test Speech</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Step 3: Plural Questions */}
@@ -168,6 +326,17 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                     onChange={(e) => handleInputChange('maxPluralQuestions', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={() => window.speakText && window.speakText('Plural practice example', 3)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                      title="Test speech for plural step"
+                    >
+                      <SpeechIcon isPlaying={false} />
+                      <span className="text-sm">Test Speech</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Step 4: Articles Questions */}
@@ -187,6 +356,17 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                     onChange={(e) => handleInputChange('maxArticlesQuestions', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={() => window.speakText && window.speakText('Articles practice example', 4)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                      title="Test speech for articles step"
+                    >
+                      <SpeechIcon isPlaying={false} />
+                      <span className="text-sm">Test Speech</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Step 5: Translations Questions */}
@@ -206,6 +386,17 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                     onChange={(e) => handleInputChange('maxTranslationsQuestions', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={() => window.speakText && window.speakText('Translation practice example', 5)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                      title="Test speech for translations step"
+                    >
+                      <SpeechIcon isPlaying={false} />
+                      <span className="text-sm">Test Speech</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Step 6: Verbs Questions */}
@@ -225,7 +416,155 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                     onChange={(e) => handleInputChange('maxVerbsQuestions', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={() => window.speakText && window.speakText('Verb conjugation example', 6)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                      title="Test speech for verbs step"
+                    >
+                      <SpeechIcon isPlaying={false} />
+                      <span className="text-sm">Test Speech</span>
+                    </button>
+                  </div>
                 </div>
+              </div>
+
+              {/* Speech Settings */}
+              <div className="pt-4 border-t border-gray-200">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Speech Settings</h3>
+                
+                {/* Speech Enabled */}
+                <div className="mb-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={localSettings.speechSettings.enabled}
+                      onChange={(e) => handleSpeechSettingChange('enabled', e.target.checked)}
+                      className="mr-2"
+                    />
+                    <span className="text-sm text-gray-700">Enable speech synthesis</span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Enable pronunciation buttons for German text
+                  </p>
+                </div>
+
+                {localSettings.speechSettings.enabled && (
+                  <>
+                    {/* Auto-pronounce */}
+                    <div className="mb-4">
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={localSettings.speechSettings.autoPronounce}
+                          onChange={(e) => handleSpeechSettingChange('autoPronounce', e.target.checked)}
+                          className="mr-2"
+                        />
+                        <span className="text-sm text-gray-700">Auto-pronounce German words</span>
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Automatically pronounce German words when displayed
+                      </p>
+                    </div>
+
+                    {/* Speech Rate */}
+                    <div className="mb-4">
+                      <label htmlFor="speechRate" className="block text-sm font-medium text-gray-700 mb-1">
+                        Speech Rate: {localSettings.speechSettings.rate.toFixed(1)}
+                      </label>
+                      <p className="text-xs text-gray-500 mb-2">
+                        Speed of speech synthesis (0.5-1.5, default: 0.9)
+                      </p>
+                      <input
+                        type="range"
+                        id="speechRate"
+                        min="0.5"
+                        max="1.5"
+                        step="0.1"
+                        value={localSettings.speechSettings.rate}
+                        onChange={(e) => handleSpeechSettingChange('rate', parseFloat(e.target.value))}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Speech Volume */}
+                    <div className="mb-4">
+                      <label htmlFor="speechVolume" className="block text-sm font-medium text-gray-700 mb-1">
+                        Speech Volume: {Math.round(localSettings.speechSettings.volume * 100)}%
+                      </label>
+                      <p className="text-xs text-gray-500 mb-2">
+                        Volume of speech synthesis (0-100%, default: 100%)
+                      </p>
+                      <input
+                        type="range"
+                        id="speechVolume"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value={localSettings.speechSettings.volume}
+                        onChange={(e) => handleSpeechSettingChange('volume', parseFloat(e.target.value))}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Voice Selection */}
+                    <div className="mb-4">
+                      <label htmlFor="voiceSelection" className="block text-sm font-medium text-gray-700 mb-1">
+                        Voice Selection
+                      </label>
+                      <p className="text-xs text-gray-500 mb-2">
+                        Choose preferred German voice for pronunciation
+                      </p>
+                      <div className="flex flex-col space-y-2">
+                        <select
+                          id="voiceSelection"
+                          value={localSettings.speechSettings.voiceUri || ''}
+                          onChange={(e) => handleSpeechSettingChange('voiceUri', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          disabled={!isSpeechSupported || speechVoices.length === 0}
+                        >
+                          {speechVoices.filter(voice =>
+                            germanSpeechConfig.languages.includes(voice.lang) ||
+                            voice.lang.startsWith('de-') ||
+                            voice.lang.startsWith('de_')
+                          ).map(voice => (
+                            <option key={voice.voiceURI} value={voice.voiceURI}>
+                              {voice.name} ({voice.lang}) {voice.default ? ' - DEFAULT' : ''}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={handlePreviewVoice}
+                          disabled={!isSpeechSupported || !localSettings.speechSettings.voiceUri || isPreviewingVoice}
+                          className="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-1"
+                        >
+                          <span>{isPreviewingVoice ? 'Playing...' : 'Test'}</span>
+                        </button>
+                      </div>
+                      {!isSpeechSupported && (
+                        <p className="text-xs text-red-500 mt-1">
+                          Speech synthesis is not supported in your browser
+                        </p>
+                      )}
+                      {isSpeechSupported && !voicesLoaded && speechVoices.length === 0 && (
+                        <p className="text-xs text-yellow-500 mt-1">
+                          Loading voices... Please wait a moment.
+                        </p>
+                      )}
+                      {isSpeechSupported && voicesLoaded && speechVoices.filter(v =>
+                        germanSpeechConfig.languages.includes(v.lang) ||
+                        v.lang.startsWith('de-') ||
+                        v.lang.startsWith('de_')
+                      ).length === 0 && (
+                        <p className="text-xs text-yellow-500 mt-1">
+                          No German voices found in your browser. Consider using Chrome or Edge for better German voice support.
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Buttons */}

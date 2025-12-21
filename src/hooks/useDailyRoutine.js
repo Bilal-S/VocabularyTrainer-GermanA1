@@ -3,8 +3,36 @@ import { VocabularyManager } from '../utils/vocabularyManager'
 import { generateMessageId } from '../utils/idGenerator'
 import { updateChecker } from '../utils/updateChecker'
 import { getStepConfig, getCurrentSection as getCurrentStepSection, STEPS, STEP_CONFIG } from '../services/stepService'
+import { speak } from '../services/speechSynthesisService'
 
 export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats) => {
+  // Get speech settings from state
+  const getSpeechSettings = () => {
+    return {
+      enabled: state.settings?.speechEnabled || false,
+      voice: state.settings?.selectedVoice || null,
+      rate: state.settings?.speechRate || 1,
+      pitch: state.settings?.speechPitch || 1,
+      volume: state.settings?.speechVolume || 1
+    }
+  }
+
+  // Speak German text with current settings
+  const speakGerman = useCallback((text, options = {}) => {
+    const settings = getSpeechSettings()
+    if (!settings.enabled) return
+
+    const speechOptions = {
+      voice: settings.voice,
+      rate: settings.rate,
+      pitch: settings.pitch,
+      volume: settings.volume,
+      ...options
+    }
+
+    speak(text, 'de-DE', speechOptions)
+  }, [state.settings])
+
   const [currentStep, setCurrentStep] = useState(0)
   const [batchProgress, setBatchProgress] = useState({
     completed: 0,
@@ -322,7 +350,7 @@ Please translate to following **English nouns** into **German** (Article + Noun)
           batchMessage += `*${index + 1}.* ${item.english}\n`
         })
         addSystemMessage(batchMessage)
-        
+              
         console.log('Vocabulary batch generated:', {
           batchLength: batch.length,
           firstItem: batch[0],
@@ -370,7 +398,7 @@ Moving to **Step 4: Articles in Context** in 1 second...`)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        // CRITICAL FIX: Reset answers when starting a new batch
+        // Reset answers when starting a new batch
         setBatchAnswers({})
         
         let pluralMessage = `### **Step 3: Plural Practice (${config.totalItems} Nouns)**
@@ -380,11 +408,12 @@ Please provide to **plural forms** for the following German nouns:
 *Example: 1. das Haus -> die Häuser*
 
 `
-        // Number the items sequentially starting from 1
+        // Number the items sequentially starting from 1 with speech markers
         batch.forEach((item, index) => {
-          pluralMessage += `*${index + 1}.* ${item.singular}\n`
+          pluralMessage += `*${index + 1}.* {{speak:${item.singular}}} \n`
         })
         addSystemMessage(pluralMessage)
+        
         return
       case 'ARTICLES':
         batch = vocabManager.generateArticlesBatch(state.settings.maxArticlesQuestions, state)
@@ -416,11 +445,13 @@ Moving to **Step 5: Case Translations** in 1 second...`)
 Please fill in the blanks with **correct articles** (der, die, das, ein, eine):
 
 `
-        // Number the items sequentially starting from 1
+        // Number the items sequentially starting from 1 with speech markers for German words
         batch.forEach((item, index) => {
-          articlesMessage += `*${index + 1}.* ${item.german}\n`
+            articlesMessage += `*${index + 1}.* {{speak:${item.german}}}\n`
         })
         addSystemMessage(articlesMessage)
+        
+
         return
       case 'TRANSLATIONS':
         batch = vocabManager.generateTranslationBatch(state.settings.maxTranslationsQuestions, state)
@@ -456,7 +487,8 @@ Please translate to following **sentences from English to German**:
         batch.forEach((item, index) => {
           translationsMessage += `*${index + 1}.* ${item.english}\n`
         })
-        addSystemMessage(translationsMessage)
+        addSystemMessage(translationsMessage)       
+
         return
       case 'VERBS':
         batch = vocabManager.generateVerbBatch([], state.settings.maxVerbsQuestions)
@@ -477,11 +509,12 @@ Please translate to following **sentences from English to German**:
 Please conjugate the following **verbs for the given subjects**:
 
 `
-        // Number the items sequentially starting from 1
+        // Number the items sequentially starting from 1 with speech markers
         batch.forEach((item, index) => {
-          verbsMessage += `*${index + 1}.* ${item.verb} (${item.subject})\n`
+          verbsMessage += `*${index + 1}.* {{speak:${item.verb}}} (${item.subject})\n`
         })
         addSystemMessage(verbsMessage)
+        
         return
       case 'RECAP':
         // CRITICAL FIX: Handle Step 7 recap directly
@@ -847,11 +880,23 @@ Please conjugate the following **verbs for the given subjects**:
     feedback += `**[Step ${currentStep} | Batch 1 | Remaining: ${remaining}]**\n\n`
     feedback += `Please continue with the remaining items:\n\n`
     
-    // List remaining items (only unanswered ones) with original numbering
+    // List remaining items (only unanswered ones) with original numbering and speech markers
     currentBatch.forEach((exercise, actualIndex) => {
       if (!allAnswers[actualIndex]) {
         const prompt = getPrompt(exercise)
-        feedback += `*${actualIndex + 1}.* ${prompt}\n`
+        let itemWithSpeech = prompt
+        
+        // Add speech markers for different step types (NOT step 2)
+        if (currentStep === 3 && exercise.type === 'plural') {
+          itemWithSpeech = `{{speak:${exercise.singular}}}`
+        } else if (currentStep === 4 && exercise.type === 'article') {
+          // directly use the whole sentence
+          itemWithSpeech = `{{speak:${exercise.german}}}`
+        } else if (currentStep === 6 && exercise.type === 'conjugation') {
+          itemWithSpeech = `{{speak:${exercise.verb}}} (${exercise.subject})`
+        }
+        
+        feedback += `*${actualIndex + 1}.* ${itemWithSpeech}\n`
       }
     })
     
@@ -945,6 +990,7 @@ Keep up the great work! You're making steady progress with your German learning.
     completeStep,
     startDailyRoutine,
     skipToNextStep,
-    isCompleting
+    isCompleting,
+    speakGerman // Expose speech function for external use
   }
 }

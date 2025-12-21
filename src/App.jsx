@@ -6,10 +6,12 @@ import ImportExportModal from './components/ImportExportModal'
 import SettingsModal from './components/SettingsModal'
 import HelpModal from './components/HelpModal'
 import UpdateModal from './components/UpdateModal'
+import DatabaseInfoModal from './components/DatabaseInfoModal'
 import { useVocabularyState } from './hooks/useVocabularyState'
 import { useDailyRoutine } from './hooks/useDailyRoutine'
 import { generateMessageId } from './utils/idGenerator'
 import { updateChecker } from './utils/updateChecker'
+import { useSpeechSynthesis } from './hooks/useSpeechSynthesis'
 
 const SECTIONS = {
   INTRO: { id: 'intro', name: 'Introduction', color: 'section-intro' },
@@ -27,6 +29,7 @@ function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [isDatabaseInfoModalOpen, setIsDatabaseInfoModalOpen] = useState(false)
   const [updateInfo, setUpdateInfo] = useState(null)
   const [messages, setMessages] = useState([])
   const [deferredPrompt, setDeferredPrompt] = useState(null)
@@ -55,8 +58,12 @@ function App() {
     getSectionProgress,
     isStepComplete,
     getRemainingQuestions,
-    isCompleting
+    isCompleting,
+    speakGerman
   } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats)
+
+  // Speech synthesis hook
+  const { speak } = useSpeechSynthesis(state.settings?.speechSettings || {})
 
   // PWA Install Prompt Handler
   useEffect(() => {
@@ -106,13 +113,27 @@ function App() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleAppInstalled)
-
+    
+    // Global speech function for update buttons in chat messages
+    window.speakText = async (text, step) => {
+      try {
+        await speak(text, {
+          step: step,
+          type: 'question',
+          autoPlay: true
+        })
+      } catch (error) {
+        console.error('Speech synthesis error in global function:', error)
+      }
+    }
+    
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       window.removeEventListener('appinstalled', handleAppInstalled)
       // Clean up global functions
       delete window.updateApp
       delete window.dismissUpdate
+      delete window.speakText
     }
   }, [])
 
@@ -135,11 +156,39 @@ function App() {
   }
 
   // Initialize with welcome message
-  useEffect(() => {
-    const welcomeMessage = {
-      id: generateMessageId(),
-      type: 'system',
-      content: `# Welcome to A1 German Coach! 🇩🇪
+ useEffect(() => {
+   let isMounted = true
+   const initializeWelcomeMessage = async () => {
+     // Check speech synthesis support with timeout
+     let isSpeechSupported = false
+     try {
+       const synth = window.speechSynthesis
+       if (synth) {
+         // Wait for voices to load
+         await new Promise(resolve => {
+           if (synth.getVoices().length > 0) {
+             resolve()
+           } else {
+             const timer = setInterval(() => {
+               if (synth.getVoices().length > 0) {
+                 clearInterval(timer)
+                 resolve()
+               }
+             }, 100)
+           }
+         })
+         isSpeechSupported = true
+       }
+     } catch (e) {
+       console.warn('Speech synthesis check failed:', e)
+     }
+
+     // Only update if component is still mounted
+     if (isMounted) {
+       const welcomeMessage = {
+         id: generateMessageId(),
+         type: 'system',
+         content: `# Welcome to A1 German Coach! 🇩🇪
 
 This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
 
@@ -147,7 +196,6 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - **"Today is a new day"** (or **"tiand"**) - Start your daily learning routine
 - **"progress summary"** - Display current learning progress
 - **"Next Step"** - Skip to the next exercise
-- **"clear all progress data"** - Reset all your progress
 
 ## Features:
 - 📚 Structured 7-step daily routine
@@ -156,12 +204,21 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 - 📱 Mobile-friendly chat interface
 - 📲 Install as PWA for offline access (Menu ☰ → Install)
 - 🔄 Check for updates manually (Menu ☰ → Check for Updates)
+${isSpeechSupported ? '- 🔊 German pronunciation with speech synthesis' : '- ⚠️ Speech synthesis not supported in this browser'}
 
 Type **"Today is a new day"** to begin your German learning journey!`
-    }
-    
-    setMessages([welcomeMessage])
-  }, [])
+       }
+       
+       setMessages([welcomeMessage])
+     }
+   }
+   
+   initializeWelcomeMessage()
+   
+   return () => {
+     isMounted = false
+   }
+ }, [])
 
   const handleCommand = async (command) => {
     const userMessage = {
@@ -270,7 +327,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </button>
-        <HamburgerMenu 
+        <HamburgerMenu
           onOpenImport={() => setIsModalOpen(true)}
           onExport={handleExport}
           onReset={handleReset}
@@ -279,16 +336,19 @@ Type **"Today is a new day"** to begin your German learning journey!`
           onInstall={handleInstall}
           isInstallable={isInstallable}
           onCheckUpdates={handleManualUpdateCheck}
+          onOpenDatabaseInfo={() => setIsDatabaseInfoModalOpen(true)}
         />
       </Header>
       
-      <ChatInterface 
+      <ChatInterface
         messages={messages}
         onCommand={handleCommand}
         isStepComplete={isStepComplete}
         getRemainingQuestions={getRemainingQuestions}
         currentStep={currentStep}
         isCompleting={isCompleting}
+        speakForStep={speakGerman}
+        speechSettings={state.settings?.speechSettings || {}}
       />
       
       <ImportExportModal
@@ -315,6 +375,11 @@ Type **"Today is a new day"** to begin your German learning journey!`
         onClose={() => setIsUpdateModalOpen(false)}
         onUpdate={handleUpdateNow}
         updateInfo={updateInfo}
+      />
+      
+      <DatabaseInfoModal
+        isOpen={isDatabaseInfoModalOpen}
+        onClose={() => setIsDatabaseInfoModalOpen(false)}
       />
     </div>
   )

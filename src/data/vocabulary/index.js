@@ -261,3 +261,41 @@ export const getTotalVocabularyCount = () => {
   
   return totalCount
 }
+
+// Get detailed database statistics including counts for all categories
+export const getDatabaseStatistics = () => {
+  const availableLetters = getAvailableLetters()
+  const stats = {
+    nouns: 0,
+    verbs: 0,
+    examples: {
+      nominative: 0,
+      accusative: 0,
+      dative: 0,
+      translations: 0,
+      conjugations: 0,
+      sentences: 0
+    }
+  }
+  
+  availableLetters.forEach(letter => {
+    const letterData = vocabularyDatabase[letter.toLowerCase()]
+    if (letterData) {
+      // Count nouns and verbs
+      stats.nouns += (letterData.nouns || []).length
+      stats.verbs += (letterData.verbs || []).length
+      
+      // Count examples by category (German-specific categories)
+      if (letterData.examples) {
+        stats.examples.nominative += (letterData.examples.nominative || []).length
+        stats.examples.accusative += (letterData.examples.accusative || []).length
+        stats.examples.dative += (letterData.examples.dative || []).length
+        stats.examples.translations += (letterData.examples.translations || []).length
+        stats.examples.conjugations += (letterData.examples.conjugations || []).length
+        stats.examples.sentences += (letterData.examples.sentences || []).length
+      }
+    }
+  })
+  
+  return stats
+}

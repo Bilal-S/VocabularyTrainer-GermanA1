@@ -3,13 +3,15 @@ import { marked } from 'marked'
 import Message from './Message'
 import VerificationModal from './VerificationModal'
 
-const ChatInterface = ({ 
-  messages, 
-  onCommand, 
-  isStepComplete, 
-  getRemainingQuestions, 
+const ChatInterface = ({
+  messages,
+  onCommand,
+  isStepComplete,
+  getRemainingQuestions,
   currentStep,
-  isCompleting
+  isCompleting,
+  speakForStep,
+  speechSettings
 }) => {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -32,8 +34,16 @@ const ChatInterface = ({
       setTimeout(() => {
         inputRef.current?.focus()
       }, 100)
+      
+      // Check if latest message has autoPopulateInput property
+      if (messages.length > 0) {
+        const latestMessage = messages[messages.length - 1]
+        if (latestMessage.autoPopulateInput && !input) {
+          setInput(latestMessage.autoPopulateInput)
+        }
+      }
     }
-  }, [messages, isLoading])
+  }, [messages, isLoading, input])
 
   // Auto-resize textarea
   useEffect(() => {
@@ -150,7 +160,13 @@ const ChatInterface = ({
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
         {messages.map((message) => (
-          <Message key={message.id} message={message} />
+          <Message
+            key={message.id}
+            message={message}
+            currentStep={currentStep}
+            speakForStep={speakForStep}
+            speechSettings={speechSettings}
+          />
         ))}
         
         {isLoading && (
