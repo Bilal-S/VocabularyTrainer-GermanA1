@@ -408,9 +408,9 @@ Please provide to **plural forms** for the following German nouns:
 *Example: 1. das Haus -> die Häuser*
 
 `
-        // Number the items sequentially starting from 1 with speech markers
+        // Number the items sequentially starting from 1 with translation and speech markers
         batch.forEach((item, index) => {
-          pluralMessage += `*${index + 1}.* {{speak:${item.singular}}} \n`
+          pluralMessage += `{{translate:${item.english}}} *${index + 1}.* {{speak:${item.singular}}} \n`
         })
         addSystemMessage(pluralMessage)
         
@@ -445,9 +445,9 @@ Moving to **Step 5: Case Translations** in 1 second...`)
 Please fill in the blanks with **correct articles** (der, die, das, ein, eine):
 
 `
-        // Number the items sequentially starting from 1 with speech markers for German words
+        // Number the items sequentially starting from 1 with translation and speech markers for German words
         batch.forEach((item, index) => {
-            articlesMessage += `*${index + 1}.* {{speak:${item.german}}}\n`
+            articlesMessage += `{{translate:${item.english}}} *${index + 1}.* {{speak:${item.german}}}\n`
         })
         addSystemMessage(articlesMessage)
         
@@ -509,9 +509,9 @@ Please translate to following **sentences from English to German**:
 Please conjugate the following **verbs for the given subjects**:
 
 `
-        // Number the items sequentially starting from 1 with speech markers
+        // Number the items sequentially starting from 1 with translation and speech markers
         batch.forEach((item, index) => {
-          verbsMessage += `*${index + 1}.* {{speak:${item.verb}}} (${item.subject})\n`
+          verbsMessage += `{{translate:${item.verbEnglish}}} *${index + 1}.* {{speak:${item.verb}}} (${item.subject})\n`
         })
         addSystemMessage(verbsMessage)
         
@@ -886,7 +886,7 @@ Please conjugate the following **verbs for the given subjects**:
         const prompt = getPrompt(exercise)
         let itemWithSpeech = prompt
         
-        // Add speech markers for different step types (NOT step 2)
+        // Add translation and speech markers for different step types (NOT step 2)
         if (currentStep === 3 && exercise.type === 'plural') {
           itemWithSpeech = `{{speak:${exercise.singular}}}`
         } else if (currentStep === 4 && exercise.type === 'article') {
@@ -896,7 +896,17 @@ Please conjugate the following **verbs for the given subjects**:
           itemWithSpeech = `{{speak:${exercise.verb}}} (${exercise.subject})`
         }
         
-        feedback += `*${actualIndex + 1}.* ${itemWithSpeech}\n`
+        // Add translation marker at the very beginning of each line
+        let translationText = ''
+        if (currentStep === 3 && exercise.type === 'plural') {
+          translationText = exercise.english
+        } else if (currentStep === 4 && exercise.type === 'article') {
+          translationText = exercise.english
+        } else if (currentStep === 6 && exercise.type === 'conjugation') {
+          translationText = exercise.verbEnglish
+        }
+        
+        feedback += `{{translate:${translationText}}}*${actualIndex + 1}.* ${itemWithSpeech}\n`
       }
     })
     

@@ -2,10 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import { marked } from 'marked'
 import clsx from 'clsx'
 import SpeechIcon from './SpeechIcon'
+import TranslationIcon from './TranslationIcon'
+import TranslationModal from './TranslationModal'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis'
 
 const Message = ({ message, currentStep, speakForStep, speechSettings = {} }) => {
   const [playingId, setPlayingId] = useState(null)
+  const [translationModalOpen, setTranslationModalOpen] = useState(false)
+  const [currentTranslation, setCurrentTranslation] = useState('')
   const contentRef = useRef(null)
   const { speak, isSpeaking } = useSpeechSynthesis(speechSettings)
   const handleSpeak = async (text, id) => {
@@ -24,10 +28,22 @@ const Message = ({ message, currentStep, speakForStep, speechSettings = {} }) =>
     }
   }
 
+  const handleTranslation = (translationText) => {
+    setCurrentTranslation(translationText)
+    setTranslationModalOpen(true)
+  }
+
+  const closeTranslationModal = () => {
+    setTranslationModalOpen(false)
+    setCurrentTranslation('')
+  }
+
   const renderContent = (content) => {
-    // Step 1: Parse {{speak:text}} markers BEFORE markdown rendering
+    // Step 1: Parse {{speak:text}} and {{translate:text}} markers BEFORE markdown rendering
     const speechMarkerRegex = /\{\{speak:([^}]+)\}\}/g
+    const translateMarkerRegex = /\{\{translate:([^}]+)\}\}/g
     const speechData = []
+    const translateData = []
     let processedContent = content
     
     // Find all speech markers and replace with placeholders
@@ -48,10 +64,28 @@ const Message = ({ message, currentStep, speakForStep, speechSettings = {} }) =>
       index++
     }
     
-    // Store speech data for use in useEffect
-    if (speechData.length > 0) {
+    // Find all translation markers and replace with placeholders
+    index = 0
+    while ((match = translateMarkerRegex.exec(content)) !== null) {
+      const translationText = match[1]
+      const id = `translate-${index}`
+      const placeholder = `<span class="translate-placeholder" data-translate-index="${index}"></span>`
+      
+      translateData.push({
+        index,
+        text: translationText,
+        id: `translate-${Math.random().toString(36).substr(2, 9)}`
+      })
+      
+      processedContent = processedContent.replace(match[0], placeholder)
+      index++
+    }
+    
+    // Store speech and translation data for use in useEffect
+    if (speechData.length > 0 || translateData.length > 0) {
       contentRef.current = contentRef.current || {}
       contentRef.current.speechData = speechData
+      contentRef.current.translateData = translateData
     }
     
     // Step 2: Configure and render markdown
@@ -66,53 +100,98 @@ const Message = ({ message, currentStep, speakForStep, speechSettings = {} }) =>
   }
 
   useEffect(() => {
-    if (!contentRef.current || !contentRef.current.speechData) return
+    if (!contentRef.current) return
 
     const contentElement = contentRef.current
     const speechData = contentElement.speechData
+    const translateData = contentElement.translateData
     
-    if (!speechData || speechData.length === 0) return
-    
-    // Find all speech placeholders and add icons
-    const placeholders = contentElement.querySelectorAll('.speech-placeholder')
-    
-    placeholders.forEach(placeholder => {
-      const index = parseInt(placeholder.getAttribute('data-speech-index'))
-      const data = speechData[index]
+    // Process speech placeholders
+    if (speechData && speechData.length > 0) {
+      const placeholders = contentElement.querySelectorAll('.speech-placeholder')
       
-      if (!data) return
-      
-      // Check if icon already added
-      if (placeholder.querySelector('.inline-speech-icon')) return
-      
-      // Create and insert icon after text
-      const iconSpan = document.createElement('span')
-      iconSpan.className = 'inline-speech-icon ml-1'
-      iconSpan.setAttribute('data-speech-id', data.id)
-      iconSpan.innerHTML = `
-        <button
-          type="button"
-          class="inline-flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-110 w-4 h-4"
-          title="Hear pronunciation"
-          aria-label="Hear pronunciation"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="${playingId === data.id ? '#EF4444' : '#3B82F6'}" stroke-width="2" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-          </svg>
-        </button>
-      `
-      
-      // Add click handler
-      const button = iconSpan.querySelector('button')
-      button.addEventListener('click', (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        handleSpeak(data.text, data.id)
+      placeholders.forEach(placeholder => {
+        const index = parseInt(placeholder.getAttribute('data-speech-index'))
+        const data = speechData[index]
+        
+        if (!data) return
+        
+        // Check if icon already added
+        if (placeholder.querySelector('.inline-speech-icon')) return
+        
+        // Create and insert icon after text
+        const iconSpan = document.createElement('span')
+        iconSpan.className = 'inline-speech-icon ml-1'
+        iconSpan.setAttribute('data-speech-id', data.id)
+        iconSpan.innerHTML = `
+          <button
+            type="button"
+            class="inline-flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-110 w-4 h-4"
+            title="Hear pronunciation"
+            aria-label="Hear pronunciation"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="${playingId === data.id ? '#EF4444' : '#3B82F6'}" stroke-width="2" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+          </button>
+        `
+        
+        // Add click handler
+        const button = iconSpan.querySelector('button')
+        button.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          handleSpeak(data.text, data.id)
+        })
+        
+        placeholder.appendChild(iconSpan)
       })
+    }
+    
+    // Process translation placeholders
+    if (translateData && translateData.length > 0) {
+      const placeholders = contentElement.querySelectorAll('.translate-placeholder')
       
-      placeholder.appendChild(iconSpan)
-    })
-  }, [message.content, playingId, handleSpeak])
+      placeholders.forEach(placeholder => {
+        const index = parseInt(placeholder.getAttribute('data-translate-index'))
+        const data = translateData[index]
+        
+        if (!data) return
+        
+        // Check if icon already added
+        if (placeholder.querySelector('.inline-translation-icon')) return
+        
+        // Create and insert translation icon
+        const iconSpan = document.createElement('span')
+        iconSpan.className = 'inline-translation-icon mr-2'
+        iconSpan.setAttribute('data-translation-id', data.id)
+        iconSpan.innerHTML = `
+          <button
+            type="button"
+            class="inline-flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-110 w-4 h-4"
+            title="Show translation"
+            aria-label="Show translation"
+          >
+            <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">
+              <circle cx="12" cy="12" r="10" fill="#3B82F6" />
+              <rect x="10" y="9" width="4" height="3" fill="white" />
+              <circle cx="12" cy="6" r="1.5" fill="white" />
+            </svg>
+          </button>
+        `
+        
+        // Add click handler
+        const button = iconSpan.querySelector('button')
+        button.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          handleTranslation(data.text)
+        })
+        
+        placeholder.appendChild(iconSpan)
+      })
+    }
+  }, [message.content, playingId, handleSpeak, handleTranslation])
 
   const isSystemMessage = message.type === 'system'
   const isUserMessage = message.type === 'user'
@@ -154,6 +233,13 @@ const Message = ({ message, currentStep, speakForStep, speechSettings = {} }) =>
           </div>
         )}
       </div>
+      
+      {/* Translation Modal */}
+      <TranslationModal
+        isOpen={translationModalOpen}
+        onClose={closeTranslationModal}
+        translationText={currentTranslation}
+      />
     </div>
   )
 }
