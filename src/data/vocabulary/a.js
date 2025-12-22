@@ -42,7 +42,6 @@ export const letterA = {
     {"to begin": ["anfangen", "fange an", "fängst an", "fängt an", "fängt an", "fängt an", "fangen an", "fangt an", "fangen an", "fangen an"]},
     {"to arrive": ["ankommen", "komme an", "kommst an", "kommt an", "kommt an", "kommt an", "kommen an", "kommt an", "kommen an", "kommen an"]},
     {"to depart": ["abfahren", "fahre ab", "fährst ab", "fährt ab", "fährt ab", "fährt ab", "fahren ab", "fahrt ab", "fahren ab", "fahren ab"]},
-    {"to give": ["abgeben", "gebe ab", "gibst ab", "gibt ab", "gibt ab", "gibt ab", "geben ab", "gebt ab", "geben ab", "geben ab"]},
     {"to pick up": ["abholen", "hole ab", "holst ab", "holt ab", "holt ab", "holt ab", "holen ab", "holt ab", "holen ab", "holen ab"]},
     {"to offer": ["anbieten", "biete an", "bietest an", "bietet an", "bietet an", "bietet an", "bieten an", "bietet an", "bieten an", "bieten an"]},
     {"to click": ["anklicken", "klicke an", "klickst an", "klickt an", "klickt an", "klickt an", "klicken an", "klickt an", "klicken an", "klicken an"]},
