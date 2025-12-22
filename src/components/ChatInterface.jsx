@@ -30,7 +30,7 @@ const ChatInterface = ({
 
   // Focus input when component mounts or when messages change
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !isCompleting) {
       setTimeout(() => {
         inputRef.current?.focus()
       }, 100)
@@ -43,7 +43,7 @@ const ChatInterface = ({
         }
       }
     }
-  }, [messages, isLoading, input])
+  }, [messages, isLoading, isCompleting, input])
 
   // Auto-resize textarea
   useEffect(() => {
