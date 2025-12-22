@@ -491,7 +491,24 @@ Please translate to following **sentences from English to German**:
 
         return
       case 'VERBS':
-        batch = vocabManager.generateVerbBatch([], state.settings.maxVerbsQuestions)
+        // Pass state to enable mastery filtering
+        batch = vocabManager.generateVerbBatch([], state.settings.maxVerbsQuestions, state)
+        
+        // Check if all verb conjugations are mastered
+        if (batch.length === 0) {
+          addSystemMessage(`🎉 **All verb conjugations have been mastered!**
+
+All verb+subject combinations have been answered correctly ${state.settings.masteringCount} times and are now in your mastered pool.
+
+Moving to **Step 7: Daily Recap** in 1 second...`)
+          
+          // Automatically move to next step after standardized delay
+          setTimeout(() => {
+            skipToNextStepFromStep(6)
+          }, 1000)
+          return
+        }
+        
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
@@ -638,8 +655,9 @@ Please conjugate the following **verbs for the given subjects**:
       completed: Math.min(prev.completed + 1, prev.total)
     }))
     
-    // Update progress in state with section information
-    updateProgress(currentExercise.word, isCorrect, currentExercise.originSection)
+    // Update progress in state with section and subject information
+    const subject = currentExercise.type === 'conjugation' ? currentExercise.cleanSubject : null
+    updateProgress(currentExercise.word, isCorrect, currentExercise.originSection, currentExercise.form || 'singular', subject)
     
     // Show next question or completion message
     if (nextExercise && nextQuestionNumber <= progress.total) {
@@ -802,20 +820,22 @@ Please conjugate the following **verbs for the given subjects**:
 
         if (isCorrect) {
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** ✅\n`
-          // Update progress for correct answers with form information
+          // Update progress for correct answers with form and subject information
           if (wordToTrack) {
-            updateProgress(wordToTrack, true, `${stepName}`, exercise.form || 'singular')
+            const subject = exercise.type === 'conjugation' ? exercise.cleanSubject : null
+            updateProgress(wordToTrack, true, `${stepName}`, exercise.form || 'singular', subject)
           }
         } else {
           const helpQuery = encodeURIComponent(`Why is "${userAnswer}" wrong for "${prompt}" in German?`)
-          const correctDisplay = Array.isArray(exercise.answer) 
-            ? exercise.answer.join(' or ') 
+          const correctDisplay = Array.isArray(exercise.answer)
+            ? exercise.answer.join(' or ')
             : exercise.answer
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${correctDisplay}** <a href="https://chatgpt.com/?q=${helpQuery}" target="_blank" rel="noopener noreferrer" title="Ask ChatGPT for explanation">💡</a>\n`
           
-          // Update progress for incorrect answers with form information
+          // Update progress for incorrect answers with form and subject information
           if (wordToTrack) {
-            updateProgress(wordToTrack, false, `${stepName}`, exercise.form || 'singular')
+            const subject = exercise.type === 'conjugation' ? exercise.cleanSubject : null
+            updateProgress(wordToTrack, false, `${stepName}`, exercise.form || 'singular', subject)
           }
         }
       })
@@ -896,7 +916,7 @@ Please conjugate the following **verbs for the given subjects**:
           itemWithSpeech = `{{speak:${exercise.verb}}} (${exercise.subject})`
         }
         
-        // Add translation marker at the very beginning of each line
+        // Add translation marker at the very beginning of each line (only for steps that need it)
         let translationText = ''
         if (currentStep === 3 && exercise.type === 'plural') {
           translationText = exercise.english
@@ -906,7 +926,12 @@ Please conjugate the following **verbs for the given subjects**:
           translationText = exercise.verbEnglish
         }
         
-        feedback += `{{translate:${translationText}}}*${actualIndex + 1}.* ${itemWithSpeech}\n`
+        if (translationText && translationText !== '') {
+          feedback += `{{translate:${translationText}}} *${actualIndex + 1}.* ${itemWithSpeech}\n`
+        } else {
+          feedback += `*${actualIndex + 1}.* ${itemWithSpeech}\n`
+        }
+        
       }
     })
     

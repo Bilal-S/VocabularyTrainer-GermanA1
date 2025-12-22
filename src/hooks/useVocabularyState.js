@@ -259,7 +259,7 @@ export const useVocabularyState = () => {
     }
   }
 
-  const updateProgress = (word, isCorrect, section = 'Unknown', form = 'singular') => {
+  const updateProgress = (word, isCorrect, section = 'Unknown', form = 'singular', subject = null) => {
     // CRITICAL FIX: Ensure word is defined before updating progress
     if (!word) {
       console.error(`updateProgress called with invalid word: ${word} (Section: ${section})`)
@@ -267,8 +267,12 @@ export const useVocabularyState = () => {
     }
 
     const newState = { ...state }
-    if (!newState.progress[word]) {
-      newState.progress[word] = {
+    
+    // For verb conjugations, use composite key: verb|subject
+    const progressKey = (section === 'VERBS' && subject) ? `${word}|${subject}` : word
+    
+    if (!newState.progress[progressKey]) {
+      newState.progress[progressKey] = {
         singular: { correctCount: 0, incorrectCount: 0 },
         plural: { correctCount: 0, incorrectCount: 0 },
         section: section
@@ -280,58 +284,31 @@ export const useVocabularyState = () => {
 
     if (isCorrect) {
       // Update correct count for specific form
-      newState.progress[word][form].correctCount++
+      newState.progress[progressKey][form].correctCount++
       
       // Determine if item is in review queue to use correct mastering threshold
-      const isInReviewQueue = newState.pools.reviewQueue.findIndex(item => 
-        typeof item === 'string' ? item === word : item.word === word
+      const isInReviewQueue = newState.pools.reviewQueue.findIndex(item =>
+        typeof item === 'string' ? item === progressKey : item.word === progressKey
       ) > -1
       
       // change which threshold to use based on review queue status
-      const masteringThreshold = isInReviewQueue 
-        ? newState.settings.maxReviewCount 
+      const masteringThreshold = isInReviewQueue
+        ? newState.settings.maxReviewCount
         : newState.settings.masteringCount
-      
-      // Check if word is mastered based on section and form
-      const isWordMastered = (wordData) => {
-        if (!wordData || wordData.singular === undefined || wordData.plural === undefined) {
-          return false
-        }
-        
-        // For review queue items, only the form that caused the failure needs to reach maxReviewCount
-        if (isInReviewQueue) {
-          if (form === 'singular') {
-            return wordData.singular.correctCount >= masteringThreshold
-          } else if (form === 'plural') {
-            return wordData.plural.correctCount >= masteringThreshold
-          }
-        }
-        
-        // For new items (not in review queue), require both forms to be mastered
-        const singularMastered = wordData.singular.correctCount >= masteringThreshold
-        const pluralMastered = wordData.plural.correctCount >= masteringThreshold
-        
-        if (section === 'VOCABULARY' || section === 'PLURAL') {
-          return singularMastered && pluralMastered
-        }
-        
-        // For verbs and other word types, only require tested form
-        return singularMastered
-      }
       
       // Check if word should be removed from review queue (specific form mastered)
       // This is distinct from full mastery (all forms mastered)
       let shouldRemoveFromReview = false
       if (isInReviewQueue) {
         // Only consider the form that was being tested/failed
-        if (form === 'singular' && newState.progress[word].singular.correctCount >= masteringThreshold) {
+        if (form === 'singular' && newState.progress[progressKey].singular.correctCount >= masteringThreshold) {
           shouldRemoveFromReview = true
-        } else if (form === 'plural' && newState.progress[word].plural.correctCount >= masteringThreshold) {
+        } else if (form === 'plural' && newState.progress[progressKey].plural.correctCount >= masteringThreshold) {
           shouldRemoveFromReview = true
-        } else if (section === 'VERBS' && newState.progress[word].singular.correctCount >= masteringThreshold) {
-          // Verbs currently use singular structure for tracking
+        } else if (section === 'VERBS' && newState.progress[progressKey].singular.correctCount >= masteringThreshold) {
+          // Verbs use singular structure for tracking each combination
           shouldRemoveFromReview = true
-        } else if ((section === 'ARTICLES' || section === 'TRANSLATIONS') && newState.progress[word].singular.correctCount >= masteringThreshold) {
+        } else if ((section === 'ARTICLES' || section === 'TRANSLATIONS') && newState.progress[progressKey].singular.correctCount >= masteringThreshold) {
           // CRITICAL FIX: ARTICLES and TRANSLATIONS are single-form items that should be removed from review queue when mastered
           shouldRemoveFromReview = true
         }
@@ -341,75 +318,93 @@ export const useVocabularyState = () => {
       // For Nouns (VOCABULARY/PLURAL sections), this requires BOTH Singular and Plural
       let isFullyMastered = false
       if (section === 'VOCABULARY' || section === 'PLURAL') {
-        const singularMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
-        const pluralMastered = newState.progress[word].plural.correctCount >= newState.settings.masteringCount
+        const singularMastered = newState.progress[progressKey].singular.correctCount >= newState.settings.masteringCount
+        const pluralMastered = newState.progress[progressKey].plural.correctCount >= newState.settings.masteringCount
         isFullyMastered = singularMastered && pluralMastered
       } else if (section === 'ARTICLES' || section === 'TRANSLATIONS') {
         // CRITICAL FIX: ARTICLES and TRANSLATIONS are single-form items that reach mastery after maxReviewCount
         // They don't need to reach the full masteringCount threshold since they're review items
-        isFullyMastered = newState.progress[word].singular.correctCount >= masteringThreshold
+        isFullyMastered = newState.progress[progressKey].singular.correctCount >= masteringThreshold
+      } else if (section === 'VERBS') {
+        // For verb conjugations, check if this specific combination is mastered
+        isFullyMastered = newState.progress[progressKey].singular.correctCount >= newState.settings.masteringCount
+        
+        // Additionally, check if ALL conjugations of the base verb are mastered
+        if (isFullyMastered && subject) {
+          const baseVerb = word // The verb without subject
+          const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
+          const allConjugationsMastered = subjects.every(subj => {
+            const key = `${baseVerb}|${subj}`
+            return newState.progress[key] &&
+                   newState.progress[key].singular.correctCount >= newState.settings.masteringCount
+          })
+          
+          // Only add verb to mastered pool if ALL conjugations are mastered
+          if (allConjugationsMastered && !newState.pools.mastered.verbs.includes(baseVerb)) {
+            newState.pools.mastered.verbs.push(baseVerb)
+            console.log(`Verb "${baseVerb}" fully mastered - all 9 conjugations complete`)
+          }
+        }
       } else {
-        // For verbs/others, basic check
-        isFullyMastered = newState.progress[word].singular.correctCount >= newState.settings.masteringCount
+        // For other word types, basic check
+        isFullyMastered = newState.progress[progressKey].singular.correctCount >= newState.settings.masteringCount
       }
 
       // 1. Remove from Review Queue if specific form is mastered
       if (shouldRemoveFromReview) {
-        const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
-          typeof item === 'string' ? item === word : item.word === word
+        const reviewIndex = newState.pools.reviewQueue.findIndex(item =>
+          typeof item === 'string' ? item === progressKey : item.word === progressKey
         )
         if (reviewIndex > -1) {
           newState.pools.reviewQueue.splice(reviewIndex, 1)
-          console.log(`Removed "${word}" from review queue - ${section} mastered`)
+          console.log(`Removed "${progressKey}" from review queue - ${section} mastered`)
         }
       }
 
-      // 2. Add to Mastered Pool ONLY if fully mastered
-      if (isFullyMastered) {
+      // 2. Add to Mastered Pool ONLY if fully mastered (except verbs which are handled above)
+      if (isFullyMastered && section !== 'VERBS') {
         // Ensure removed from review queue (redundant safety)
-        const reviewIndex = newState.pools.reviewQueue.findIndex(item => 
-          typeof item === 'string' ? item === word : item.word === word
+        const reviewIndex = newState.pools.reviewQueue.findIndex(item =>
+          typeof item === 'string' ? item === progressKey : item.word === progressKey
         )
         if (reviewIndex > -1) {
           newState.pools.reviewQueue.splice(reviewIndex, 1)
         }
 
         // Remove from unselected if present
-        const unselectedIndex = newState.pools.unselected.indexOf(word)
+        const unselectedIndex = newState.pools.unselected.indexOf(progressKey)
         if (unselectedIndex > -1) {
           newState.pools.unselected.splice(unselectedIndex, 1)
         }
         
         // Add to appropriate mastered category
-        if (!newState.pools.mastered.nouns.includes(word) && 
-            !newState.pools.mastered.verbs.includes(word) && 
-            !newState.pools.mastered.words.includes(word)) {
+        if (!newState.pools.mastered.nouns.includes(progressKey) &&
+            !newState.pools.mastered.verbs.includes(progressKey) &&
+            !newState.pools.mastered.words.includes(progressKey)) {
           
           // Determine word type based on section (simple heuristic)
           if (section === 'VOCABULARY' || section === 'PLURAL') {
-            newState.pools.mastered.nouns.push(word)
-          } else if (section === 'VERBS') {
-            newState.pools.mastered.verbs.push(word)
+            newState.pools.mastered.nouns.push(progressKey)
           } else if (section === 'ARTICLES' || section === 'TRANSLATIONS') {
             // CRITICAL FIX: ARTICLES and TRANSLATIONS go to the words pool
-            newState.pools.mastered.words.push(word)
-            console.log(`Added "${word}" to mastered.words - ${section} fully mastered`)
+            newState.pools.mastered.words.push(progressKey)
+            console.log(`Added "${progressKey}" to mastered.words - ${section} fully mastered`)
           } else {
-            newState.pools.mastered.words.push(word)
+            newState.pools.mastered.words.push(progressKey)
           }
           wasMovedToMastered = true
         }
       }
     } else {
       // Update incorrect count for specific form
-      newState.progress[word][form].incorrectCount++
+      newState.progress[progressKey][form].incorrectCount++
       
       // Add to review queue with section info if not already there
-      const existsInReview = newState.pools.reviewQueue.findIndex(item => 
-        typeof item === 'string' ? item === word : item.word === word
+      const existsInReview = newState.pools.reviewQueue.findIndex(item =>
+        typeof item === 'string' ? item === progressKey : item.word === progressKey
       )
       if (existsInReview === -1) {
-        newState.pools.reviewQueue.push({ word, section })
+        newState.pools.reviewQueue.push({ word: progressKey, section })
         wasAddedToReview = true
       }
 

@@ -34,6 +34,38 @@ export class VocabularyManager {
     return progress && progress.singular && progress.singular.correctCount >= state.settings.maxReviewCount
   }
 
+  // Verb conjugation mastery helpers
+  isVerbConjugationMastered(verb, subject, state) {
+    const key = `${verb}|${subject}`
+    const progress = state.progress[key]
+    return progress && progress.singular && progress.singular.correctCount >= state.settings.masteringCount
+  }
+
+  isVerbFullyMastered(verb, state) {
+    const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
+    return subjects.every(subject => this.isVerbConjugationMastered(verb, subject, state))
+  }
+
+  getAvailableVerbCombinations(verbs, state) {
+    const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
+    const combinations = []
+    
+    verbs.forEach(verb => {
+      subjects.forEach(subject => {
+        if (!this.isVerbConjugationMastered(verb.german, subject, state)) {
+          combinations.push({
+            verb: verb.german,
+            verbEnglish: verb.english,
+            subject: subject,
+            conjugation: verb.conjugations[subject]
+          })
+        }
+      })
+    })
+    
+    return combinations
+  }
+
   // Helper to get available nouns filtered by step-specific mastery
   getAvailableNounsForStep(excludeList, state, stepType) {
     const allNouns = getAllNounsFromAllLetters(excludeList)
@@ -403,7 +435,7 @@ export class VocabularyManager {
 
     this.currentBatch = translations.slice(0, batchSize).map(t => ({
       ...t,
-      word: t.english, // Use English prompt as ID for translations
+      word: t.english || t.german || 'unknown', // Use English prompt as ID for translations, fallback to german or 'unknown'
       answer: t.german, // Ensure answer property exists
       type: 'translation'
     }))
@@ -418,9 +450,13 @@ export class VocabularyManager {
     return this.currentBatch
   }
 
-  // Generate Step 6: Verb Conjugation (3 rounds of 10 items)
-  generateVerbBatch(exclude = [], batchSize = 10) {
-    console.log('Generating verb batch with TRUE RANDOMIZATION:', { exclude: exclude.slice(0, 5), batchSize })
+  // Generate Step 6: Verb Conjugation (configurable items)
+  generateVerbBatch(exclude = [], batchSize = 10, state = null) {
+    console.log('Generating verb batch with TRUE RANDOMIZATION:', {
+      exclude: exclude.slice(0, 5),
+      batchSize,
+      hasState: !!state
+    })
     
     // CRITICAL FIX: Use ALL verbs from ALL letters for true randomization
     const allVerbs = getAllVerbsFromAllLetters([...exclude, ...this.excludeList])
@@ -430,8 +466,46 @@ export class VocabularyManager {
       return []
     }
 
-    // Use explicit subjects to distinguish between singular "she" and plural "they"
-    // Create mapping for clean subject vs display subject
+    // If state is provided, filter by mastery
+    let availableCombinations
+    if (state) {
+      availableCombinations = this.getAvailableVerbCombinations(allVerbs, state)
+      console.log('After filtering mastered verb combinations:', {
+        totalVerbs: allVerbs.length,
+        totalCombinations: allVerbs.length * 9,
+        availableCombinations: availableCombinations.length,
+        batchSize
+      })
+      
+      // Return empty if all combinations are mastered
+      if (availableCombinations.length === 0) {
+        console.log('All verb conjugations have been mastered!')
+        return []
+      }
+    } else {
+      // No state - generate all combinations
+      const subjects = ['ich', 'du', 'er', 'sie (she)', 'es', 'wir', 'ihr', 'sie (they)', 'Sie']
+      
+      availableCombinations = []
+      allVerbs.forEach(verb => {
+        subjects.forEach(subject => {
+          availableCombinations.push({
+            verb: verb.german,
+            verbEnglish: verb.english,
+            subject: subject,
+            conjugation: verb.conjugations[subject]
+          })
+        })
+      })
+    }
+
+    // Shuffle combinations for randomness
+    const shuffled = [...availableCombinations].sort(() => 0.5 - Math.random())
+    
+    // Take requested batch size
+    const selectedCombinations = shuffled.slice(0, batchSize)
+    
+    // Create subject mapping for display
     const subjectMapping = {
       'ich': { clean: 'ich', display: 'ich' },
       'du': { clean: 'du', display: 'du' },
@@ -444,35 +518,32 @@ export class VocabularyManager {
       'Sie': { clean: 'Sie', display: 'Sie' }
     }
     
-    const displaySubjects = Object.values(subjectMapping)
-    const cleanSubjects = Object.keys(subjectMapping)
-    
-    this.currentBatch = []
-    for (let i = 0; i < batchSize; i++) {
-      const verb = allVerbs[i % allVerbs.length]
-      const cleanSubject = cleanSubjects[i % cleanSubjects.length]
-      const subjectObj = subjectMapping[cleanSubject]
-      const conjugation = verb.conjugations[cleanSubject]
-      
-      this.currentBatch.push({
+    // Format batch items
+    this.currentBatch = selectedCombinations.map(combo => {
+      const subjectObj = subjectMapping[combo.subject]
+      return {
         type: 'conjugation',
-        question: `Conjugate "${verb.english}" for "${subjectObj.display}" (e.g., "ich bin"):`,
-        answer: `${subjectObj.clean} ${conjugation}`, // Store clean subject in answer
-        verb: verb.german,
-        verbEnglish: verb.english,
-        subject: subjectObj.display, // Keep display subject for reference
-        cleanSubject: subjectObj.clean, // Store clean subject for validation
-        conjugation: conjugation,
-        word: verb.german // For progress tracking
-      })
-    }
+        question: `Conjugate "${combo.verbEnglish}" for "${subjectObj.display}" (e.g., "ich bin"):`,
+        answer: `${subjectObj.clean} ${combo.conjugation}`,
+        verb: combo.verb,
+        verbEnglish: combo.verbEnglish,
+        subject: subjectObj.display,
+        cleanSubject: subjectObj.clean,
+        conjugation: combo.conjugation,
+        word: combo.verb // For progress tracking
+      }
+    })
 
     this.currentBatchIndex = 0
-    this.addToExcludeList(allVerbs.slice(0, Math.ceil(batchSize / 2)).map(v => v.german))
+    
+    // Track unique verbs used
+    const uniqueVerbs = [...new Set(selectedCombinations.map(c => c.verb))]
+    this.addToExcludeList(uniqueVerbs)
     
     console.log('Generated verb batch with TRUE RANDOMIZATION:', {
-      totalAvailable: allVerbs.length,
-      batchSize: this.currentBatch.length
+      totalAvailable: availableCombinations.length,
+      batchSize: this.currentBatch.length,
+      uniqueVerbs: uniqueVerbs.length
     })
     
     return this.currentBatch
