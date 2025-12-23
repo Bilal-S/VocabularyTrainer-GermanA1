@@ -123,6 +123,8 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
       }
     } else if (normalizedCommand === 'progress summary') {
       await generateProgressSummary()
+    } else if (normalizedCommand === 'redo') {
+      await handleRedo()
     } else if (normalizedCommand === 'clear all progress data') {
       // This is handled in App component
       return
@@ -319,29 +321,8 @@ Moving to **Step 3: Plural Practice** in 1 second...`)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        // Generate initial batch message
-        let batchMessage = `Hello! I am your **A1 German Coach (Goethe-only)**. I am ready to guide you through your daily structured learning routine using only approved vocabulary from Goethe-Institut A1 list.
-
-***
-
-### **Step 1: Review Previous Mistakes**
-*Checking Review Queue...*
-> **Status:** Your Review Queue is currently empty! Great job.
-> **Action:** Moving immediately to Step 2.
-
----
-
-### **Step 2: New Vocabulary (${config.totalItems} Nouns)**
-**[Step 2 | Batch 1 | Remaining: ${batch.length}]**
-
-Please translate to following **English nouns** into **German** (Article + Noun) singular form:
-*Example: 1. house -> das Haus*
-
-`
-        // Number the items sequentially starting from 1
-        batch.forEach((item, index) => {
-          batchMessage += `*${index + 1}.* ${item.english}\n`
-        })
+        // Generate initial batch message using helper function
+        const batchMessage = generateBatchMessageForStep(2, batch, state.settings)
         addSystemMessage(batchMessage)
               
         console.log('Vocabulary batch generated:', {
@@ -394,17 +375,7 @@ Moving to **Step 4: Articles in Context** in 1 second...`)
         // Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let pluralMessage = `### **Step 3: Plural Practice (${config.totalItems} Nouns)**
-**[Step 3 | Batch 1 | Remaining: ${batch.length}]**
-
-Please provide to **plural forms** for the following German nouns:
-*Example: 1. das Haus -> die Häuser*
-
-`
-        // Number the items sequentially starting from 1 with translation and speech markers
-        batch.forEach((item, index) => {
-          pluralMessage += `{{translate:${item.english}}} *${index + 1}.* {{speak:${item.singular}}} \n`
-        })
+        const pluralMessage = generateBatchMessageForStep(3, batch, state.settings)
         addSystemMessage(pluralMessage)
         
         return
@@ -432,16 +403,7 @@ Moving to **Step 5: Case Translations** in 1 second...`)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let articlesMessage = `### **Step 4: Articles in Context (${config.totalItems} Items)**
-**[Step 4 | Batch 1 | Remaining: ${batch.length}]**
-
-Please fill in the blanks with **correct articles** (der, die, das, ein, eine):
-
-`
-        // Number the items sequentially starting from 1 with translation and speech markers for German words
-        batch.forEach((item, index) => {
-            articlesMessage += `{{translate:${item.english}}} *${index + 1}.* {{speak:${item.german}}}\n`
-        })
+        const articlesMessage = generateBatchMessageForStep(4, batch, state.settings)
         addSystemMessage(articlesMessage)
         
 
@@ -470,17 +432,8 @@ Moving to **Step 6: Verb Conjugation**...`)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let translationsMessage = `### **Step 5: Case Translations (${config.totalItems} Items)**
-**[Step 5 | Batch 1 | Remaining: ${batch.length}]**
-
-Please translate to following **sentences from English to German**:
-
-`
-        // Number the items sequentially starting from 1
-        batch.forEach((item, index) => {
-          translationsMessage += `*${index + 1}.* ${item.english}\n`
-        })
-        addSystemMessage(translationsMessage)       
+        const translationsMessage = generateBatchMessageForStep(5, batch, state.settings)
+        addSystemMessage(translationsMessage)
 
         return
       case 'VERBS':
@@ -513,16 +466,7 @@ Moving to **Step 7: Daily Recap** in 1 second...`)
         // CRITICAL FIX: Reset answers when starting a new batch
         setBatchAnswers({})
         
-        let verbsMessage = `### **Step 6: Verb Conjugation (${config.totalItems} Items)**
-**[Step 6 | Batch 1 | Remaining: ${batch.length}]**
-
-Please conjugate the following **verbs for the given subjects**:
-
-`
-        // Number the items sequentially starting from 1 with translation and speech markers
-        batch.forEach((item, index) => {
-          verbsMessage += `{{translate:${item.verbEnglish}}} *${index + 1}.* {{speak:${item.verb}}} (${item.subject})\n`
-        })
+        const verbsMessage = generateBatchMessageForStep(6, batch, state.settings)
         addSystemMessage(verbsMessage)
         
         return
@@ -555,6 +499,68 @@ Please conjugate the following **verbs for the given subjects**:
     } else {
       addSystemMessage("You've already completed all steps for today!")
     }
+  }
+
+  const handleRedo = async () => {
+    // Redo only works in Steps 2-6 (batch mode exercises)
+    if (currentStep === 0 || currentStep === 1 || currentStep === 7) {
+      addSystemMessage(`The "${LANGUAGE_CONFIG.commands.redo.primary}" command only works during Steps 2-6 (New Vocabulary, Plural Practice, Articles in Context, Case Translations, Verb Conjugation).`)
+      return
+    }
+
+    // Display the last set of exercises again
+    if (currentBatch && currentBatch.length > 0) {
+      addSystemMessage(`**Redo:** Displaying the last set of exercises again...`)
+      
+      // Redraw the batch questions using helper function
+      const batchMessage = generateBatchMessageForStep(currentStep, currentBatch, state.settings)
+      addSystemMessage(batchMessage)
+    } else {
+      addSystemMessage("No exercises available to redo.")
+    }
+  }
+
+  /**
+   * Helper function to generate batch message for a given step
+   * @param {number} step - Current step number
+   * @param {Array} batch - Current batch of exercises
+   * @param {Object} settings - User settings
+   * @returns {string} Formatted batch message
+   */
+  const generateBatchMessageForStep = (step, batch, settings) => {
+    const config = getStepConfig(step, settings)
+    let batchMessage = `### **Step ${step}: ${config.name} (${config.totalItems} Items)**\n`
+    batchMessage += `**[Step ${step} | Batch 1 | Remaining: ${batch.length}]**\n\n`
+    
+    // Add instructions based on step type
+    if (step === 2) {
+      batchMessage += `Please translate to following **English nouns** into **German** (Article + Noun) singular form:\n*Example: 1. house -> das Haus*\n\n`
+    } else if (step === 3) {
+      batchMessage += `Please provide to **plural forms** for the following German nouns:\n*Example: 1. das Haus -> die Häuser*\n\n`
+    } else if (step === 4) {
+      batchMessage += `Please fill in the blanks with **correct articles** (der, die, das, ein, eine):\n\n`
+    } else if (step === 5) {
+      batchMessage += `Please translate to following **sentences from English to German**:\n\n`
+    } else if (step === 6) {
+      batchMessage += `Please conjugate the following **verbs for the given subjects**:\n\n`
+    }
+    
+    // Number the items sequentially starting from 1
+    batch.forEach((item, index) => {
+      if (step === 2) {
+        batchMessage += `*${index + 1}.* ${item.english}\n`
+      } else if (step === 3) {
+        batchMessage += `{{translate:${item.english}}} *${index + 1}.* {{speak:${item.singular}}} \n`
+      } else if (step === 4) {
+        batchMessage += `{{translate:${item.english}}} *${index + 1}.* {{speak:${item.german}}}\n`
+      } else if (step === 5) {
+        batchMessage += `*${index + 1}.* ${item.english}\n`
+      } else if (step === 6) {
+        batchMessage += `{{translate:${item.verbEnglish}}} *${index + 1}.* {{speak:${item.verb}}} (${item.subject})\n`
+      }
+    })
+    
+    return batchMessage
   }
 
   const getStepInstructions = async (stepKey) => {
