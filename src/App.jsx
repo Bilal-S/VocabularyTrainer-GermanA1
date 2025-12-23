@@ -156,40 +156,16 @@ function App() {
     setIsInstallable(false)
   }
 
-  // Initialize with welcome message
- useEffect(() => {
-   let isMounted = true
-   const initializeWelcomeMessage = async () => {
-     // Check speech synthesis support with timeout
-     let isSpeechSupported = false
-     try {
-       const synth = window.speechSynthesis
-       if (synth) {
-         // Wait for voices to load
-         await new Promise(resolve => {
-           if (synth.getVoices().length > 0) {
-             resolve()
-           } else {
-             const timer = setInterval(() => {
-               if (synth.getVoices().length > 0) {
-                 clearInterval(timer)
-                 resolve()
-               }
-             }, 100)
-           }
-         })
-         isSpeechSupported = true
-       }
-     } catch (e) {
-       console.warn('Speech synthesis check failed:', e)
-     }
-
-     // Only update if component is still mounted
-     if (isMounted) {
-       const welcomeMessage = {
-         id: generateMessageId(),
-         type: 'system',
-         content: `# Welcome to A1 German Coach! 🇩🇪
+  // Initialize with welcome message immediately, without waiting for speech synthesis
+  useEffect(() => {
+    let isMounted = true
+    
+    // Show welcome message immediately
+    if (isMounted) {
+      const welcomeMessage = {
+        id: generateMessageId(),
+        type: 'system',
+        content: `# Welcome to A1 German Coach! 🇩🇪
 
 This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
 
@@ -197,21 +173,83 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 ${LANGUAGE_CONFIG.getCommandsList()}
 
 ## Features:
-${LANGUAGE_CONFIG.getFeaturesList(isSpeechSupported)}
+${LANGUAGE_CONFIG.getFeaturesList(false)} // Will be updated asynchronously
 
 Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin your German learning journey!`
-       }
-       
-       setMessages([welcomeMessage])
-     }
-   }
-   
-   initializeWelcomeMessage()
-   
-   return () => {
-     isMounted = false
-   }
- }, [])
+      }
+      
+      setMessages([welcomeMessage])
+    }
+    
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  // Asynchronously check speech synthesis support and update features
+  useEffect(() => {
+    let isMounted = true
+    
+    const checkSpeechSynthesisAsync = async () => {
+      // Small delay to ensure speech synthesis service has initialized
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      if (!isMounted) return
+      
+      // Check if speech synthesis has German voices
+      let hasGermanVoices = false
+      try {
+        const synth = window.speechSynthesis
+        if (synth) {
+          const voices = synth.getVoices()
+          hasGermanVoices = voices.some(voice => 
+            voice.lang.startsWith('de-') || voice.lang.startsWith('de_')
+          )
+          
+          // If no voices yet, wait a bit longer and check again
+          if (voices.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            const updatedVoices = synth.getVoices()
+            hasGermanVoices = updatedVoices.some(voice => 
+              voice.lang.startsWith('de-') || voice.lang.startsWith('de_')
+            )
+          }
+        }
+      } catch (e) {
+        console.warn('Speech synthesis check failed:', e)
+      }
+
+      // Update welcome message with correct speech synthesis status
+      if (isMounted) {
+        setMessages(prev => {
+          if (prev.length === 0) return prev
+          
+          const updatedMessage = {
+            ...prev[0],
+            content: `# Welcome to A1 German Coach! 🇩🇪
+
+This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
+
+## Available Commands:
+${LANGUAGE_CONFIG.getCommandsList()}
+
+## Features:
+${LANGUAGE_CONFIG.getFeaturesList(hasGermanVoices)}
+
+Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin your German learning journey!`
+          }
+          
+          return [updatedMessage]
+        })
+      }
+    }
+    
+    checkSpeechSynthesisAsync()
+    
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const handleCommand = async (command) => {
     const userMessage = {

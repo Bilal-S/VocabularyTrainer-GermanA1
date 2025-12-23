@@ -144,10 +144,10 @@ ${LANGUAGE_CONFIG.getCommandsList()}`)
   const startDailyRoutine = async () => {
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    // CRITICAL FIX: Reset session stats when starting a new day
+    //  Reset session stats when starting a new day
     resetSessionStats()
     
-    // CRITICAL FIX: Reset batch answers when starting a new day
+    //  Reset batch answers when starting a new day
     setBatchAnswers({})
     
     // Check for PWA updates if running as PWA
@@ -318,7 +318,7 @@ Moving to **Step 3: Plural Practice** in 1 second...`)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        // CRITICAL FIX: Reset answers when starting a new batch
+        //  Reset answers when starting a new batch
         setBatchAnswers({})
         
         // Generate initial batch message using helper function
@@ -400,7 +400,7 @@ Moving to **Step 5: Case Translations** in 1 second...`)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        // CRITICAL FIX: Reset answers when starting a new batch
+        //  Reset answers when starting a new batch
         setBatchAnswers({})
         
         const articlesMessage = generateBatchMessageForStep(4, batch, state.settings)
@@ -429,7 +429,7 @@ Moving to **Step 6: Verb Conjugation**...`)
         setCurrentBatch(batch)
         setBatchProgress({ completed: 0, total: batch.length })
         setIsBatchMode(true)
-        // CRITICAL FIX: Reset answers when starting a new batch
+        //  Reset answers when starting a new batch
         setBatchAnswers({})
         
         const translationsMessage = generateBatchMessageForStep(5, batch, state.settings)
@@ -463,7 +463,7 @@ Moving to **Step 7: Daily Recap** in 1 second...`)
         const uniqueVerbs = [...new Set(batch.map(item => item.word))]
         trackSessionLearning('verbs', uniqueVerbs.length)
         
-        // CRITICAL FIX: Reset answers when starting a new batch
+        //  Reset answers when starting a new batch
         setBatchAnswers({})
         
         const verbsMessage = generateBatchMessageForStep(6, batch, state.settings)
@@ -471,7 +471,7 @@ Moving to **Step 7: Daily Recap** in 1 second...`)
         
         return
       case 'RECAP':
-        // CRITICAL FIX: Handle Step 7 recap directly
+        //  Handle Step 7 recap directly
         await generateDailyRecap()
         return
       default:
@@ -678,7 +678,7 @@ Moving to **Step 7: Daily Recap** in 1 second...`)
   }
 
   const handleBatchAnswer = async (answer) => {
-    // CRITICAL FIX: Parse batch answer with proper handling
+    //  Parse batch answer with proper handling
     console.log('handleBatchAnswer called with:', { answer, currentStep, currentBatchLength: currentBatch.length })
     
     const lines = answer.split('\n').filter(line => line.trim())
@@ -718,7 +718,7 @@ Moving to **Step 7: Daily Recap** in 1 second...`)
     console.log('Numbered answers:', numberedAnswers)
     console.log('Sequential answers:', sequentialAnswers)
 
-    // CRITICAL FIX: Update batch answers with proper validation
+    //  Update batch answers with proper validation
     const updatedBatchAnswers = { ...batchAnswers }
     const newlyAnsweredIndices = []
     
