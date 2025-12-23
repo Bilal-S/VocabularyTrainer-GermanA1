@@ -8,7 +8,7 @@ export const letterB = {
     {"flower": ["Blume", "Blumen", "die", "die", "f"]},
     {"book": ["Buch", "Bücher", "das", "die", "n"]},
     {"brother": ["Bruder", "Brüder", "der", "die", "m"]},
-    {"bank; bench": ["Bank", "Banken", "die", "die", "f"]},
+    {"bank/bench": ["Bank", "Banken", "die", "die", "f"]},
     {"profession": ["Beruf", "Berufe", "der", "die", "m"]},
     {"baby": ["Baby", "Babys", "das", "die", "n"]},
     {"bakery": ["Bäckerei", "Bäckereien", "die", "die", "f"]},

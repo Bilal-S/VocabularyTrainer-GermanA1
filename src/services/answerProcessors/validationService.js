@@ -56,11 +56,19 @@ export class ValidationService {
     }
   
     // Normalize umlauts for ALL input
+    // If both are arrays, it's a special case from the simulator. Compare them directly.
+    if (Array.isArray(userAnswer) && Array.isArray(correctAnswer)) {
+      const sortedUser = [...userAnswer].sort()
+      const sortedCorrect = [...correctAnswer].sort()
+      // A successful return here means the answer is correct.
+      return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)
+    }
+
     const normalizedUser = this.normalizeUmlauts(String(userAnswer).trim())
   
     const normalizeCorrect = (val) =>
       Array.isArray(val)
-        ? val.map((v) => this.normalizeUmlauts(String(v).trim()))
+        ? val.map((v) => this.normalizeUunlauts(String(v).trim()))
         : this.normalizeUmlauts(String(val).trim())
   
     const normalizedCorrect = normalizeCorrect(correctAnswer)

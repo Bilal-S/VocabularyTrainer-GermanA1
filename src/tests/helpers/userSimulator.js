@@ -153,6 +153,10 @@ export class UserSimulator {
    * Add or remove umlauts from text
    */
   addOrRemoveUmlauts(text) {
+    // CRITICAL FIX: If the answer is an array (e.g., multiple correct translations), pick the first one to modify.
+    if (Array.isArray(text)) {
+      text = text[0]
+    }
     const umlautMap = {
       'ä': 'a', 'ö': 'o', 'ü': 'u', 'ß': 'ss',
       'Ä': 'A', 'Ö': 'O', 'Ü': 'U'

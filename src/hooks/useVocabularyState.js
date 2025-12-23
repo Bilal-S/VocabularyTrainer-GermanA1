@@ -259,7 +259,7 @@ export const useVocabularyState = () => {
     }
   }
 
-  const updateProgress = (word, isCorrect, section = 'Unknown', form = 'singular', subject = null) => {
+    const updateProgress = (word, isCorrect, section = 'Unknown', form = 'singular', subject = null) => {
     // CRITICAL FIX: Ensure word is defined before updating progress
     if (!word) {
       console.error(`updateProgress called with invalid word: ${word} (Section: ${section})`)
@@ -268,8 +268,13 @@ export const useVocabularyState = () => {
 
     const newState = { ...state }
     
-    // For verb conjugations, use composite key: verb|subject
-    const progressKey = (section === 'VERBS' && subject) ? `${word}|${subject}` : word
+    // CRITICAL FIX: For verb conjugations, don't double the subject in the key
+    // If word already contains subject (e.g., "machen|wir"), use it as-is
+    // Otherwise, create the composite key: verb|subject
+    let progressKey = word
+    if (section === 'VERBS' && subject && !word.includes('|')) {
+      progressKey = `${word}|${subject}`
+    }
     
     if (!newState.progress[progressKey]) {
       newState.progress[progressKey] = {

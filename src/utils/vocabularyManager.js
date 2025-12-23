@@ -94,13 +94,41 @@ export class VocabularyManager {
       return []
     }
 
-    console.log('Generating review batch with TRUE RANDOMIZATION:', { 
-      queueSize: reviewQueue.length, 
-      batchSize 
+    console.log('Generating review batch with TRUE RANDOMIZATION:', {
+      queueSize: reviewQueue.length,
+      batchSize
     })
 
-    // CRITICAL FIX: Shuffle review queue for random order each time
-    const shuffledReviewQueue = [...reviewQueue].sort(() => 0.5 - Math.random())
+    // CRITICAL FIX: Remove duplicates from review queue first
+    const uniqueReviewQueue = []
+    const seenItems = new Set()
+    
+    for (const item of reviewQueue) {
+      const itemWord = typeof item === 'string' ? item : item.word
+      // Add a section to string-only items for consistent key creation
+      const itemSection = typeof item === 'string' ? 'VOCABULARY' : item.section
+      
+      const uniqueKey = `${itemWord}|${itemSection}`
+      
+      if (!seenItems.has(uniqueKey)) {
+        seenItems.add(uniqueKey)
+        // If the original item was a string, push an object with the inferred section
+        if (typeof item === 'string') {
+          uniqueReviewQueue.push({ word: item, section: itemSection })
+        } else {
+          uniqueReviewQueue.push(item)
+        }
+      }
+    }
+    
+    console.log('Removed duplicates from review queue:', {
+      original: reviewQueue.length,
+      unique: uniqueReviewQueue.length,
+      duplicatesRemoved: reviewQueue.length - uniqueReviewQueue.length
+    })
+
+    // Shuffle review queue for random order each time
+    const shuffledReviewQueue = [...uniqueReviewQueue].sort(() => 0.5 - Math.random())
 
     // Use all available letters to search for review items
     const allLetters = getAvailableLetters()
@@ -110,7 +138,18 @@ export class VocabularyManager {
       const itemWord = typeof item === 'string' ? item : item.word
       const section = typeof item === 'string' ? 'Unknown' : item.section
       
-      const letterData = this.findWordInLetters(itemWord, allLetters)
+      // Handle verb conjugation pattern "verb|subject"
+      let letterData = null
+      let verbSubject = null
+      
+      if (section === 'VERBS' && itemWord && itemWord.includes('|')) {
+        // This is a verb conjugation review item
+        const [verb, subject] = itemWord.split('|')
+        verbSubject = { verb, subject }
+        letterData = this.findWordInLetters(verb, allLetters)
+      } else {
+        letterData = this.findWordInLetters(itemWord, allLetters)
+      }
       
       // If noun/verb lookup failed, try finding an example if it's a sentence
       if (!letterData && itemWord && itemWord.includes(' ')) {
@@ -130,7 +169,7 @@ export class VocabularyManager {
                 form: 'plural', // Track that this is plural form review
                 question: `What is plural form of "${displayWord}"?`,
                 answer: letterData.plural,
-                word: displayWord,
+                word: letterData.german, // CRITICAL FIX: Use full german (with article) to match review queue
                 singular: letterData.german,
                 plural: letterData.plural,
                 english: letterData.english,
@@ -155,21 +194,28 @@ export class VocabularyManager {
                 'Sie': { clean: 'Sie', display: 'Sie' }
               }
               
-              const cleanSubjects = Object.keys(subjectMapping)
-              const randomCleanSubject = cleanSubjects[Math.floor(Math.random() * cleanSubjects.length)]
+              // CRITICAL FIX: Use the specific subject from verbSubject if available, otherwise random
+              let randomCleanSubject
+              if (verbSubject && verbSubject.subject) {
+                randomCleanSubject = verbSubject.subject
+              } else {
+                const cleanSubjects = Object.keys(subjectMapping)
+                randomCleanSubject = cleanSubjects[Math.floor(Math.random() * cleanSubjects.length)]
+              }
+              
               const subjectObj = subjectMapping[randomCleanSubject]
               const conjugation = letterData.conjugations[randomCleanSubject]
               
               return {
                 type: 'conjugation',
-                question: `Conjugate "${letterData.english}" for "${subjectObj.display}" (e.g., "ich bin"):`,
+                question: `Conjugate "${letterData.english}" -> "${letterData.german}" for "${subjectObj.display}":`,
                 answer: `${subjectObj.clean} ${conjugation}`,
                 verb: letterData.german,
                 verbEnglish: letterData.english,
                 subject: subjectObj.display, // Keep display subject for reference
                 cleanSubject: subjectObj.clean, // Store clean subject for validation
                 conjugation: conjugation,
-                word: letterData.german,
+                word: `${letterData.german}|${randomCleanSubject}`, // Store with subject for progress tracking
                 originSection: section
               }
             }
@@ -217,15 +263,22 @@ export class VocabularyManager {
             
             // Fallback to random if not found (or if itemWord was missing)
             if (!articleExample) {
+              console.log(`DEBUG: Using random article as fallback for "${itemWord}"`)
               const randomExamples = getExamplesByTypeAndLetters('articles', getRandomLetters(2), 1)
               articleExample = randomExamples[0]
             }
 
             if (articleExample) {
+              console.log(`DEBUG: Generated article review item:`, {
+                itemWord,
+                articleExampleGerman: articleExample.german,
+                wordKey: itemWord
+              })
               return {
                 type: 'article',
                 question: `Fill in the blank(s): ${articleExample.german.replace('___', '_____')}`,
                 answer: articleExample.answer || articleExample.german.match(/___\s*(\w+)/)?.[1] || articleExample.answer,
+                word: itemWord, // CRITICAL FIX: Use original itemWord from review queue for progress tracking
                 german: articleExample.german,
                 english: articleExample.english,
                 caseType: articleExample.caseType || articleExample.case || 'nominative',
@@ -239,19 +292,27 @@ export class VocabularyManager {
             let transExample = null
             if (itemWord && itemWord.includes(' ')) {
               transExample = this.findExampleByType(itemWord, 'translations')
+              console.log(`DEBUG: Looking for translation "${itemWord}":`, transExample ? 'FOUND' : 'NOT FOUND')
             }
 
             // Fallback to random if not found
             if (!transExample) {
+              console.log(`DEBUG: Using random translation as fallback for "${itemWord}"`)
               const randomExamples = getExamplesByTypeAndLetters('translations', getRandomLetters(2), 1)
               transExample = randomExamples[0]
             }
 
             if (transExample) {
+              console.log(`DEBUG: Generated translation review item:`, {
+                itemWord,
+                transExampleEnglish: transExample.english,
+                wordKey: itemWord
+              })
               return {
                 type: 'translation',
                 question: `Translate to German: "${transExample.english}"`,
                 answer: transExample.german,
+                word: itemWord, // CRITICAL FIX: Use original itemWord from review queue for progress tracking
                 german: transExample.german,
                 english: transExample.english,
                 caseType: transExample.caseType || transExample.case || 'nominative',
@@ -264,8 +325,34 @@ export class VocabularyManager {
       return null
     }).filter(Boolean)
 
-    this.currentBatch = reviewItems.slice(0, batchSize)
+    // CRITICAL FIX: Remove any null/duplicate items from the batch
+    const uniqueBatch = []
+    const seenQuestions = new Set()
+    
+    for (const item of reviewItems) {
+      // Create a unique key for each question to detect duplicates
+      // Use a more specific key to avoid flagging different question types for the same word as duplicates
+      const questionKey = item.type === 'conjugation'
+        ? `${item.verb}|${item.subject}`
+        : `${item.word}|${item.originSection}`
+      
+      if (!seenQuestions.has(questionKey)) {
+        seenQuestions.add(questionKey)
+        uniqueBatch.push(item)
+      } else {
+        console.log(`DEBUG: Skipping duplicate question: ${questionKey}`)
+      }
+    }
+
+    this.currentBatch = uniqueBatch.slice(0, batchSize)
     this.currentBatchIndex = 0
+    
+    console.log('Generated review batch:', {
+      totalItems: reviewItems.length,
+      uniqueItems: uniqueBatch.length,
+      batchSize: this.currentBatch.length,
+      duplicatesSkipped: reviewItems.length - uniqueBatch.length
+    })
     
     return this.currentBatch
   }
@@ -523,14 +610,14 @@ export class VocabularyManager {
       const subjectObj = subjectMapping[combo.subject]
       return {
         type: 'conjugation',
-        question: `Conjugate "${combo.verbEnglish}" for "${subjectObj.display}" (e.g., "ich bin"):`,
+        question: `Conjugate "${combo.verbEnglish}" -> "${combo.verb}" for "${subjectObj.display}":`,
         answer: `${subjectObj.clean} ${combo.conjugation}`,
         verb: combo.verb,
         verbEnglish: combo.verbEnglish,
         subject: subjectObj.display,
         cleanSubject: subjectObj.clean,
         conjugation: combo.conjugation,
-        word: combo.verb // For progress tracking
+        word: `${combo.verb}|${subjectObj.clean}` // CRITICAL FIX: Use verb|subject format for progress tracking
       }
     })
 
@@ -654,5 +741,10 @@ export class VocabularyManager {
 
   validateAnswer(userAnswer, correctAnswer, type, exercise = null) {
     return validationService.validateAnswer(userAnswer, correctAnswer, type, exercise)
+  }
+
+  // Add normalizeAccents method to match what TestHarness expects
+  normalizeAccents(text) {
+    return validationService.normalizeUmlauts(text)
   }
 }

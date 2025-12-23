@@ -205,19 +205,36 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-30"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-40 p-4">
-        <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Settings</h2>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Full Screen Settings */}
+      <div className="fixed inset-0 bg-white z-40">
+        {/* Header with Close Button */}
+        <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-800">Settings</h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Close settings"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto h-[calc(100vh-80px)]">
+          <div className="max-w-4xl mx-auto p-4 md:p-6 lg:p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Mastering Count */}
               <div>
                 <label htmlFor="masteringCount" className="block text-sm font-medium text-gray-700 mb-1">
@@ -276,166 +293,167 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
               </div>
 
               {/* Step-specific Settings */}
-              <div className="pt-4 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Step 2-6 Question Limits</h3>
-                
-                {/* Step 2: Vocabulary Questions */}
-                <div>
-                  <label htmlFor="maxVocabularyQuestions" className="block text-sm font-medium text-gray-700 mb-1">
-                    Step 2: New Vocabulary Questions
-                  </label>
-                  <p className="text-xs text-gray-500 mb-2">
-                    Maximum questions for vocabulary practice (1-40, default: 20)
-                  </p>
-                  <input
-                    type="number"
-                    id="maxVocabularyQuestions"
-                    min="1"
-                    max="40"
-                    value={localSettings.maxVocabularyQuestions}
-                    onChange={(e) => handleInputChange('maxVocabularyQuestions', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      onClick={() => window.speakText && window.speakText('Vocabulary practice example', 2)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
-                      title="Test speech for vocabulary step"
-                    >
-                      <SpeechIcon isPlaying={false} />
-                      <span className="text-sm">Test Speech</span>
-                    </button>
+              <div className="pt-6 border-t border-gray-200">
+                <h3 className="text-lg font-medium text-gray-700 mb-4">Step 2-6 Question Limits</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Step 2: Vocabulary Questions */}
+                  <div>
+                    <label htmlFor="maxVocabularyQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                      Step 2: New Vocabulary Questions
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Maximum questions for vocabulary practice (1-40, default: 20)
+                    </p>
+                    <input
+                      type="number"
+                      id="maxVocabularyQuestions"
+                      min="1"
+                      max="40"
+                      value={localSettings.maxVocabularyQuestions}
+                      onChange={(e) => handleInputChange('maxVocabularyQuestions', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => window.speakText && window.speakText('Vocabulary practice example', 2)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                        title="Test speech for vocabulary step"
+                      >
+                        <SpeechIcon isPlaying={false} />
+                        <span className="text-sm">Test Speech</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* Step 3: Plural Questions */}
-                <div className="mt-4">
-                  <label htmlFor="maxPluralQuestions" className="block text-sm font-medium text-gray-700 mb-1">
-                    Step 3: Plural Practice Questions
-                  </label>
-                  <p className="text-xs text-gray-500 mb-2">
-                    Maximum questions for plural practice (1-40, default: 20)
-                  </p>
-                  <input
-                    type="number"
-                    id="maxPluralQuestions"
-                    min="1"
-                    max="40"
-                    value={localSettings.maxPluralQuestions}
-                    onChange={(e) => handleInputChange('maxPluralQuestions', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      onClick={() => window.speakText && window.speakText('Plural practice example', 3)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
-                      title="Test speech for plural step"
-                    >
-                      <SpeechIcon isPlaying={false} />
-                      <span className="text-sm">Test Speech</span>
-                    </button>
+                  {/* Step 3: Plural Questions */}
+                  <div>
+                    <label htmlFor="maxPluralQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                      Step 3: Plural Practice Questions
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Maximum questions for plural practice (1-40, default: 20)
+                    </p>
+                    <input
+                      type="number"
+                      id="maxPluralQuestions"
+                      min="1"
+                      max="40"
+                      value={localSettings.maxPluralQuestions}
+                      onChange={(e) => handleInputChange('maxPluralQuestions', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => window.speakText && window.speakText('Plural practice example', 3)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                        title="Test speech for plural step"
+                      >
+                        <SpeechIcon isPlaying={false} />
+                        <span className="text-sm">Test Speech</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* Step 4: Articles Questions */}
-                <div className="mt-4">
-                  <label htmlFor="maxArticlesQuestions" className="block text-sm font-medium text-gray-700 mb-1">
-                    Step 4: Articles in Context Questions
-                  </label>
-                  <p className="text-xs text-gray-500 mb-2">
-                    Maximum questions for articles practice (1-40, default: 30)
-                  </p>
-                  <input
-                    type="number"
-                    id="maxArticlesQuestions"
-                    min="1"
-                    max="40"
-                    value={localSettings.maxArticlesQuestions}
-                    onChange={(e) => handleInputChange('maxArticlesQuestions', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      onClick={() => window.speakText && window.speakText('Articles practice example', 4)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
-                      title="Test speech for articles step"
-                    >
-                      <SpeechIcon isPlaying={false} />
-                      <span className="text-sm">Test Speech</span>
-                    </button>
+                  {/* Step 4: Articles Questions */}
+                  <div>
+                    <label htmlFor="maxArticlesQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                      Step 4: Articles in Context Questions
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Maximum questions for articles practice (1-40, default: 30)
+                    </p>
+                    <input
+                      type="number"
+                      id="maxArticlesQuestions"
+                      min="1"
+                      max="40"
+                      value={localSettings.maxArticlesQuestions}
+                      onChange={(e) => handleInputChange('maxArticlesQuestions', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => window.speakText && window.speakText('Articles practice example', 4)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                        title="Test speech for articles step"
+                      >
+                        <SpeechIcon isPlaying={false} />
+                        <span className="text-sm">Test Speech</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* Step 5: Translations Questions */}
-                <div className="mt-4">
-                  <label htmlFor="maxTranslationsQuestions" className="block text-sm font-medium text-gray-700 mb-1">
-                    Step 5: Case Translations Questions
-                  </label>
-                  <p className="text-xs text-gray-500 mb-2">
-                    Maximum questions for translation practice (1-40, default: 30)
-                  </p>
-                  <input
-                    type="number"
-                    id="maxTranslationsQuestions"
-                    min="1"
-                    max="40"
-                    value={localSettings.maxTranslationsQuestions}
-                    onChange={(e) => handleInputChange('maxTranslationsQuestions', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      onClick={() => window.speakText && window.speakText('Translation practice example', 5)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
-                      title="Test speech for translations step"
-                    >
-                      <SpeechIcon isPlaying={false} />
-                      <span className="text-sm">Test Speech</span>
-                    </button>
+                  {/* Step 5: Translations Questions */}
+                  <div>
+                    <label htmlFor="maxTranslationsQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                      Step 5: Case Translations Questions
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Maximum questions for translation practice (1-40, default: 30)
+                    </p>
+                    <input
+                      type="number"
+                      id="maxTranslationsQuestions"
+                      min="1"
+                      max="40"
+                      value={localSettings.maxTranslationsQuestions}
+                      onChange={(e) => handleInputChange('maxTranslationsQuestions', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => window.speakText && window.speakText('Translation practice example', 5)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                        title="Test speech for translations step"
+                      >
+                        <SpeechIcon isPlaying={false} />
+                        <span className="text-sm">Test Speech</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* Step 6: Verbs Questions */}
-                <div className="mt-4">
-                  <label htmlFor="maxVerbsQuestions" className="block text-sm font-medium text-gray-700 mb-1">
-                    Step 6: Verb Conjugation Questions
-                  </label>
-                  <p className="text-xs text-gray-500 mb-2">
-                    Maximum questions for verb conjugation (1-40, default: 30)
-                  </p>
-                  <input
-                    type="number"
-                    id="maxVerbsQuestions"
-                    min="1"
-                    max="40"
-                    value={localSettings.maxVerbsQuestions}
-                    onChange={(e) => handleInputChange('maxVerbsQuestions', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      onClick={() => window.speakText && window.speakText('Verb conjugation example', 6)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
-                      title="Test speech for verbs step"
-                    >
-                      <SpeechIcon isPlaying={false} />
-                      <span className="text-sm">Test Speech</span>
-                    </button>
+                  {/* Step 6: Verbs Questions */}
+                  <div>
+                    <label htmlFor="maxVerbsQuestions" className="block text-sm font-medium text-gray-700 mb-1">
+                      Step 6: Verb Conjugation Questions
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Maximum questions for verb conjugation (1-40, default: 30)
+                    </p>
+                    <input
+                      type="number"
+                      id="maxVerbsQuestions"
+                      min="1"
+                      max="40"
+                      value={localSettings.maxVerbsQuestions}
+                      onChange={(e) => handleInputChange('maxVerbsQuestions', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => window.speakText && window.speakText('Verb conjugation example', 6)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
+                        title="Test speech for verbs step"
+                      >
+                        <SpeechIcon isPlaying={false} />
+                        <span className="text-sm">Test Speech</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Speech Settings */}
-              <div className="pt-4 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Speech Settings</h3>
+              <div className="pt-6 border-t border-gray-200">
+                <h3 className="text-lg font-medium text-gray-700 mb-4">Speech Settings</h3>
                 
                 {/* Speech Enabled */}
-                <div className="mb-4">
+                <div className="mb-6">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
@@ -451,9 +469,9 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                 </div>
 
                 {localSettings.speechSettings.enabled && (
-                  <>
+                  <div className="space-y-6">
                     {/* Auto-pronounce */}
-                    <div className="mb-4">
+                    <div>
                       <label className="flex items-center">
                         <input
                           type="checkbox"
@@ -468,60 +486,62 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                       </p>
                     </div>
 
-                    {/* Speech Rate */}
-                    <div className="mb-4">
-                      <label htmlFor="speechRate" className="block text-sm font-medium text-gray-700 mb-1">
-                        Speech Rate: {localSettings.speechSettings.rate.toFixed(1)}
-                      </label>
-                      <p className="text-xs text-gray-500 mb-2">
-                        Speed of speech synthesis (0.5-1.5, default: 0.9)
-                      </p>
-                      <input
-                        type="range"
-                        id="speechRate"
-                        min="0.5"
-                        max="1.5"
-                        step="0.1"
-                        value={localSettings.speechSettings.rate}
-                        onChange={(e) => handleSpeechSettingChange('rate', parseFloat(e.target.value))}
-                        className="w-full"
-                      />
-                    </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Speech Rate */}
+                      <div>
+                        <label htmlFor="speechRate" className="block text-sm font-medium text-gray-700 mb-1">
+                          Speech Rate: {localSettings.speechSettings.rate.toFixed(1)}
+                        </label>
+                        <p className="text-xs text-gray-500 mb-2">
+                          Speed of speech synthesis (0.5-1.5, default: 0.9)
+                        </p>
+                        <input
+                          type="range"
+                          id="speechRate"
+                          min="0.5"
+                          max="1.5"
+                          step="0.1"
+                          value={localSettings.speechSettings.rate}
+                          onChange={(e) => handleSpeechSettingChange('rate', parseFloat(e.target.value))}
+                          className="w-full"
+                        />
+                      </div>
 
-                    {/* Speech Volume */}
-                    <div className="mb-4">
-                      <label htmlFor="speechVolume" className="block text-sm font-medium text-gray-700 mb-1">
-                        Speech Volume: {Math.round(localSettings.speechSettings.volume * 100)}%
-                      </label>
-                      <p className="text-xs text-gray-500 mb-2">
-                        Volume of speech synthesis (0-100%, default: 100%)
-                      </p>
-                      <input
-                        type="range"
-                        id="speechVolume"
-                        min="0"
-                        max="1"
-                        step="0.1"
-                        value={localSettings.speechSettings.volume}
-                        onChange={(e) => handleSpeechSettingChange('volume', parseFloat(e.target.value))}
-                        className="w-full"
-                      />
+                      {/* Speech Volume */}
+                      <div>
+                        <label htmlFor="speechVolume" className="block text-sm font-medium text-gray-700 mb-1">
+                          Speech Volume: {Math.round(localSettings.speechSettings.volume * 100)}%
+                        </label>
+                        <p className="text-xs text-gray-500 mb-2">
+                          Volume of speech synthesis (0-100%, default: 100%)
+                        </p>
+                        <input
+                          type="range"
+                          id="speechVolume"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={localSettings.speechSettings.volume}
+                          onChange={(e) => handleSpeechSettingChange('volume', parseFloat(e.target.value))}
+                          className="w-full"
+                        />
+                      </div>
                     </div>
 
                     {/* Voice Selection */}
-                    <div className="mb-4">
+                    <div>
                       <label htmlFor="voiceSelection" className="block text-sm font-medium text-gray-700 mb-1">
                         Voice Selection
                       </label>
                       <p className="text-xs text-gray-500 mb-2">
                         Choose preferred German voice for pronunciation
                       </p>
-                      <div className="flex flex-col space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
                         <select
                           id="voiceSelection"
                           value={localSettings.speechSettings.voiceUri || ''}
                           onChange={(e) => handleSpeechSettingChange('voiceUri', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           disabled={!isSpeechSupported || speechVoices.length === 0}
                         >
                           {speechVoices.filter(voice =>
@@ -538,9 +558,9 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                           type="button"
                           onClick={handlePreviewVoice}
                           disabled={!isSpeechSupported || !localSettings.speechSettings.voiceUri || isPreviewingVoice}
-                          className="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-1"
+                          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                         >
-                          <span>{isPreviewingVoice ? 'Playing...' : 'Test'}</span>
+                          {isPreviewingVoice ? 'Playing...' : 'Test Voice'}
                         </button>
                       </div>
                       {!isSpeechSupported && (
@@ -563,22 +583,22 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                         </p>
                       )}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
 
-              {/* Buttons */}
-              <div className="flex justify-end space-x-3 pt-4">
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                  className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                  className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
                 >
                   Save Settings
                 </button>

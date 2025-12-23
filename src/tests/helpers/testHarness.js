@@ -431,8 +431,12 @@ export class TestHarness {
     const currentExercise = this.currentBatch[this.currentBatchIndex]
     const isCorrect = this.vocabManager.validateAnswer(answer, currentExercise.answer, currentExercise.type, currentExercise)
     
-    // Update progress
-    this.updateProgress(currentExercise.word, isCorrect, currentExercise.originSection, currentExercise.form)
+    // CRITICAL FIX: For ARTICLES and TRANSLATIONS, use the original review queue item word for progress tracking
+    // This ensures proper matching between review queue items and progress tracking
+    const progressWord = currentExercise.word
+    
+    // Update progress with the correct word key
+    this.updateProgress(progressWord, isCorrect, currentExercise.originSection, currentExercise.form)
     
     // Move to next exercise
     this.currentBatchIndex++
@@ -562,7 +566,7 @@ export class TestHarness {
         const isCorrect = this.vocabManager.validateAnswer(userAnswer, exercise.answer, exercise.type, exercise)
         const prompt = exercise.english || exercise.question || exercise.word
         
-        const wordToTrack = exercise.word || exercise.german || exercise.english || exercise.question
+        const wordToTrack = exercise.word
         
         if (isCorrect) {
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** ✅\n`
@@ -570,8 +574,8 @@ export class TestHarness {
             this.updateProgress(wordToTrack, true, stepName, exercise.form || 'singular')
           }
         } else {
-          const correctDisplay = Array.isArray(exercise.answer) 
-            ? exercise.answer.join(' or ') 
+          const correctDisplay = Array.isArray(exercise.answer)
+            ? exercise.answer.join(' or ')
             : exercise.answer
           feedback += `${index + 1}. **${prompt}**: Your answer: **${userAnswer}** <span style="color: red;">**Correction:**</span> **${correctDisplay}**\n`
           
@@ -671,26 +675,15 @@ export class TestHarness {
       } else {
         isFullyMastered = this.state.progress[word].singular.correctCount >= this.state.settings.masteringCount
       }
-
-      if (shouldRemoveFromReview) {
-        const reviewIndex = this.state.pools.reviewQueue.findIndex(item => 
-          typeof item === 'string' ? item === word : item.word === word
-        )
-        if (reviewIndex > -1) {
-          console.log(`DEBUG: Removing '${word}' from review queue (Section: ${section})`)
-          this.state.pools.reviewQueue.splice(reviewIndex, 1)
-        } else {
-          console.log(`DEBUG: Could not find '${word}' in review queue to remove (Section: ${section})`)
-        }
-      } else if (isInReviewQueue) {
-        console.log(`DEBUG: '${word}' (Section: ${section}) NOT removed. Correct: ${this.state.progress[word][form].correctCount} Threshold: ${masteringThreshold}`)
-      }
-
+      
       if (isFullyMastered) {
-        const reviewIndex = this.state.pools.reviewQueue.findIndex(item => 
-          typeof item === 'string' ? item === word : item.word === word
+        // 1. If fully mastered, remove from review queue (if present) and move to mastered pool.
+        const reviewIndex = this.state.pools.reviewQueue.findIndex(item =>
+          (typeof item === 'string' ? item === word : item.word === word) &&
+          (typeof item === 'string' ? true : item.section === section)
         )
         if (reviewIndex > -1) {
+          console.log(`DEBUG: Removing fully mastered '${word}' from review queue (Section: ${section})`)
           this.state.pools.reviewQueue.splice(reviewIndex, 1)
         }
 
@@ -698,22 +691,34 @@ export class TestHarness {
         if (unselectedIndex > -1) {
           this.state.pools.unselected.splice(unselectedIndex, 1)
         }
-        
-        if (!this.state.pools.mastered.nouns.includes(word) && 
-            !this.state.pools.mastered.verbs.includes(word) && 
-            !this.state.pools.mastered.words.includes(word)) {
-          
+
+        const isAlreadyMastered = this.state.pools.mastered.nouns.includes(word) ||
+                                  this.state.pools.mastered.verbs.includes(word) ||
+                                  this.state.pools.mastered.words.includes(word)
+
+        if (!isAlreadyMastered) {
           if (section === 'VOCABULARY' || section === 'PLURAL') {
             this.state.pools.mastered.nouns.push(word)
           } else if (section === 'VERBS') {
             this.state.pools.mastered.verbs.push(word)
-          } else if (section === 'ARTICLES' || section === 'TRANSLATIONS') {
-            this.state.pools.mastered.words.push(word)
-          } else {
+          } else { // ARTICLES, TRANSLATIONS, etc.
             this.state.pools.mastered.words.push(word)
           }
           wasMovedToMastered = true
         }
+      } else if (shouldRemoveFromReview) {
+        // 2. If not fully mastered but meets review threshold, only remove from review queue.
+        const reviewIndex = this.state.pools.reviewQueue.findIndex(item =>
+          (typeof item === 'string' ? item === word : item.word === word) &&
+          (typeof item === 'string' ? true : item.section === section)
+        )
+        if (reviewIndex > -1) {
+          console.log(`DEBUG: Removing '${word}' from review queue after meeting threshold (Section: ${section})`)
+          this.state.pools.reviewQueue.splice(reviewIndex, 1)
+        }
+      } else if (isInReviewQueue) {
+        // 3. If still in review queue but doesn't meet any removal criteria, log it.
+        console.log(`DEBUG: '${word}' (Section: ${section}) NOT removed. Correct: ${this.state.progress[word][form].correctCount} Threshold: ${masteringThreshold}`)
       }
     } else {
       this.state.progress[word][form].incorrectCount++
