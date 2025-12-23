@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useInstallInstructions } from '../hooks/useInstallInstructions'
 import { updateChecker } from '../utils/updateChecker'
 import VideoLink from './VideoLink'
+import { LANGUAGE_CONFIG } from '../config/language.js'
 
 const videos = [
   {
@@ -339,8 +340,8 @@ const HelpModal = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
                   <div>
-                    <h3 className="font-semibold text-blue-800">"Today is a new day" (or "tiand")</h3>
-                    <p className="text-sm text-blue-700">Starts your fresh daily practice session with 7 structured learning steps.</p>
+                    <h3 className="font-semibold text-blue-800">"{LANGUAGE_CONFIG.commands.todayIsNewDay.primary}" (or "tiand")</h3>
+                    <p className="text-sm text-blue-700">{LANGUAGE_CONFIG.commands.todayIsNewDay.description}</p>
                   </div>
                 </div>
               </div>
@@ -349,8 +350,8 @@ const HelpModal = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
                   <div>
-                    <h3 className="font-semibold text-yellow-800">"Next Step"</h3>
-                    <p className="text-sm text-yellow-700">Skips the current exercise if you get stuck. Use sparingly to maximize learning!</p>
+                    <h3 className="font-semibold text-yellow-800">"{LANGUAGE_CONFIG.commands.nextStep.primary}"</h3>
+                    <p className="text-sm text-yellow-700">{LANGUAGE_CONFIG.commands.nextStep.description}</p>
                   </div>
                 </div>
               </div>
@@ -359,8 +360,8 @@ const HelpModal = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm">3</span>
                   <div>
-                    <h3 className="font-semibold text-orange-800">"progress summary"</h3>
-                    <p className="text-sm text-orange-700">Displays your current learning progress and statistics, similar to the daily recap in Step 7.</p>
+                    <h3 className="font-semibold text-orange-800">"{LANGUAGE_CONFIG.commands.progressSummary.primary}"</h3>
+                    <p className="text-sm text-orange-700">{LANGUAGE_CONFIG.commands.progressSummary.description}</p>
                   </div>
                 </div>
               </div>
@@ -369,7 +370,7 @@ const HelpModal = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-sm">!</span>
                   <div>
-                    <h3 className="font-semibold text-red-800">"clear all progress data"</h3>
+                    <h3 className="font-semibold text-red-800">"{LANGUAGE_CONFIG.commands.clearAllProgress.primary}"</h3>
                     <p className="text-sm text-red-700">⚠️ COMPLETELY resets all your progress. Use with extreme caution - this cannot be undone!</p>
                   </div>
                 </div>
@@ -436,7 +437,7 @@ die Frau <br></br>
                   <h4 className="font-semibold text-indigo-700">Content:</h4>
                   <ul className="text-sm text-indigo-600 list-disc list-inside space-y-1">
                     <li>Welcome message with app overview</li>
-                    <li>List of available commands ("Today is a new day", "Next Step", "clear all progress data")</li>
+                    <li>List of available commands ("${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}", "${LANGUAGE_CONFIG.commands.nextStep.primary}", "${LANGUAGE_CONFIG.commands.clearAllProgress.primary}")</li>
                     <li>Brief explanation of the 7-step learning process</li>
                   </ul>
                 </div>

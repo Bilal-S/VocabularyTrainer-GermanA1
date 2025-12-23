@@ -96,7 +96,7 @@ or the shortcut:
 - **What Happens**: Displays instructions for the daily routine and available commands
 - **Content**: 
   - Welcome message with app overview
-  - List of available commands ("Today is a new day", "Next Step", "clear all progress data")
+  - List of available commands ("Today is a new day", "Next Step", "clear all progress data", "Redo", "Progress Summary")
   - Brief explanation of the 7-step learning process
 - **Progress**: No exercises, just informational setup for the day
 

@@ -1,5 +1,6 @@
 import { getExercisePrompt } from './batchAnswerProcessor.js'
 import { validationService } from './validationService.js'
+import { LANGUAGE_CONFIG } from '../../config/language.js'
 
 /**
  * Generate batch feedback for newly answered items
@@ -14,7 +15,7 @@ export const generateBatchFeedback = (allAnswers, newlyAnsweredIndices, currentB
   // Enhanced error handling with fallback
   if (!currentBatch || !currentBatch.length) {
     console.error('No batch available for grading. Current batch:', currentBatch)
-    return "⚠️ Error: No exercise batch is currently available. Please try starting a new step with 'Next Step' command."
+    return `⚠️ Error: No exercise batch is currently available. Please try starting a new step with '${LANGUAGE_CONFIG.commands.nextStep.primary}' command.`
   }
   
   if (!allAnswers || Object.keys(allAnswers).length === 0) {
@@ -116,7 +117,7 @@ const generateBatchCompleteFeedback = (totalAnswered, currentStep) => {
   }
   
   feedback += `${nextStepInfo}\n\n`
-  feedback += `Type **"Next Step"** to continue or wait for automatic progression.`
+  feedback += `Type **"${LANGUAGE_CONFIG.commands.nextStep.primary}"** to continue or wait for automatic progression.`
   
   return feedback
 }
@@ -176,7 +177,7 @@ export const generateValidationError = (reason) => {
     'empty': "Please provide your answers in the format:\n1. answer1\n2. answer2\n...",
     'invalid_format': "⚠️ Error: Invalid answer format. Please provide answers one per line or numbered (e.g., '1. answer').",
     'mixed_format': "⚠️ Error: Please provide either all numbered answers (e.g., '1. answer') or all sequential answers (one per line). Mixed formats are not supported.",
-    'no_batch': "⚠️ Error: No exercise batch is currently available. Please try starting a new step with 'Next Step' command.",
+    'no_batch': `⚠️ Error: No exercise batch is currently available. Please try starting a new step with '${LANGUAGE_CONFIG.commands.nextStep.primary}' command.`,
     'default': "Please provide your answers in the format:\n1. answer1\n2. answer2\n..."
   }
   

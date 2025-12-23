@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { marked } from 'marked'
 import Message from './Message'
 import VerificationModal from './VerificationModal'
+import { LANGUAGE_CONFIG } from '../config/language.js'
 
 const ChatInterface = ({
   messages,
@@ -148,12 +149,7 @@ const ChatInterface = ({
     }
   }
 
-  const suggestedCommands = [
-    'Today is a new day',
-    'progress summary',
-    'Next Step',
-    'clear all progress data'
-  ]
+  const suggestedCommands = LANGUAGE_CONFIG.getSuggestedCommands()
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col">

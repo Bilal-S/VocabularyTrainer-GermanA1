@@ -12,6 +12,7 @@ import { useDailyRoutine } from './hooks/useDailyRoutine'
 import { generateMessageId } from './utils/idGenerator'
 import { updateChecker } from './utils/updateChecker'
 import { useSpeechSynthesis } from './hooks/useSpeechSynthesis'
+import { LANGUAGE_CONFIG } from './config/language.js'
 
 const SECTIONS = {
   INTRO: { id: 'intro', name: 'Introduction', color: 'section-intro' },
@@ -193,20 +194,12 @@ function App() {
 This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
 
 ## Available Commands:
-- **"Today is a new day"** (or **"tiand"**) - Start your daily learning routine
-- **"progress summary"** - Display current learning progress
-- **"Next Step"** - Skip to the next exercise
+${LANGUAGE_CONFIG.getCommandsList()}
 
 ## Features:
-- 📚 Structured 7-step daily routine
-- 🎯 Progress tracking and mastery system
-- 💾 Save/load your progress via JSON
-- 📱 Mobile-friendly chat interface
-- 📲 Install as PWA for offline access (Menu ☰ → Install)
-- 🔄 Check for updates manually (Menu ☰ → Check for Updates)
-${isSpeechSupported ? '- 🔊 German pronunciation with speech synthesis' : '- ⚠️ Speech synthesis not supported in this browser'}
+${LANGUAGE_CONFIG.getFeaturesList(isSpeechSupported)}
 
-Type **"Today is a new day"** to begin your German learning journey!`
+Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin your German learning journey!`
        }
        
        setMessages([welcomeMessage])
@@ -259,7 +252,7 @@ Type **"Today is a new day"** to begin your German learning journey!`
     setMessages([{
       id: generateMessageId(),
       type: 'system',
-      content: '✨ All progress data has been cleared. You can start fresh with "Today is a new day"!'
+      content: `✨ All progress data has been cleared. You can start fresh with "${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"!`
     }])
   }
 

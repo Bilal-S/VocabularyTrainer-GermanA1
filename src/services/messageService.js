@@ -1,5 +1,6 @@
 import { generateMessageId } from '../utils/idGenerator.js'
 import { updateChecker } from '../utils/updateChecker.js'
+import { LANGUAGE_CONFIG } from '../config/language.js'
 
 /**
  * Add a system message to the messages array
@@ -19,9 +20,10 @@ export const addSystemMessage = (content, setMessages) => {
 /**
  * Generate welcome message for the application
  * @param {boolean} isPWA - Whether running as PWA
+ * @param {boolean} isSpeechSupported - Whether speech synthesis is supported
  * @returns {string} Welcome message content
  */
-export const generateWelcomeMessage = (isPWA = false) => {
+export const generateWelcomeMessage = (isPWA = false, isSpeechSupported = false) => {
   const updateMessage = isPWA ? `- 🔄 Auto-update notifications for PWA users` : ''
   
   return `# Welcome to A1 German Coach! 🇩🇪
@@ -29,17 +31,10 @@ export const generateWelcomeMessage = (isPWA = false) => {
 This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
 
 ## Available Commands:
-- **"Today is a new day"** - Start your daily learning routine
-- **"progress summary"** - Display current learning progress
-- **"Next Step"** - Skip to the next exercise
-- **"clear all progress data"** - Reset all your progress
+${LANGUAGE_CONFIG.getCommandsList()}
 
 ## Features:
-- 📚 Structured 7-step daily routine
-- 🎯 Progress tracking and mastery system
-- 💾 Save/load your progress via JSON
-- 📱 Mobile-friendly chat interface
-${updateMessage}
+${LANGUAGE_CONFIG.getFeaturesList(isSpeechSupported)}
 
 Type **"Today is a new day"** to begin your German learning journey!`
 }
@@ -231,10 +226,7 @@ Keep up the great work! You're making steady progress with your German learning.
  */
 export const generateUnknownCommandMessage = () => {
   return `I didn't understand that command. Available commands:
-- **"Today is a new day"** (or **"tiand"**) - Start your daily routine
-- **"progress summary"** - Display current learning progress
-- **"Next Step"** - Skip to next exercise
-- **"clear all progress data"** - Reset all progress`
+${LANGUAGE_CONFIG.getCommandsList()}`
 }
 
 /**
@@ -242,7 +234,7 @@ export const generateUnknownCommandMessage = () => {
  * @returns {string} Message prompting to start routine
  */
 export const generateStartRoutineMessage = () => {
-  return 'Please start your daily routine first. Type **"Today is a new day"** to begin.'
+  return `Please start your daily routine first. Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin.`
 }
 
 /**

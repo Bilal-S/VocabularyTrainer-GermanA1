@@ -10,7 +10,7 @@ const validateProgressStructure = (progressData) => {
   for (const [word, data] of Object.entries(progressData)) {
     // Check if data has old single-counter format (reject)
     if (data.correctCount !== undefined || data.incorrectCount !== undefined) {
-      throw new Error(`Invalid progress format for word "${word}": Old single-counter format detected. Please clear all progress data and start fresh with dual-form tracking.`)
+      throw new Error(`Invalid progress format for word "${word}": Old single-counter format detected. Please ${LANGUAGE_CONFIG.commands.clearAllProgress.primary} and start fresh with dual-form tracking.`)
     }
     
     // Validate dual-form structure

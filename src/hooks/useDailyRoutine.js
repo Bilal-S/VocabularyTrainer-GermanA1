@@ -4,6 +4,7 @@ import { generateMessageId } from '../utils/idGenerator'
 import { updateChecker } from '../utils/updateChecker'
 import { getStepConfig, getCurrentSection as getCurrentStepSection, STEPS, STEP_CONFIG } from '../services/stepService'
 import { speak } from '../services/speechSynthesisService'
+import { LANGUAGE_CONFIG } from '../config/language.js'
 
 export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats) => {
   // Get speech settings from state
@@ -98,12 +99,13 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
     return Math.max(0, batchProgress.total - batchProgress.completed)
   }, [currentStep, isBatchMode, currentBatch, batchAnswers, batchProgress])
 
-  const addSystemMessage = useCallback((content) => {
+  const addSystemMessage = useCallback((content, options = {}) => {
     const message = {
       id: generateMessageId(),
       type: 'system',
       content,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      ...options // Include any additional options like autoPopulateInput
     }
     setMessages(prev => [...prev, message])
   }, [setMessages])
@@ -111,11 +113,11 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
   const processCommand = async (command) => {
     const normalizedCommand = command.trim().toLowerCase()
 
-    if (normalizedCommand === 'today is a new day' || normalizedCommand === 'tiand') {
+    if (normalizedCommand === 'today is a new day' || normalizedCommand === 'tiand' || normalizedCommand === 'new day') {
       await startDailyRoutine()
     } else if (normalizedCommand === 'next step') {
       if (currentStep === 0) {
-        addSystemMessage("Please start your daily routine first. Type **\"Today is a new day\"** to begin.")
+        addSystemMessage(`Please start your daily routine first. Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin.`, { autoPopulateInput: LANGUAGE_CONFIG.commands.todayIsNewDay.primary })
       } else {
         await skipToNextStep()
       }
@@ -133,10 +135,7 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
       }
     } else {
       addSystemMessage(`I didn't understand that command. Available commands:
-- **"Today is a new day"** (or **"tiand"**) - Start your daily routine
-- **"progress summary"** - Display current learning progress
-- **"Next Step"** - Skip to next exercise
-- **"clear all progress data"** - Reset all progress`)
+${LANGUAGE_CONFIG.getCommandsList()}`)
     }
   }
 
@@ -183,18 +182,12 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
 This is your personal German vocabulary trainer using only official Goethe-Institut A1 vocabulary.
 
 ## Available Commands:
-- **"Today is a new day"** - Start your daily learning routine
-- **"Next Step"** - Skip to the next exercise
-- **"clear all progress data"** - Reset all your progress
+${LANGUAGE_CONFIG.getCommandsList()}
 
 ## Features:
-- 📚 Structured 7-step daily routine
-- 🎯 Progress tracking and mastery system
-- 💾 Save/load your progress via JSON
-- 📱 Mobile-friendly chat interface
-${updateChecker.isPWA ? '- 🔄 Auto-update notifications for PWA users' : ''}
+${LANGUAGE_CONFIG.getFeaturesList(updateChecker.isPWA)}
 
-Type **"Today is a new day"** to begin your German learning journey!${updateMessage}`
+Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin your German learning journey!${updateMessage}`
     
     setMessages([{
       id: generateMessageId(),
@@ -982,7 +975,7 @@ Please conjugate the following **verbs for the given subjects**:
 
 Great job today! You've made excellent progress with your German learning. 
 
-Type **"Today is a new day"** tomorrow to continue your learning journey!`)
+Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** tomorrow to continue your learning journey!`)
     
     setCurrentStep(0)
     setBatchProgress({ completed: 0, total: 0 })
@@ -1008,7 +1001,7 @@ Type **"Today is a new day"** tomorrow to continue your learning journey!`)
 - **Mistakes made today:** ${sessionStats.mistakesMade}
 
 ${currentStep > 0 && currentStep < 7 ? `### **Current Status:** Step ${currentStep} of 7 - ${STEP_CONFIG[STEPS[currentStep]].name}**` : ''}
-${currentStep === 0 ? '### **Current Status:** Not started - Type "Today is a new day" to begin!' : ''}
+${currentStep === 0 ? `### **Current Status:** Not started - Type "${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}" to begin!` : ''}
 ${currentStep === 7 ? '### **Current Status:** Daily routine complete!' : ''}
 
 Keep up the great work! You're making steady progress with your German learning.`)

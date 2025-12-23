@@ -320,7 +320,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
                         title="Test speech for vocabulary step"
                       >
-                        <SpeechIcon isPlaying={false} />
+                        
                         <span className="text-sm">Test Speech</span>
                       </button>
                     </div>
@@ -350,7 +350,6 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
                         title="Test speech for plural step"
                       >
-                        <SpeechIcon isPlaying={false} />
                         <span className="text-sm">Test Speech</span>
                       </button>
                     </div>
@@ -380,7 +379,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
                         title="Test speech for articles step"
                       >
-                        <SpeechIcon isPlaying={false} />
+                       
                         <span className="text-sm">Test Speech</span>
                       </button>
                     </div>
@@ -410,7 +409,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
                         title="Test speech for translations step"
                       >
-                        <SpeechIcon isPlaying={false} />
+                       
                         <span className="text-sm">Test Speech</span>
                       </button>
                     </div>
@@ -440,7 +439,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onSave }) => {
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center space-x-2"
                         title="Test speech for verbs step"
                       >
-                        <SpeechIcon isPlaying={false} />
+                        
                         <span className="text-sm">Test Speech</span>
                       </button>
                     </div>

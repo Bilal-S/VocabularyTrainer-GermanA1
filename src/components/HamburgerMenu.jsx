@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { deviceDetector } from '../utils/deviceDetector'
 import { updateChecker } from '../utils/updateChecker'
+import { LANGUAGE_CONFIG } from '../config/language.js'
 
 const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInstall, isInstallable, onOpenHelp, onCheckUpdates, onOpenDatabaseInfo }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -17,7 +18,7 @@ const HamburgerMenu = ({ onOpenImport, onExport, onReset, onOpenSettings, onInst
 
   const handleReset = () => {
     setIsOpen(false)
-    if (window.confirm('Are you sure you want to clear all progress data? This cannot be undone.')) {
+    if (window.confirm(`Are you sure you want to ${LANGUAGE_CONFIG.commands.clearAllProgress.primary}? This cannot be undone.`)) {
       onReset()
     }
   }
