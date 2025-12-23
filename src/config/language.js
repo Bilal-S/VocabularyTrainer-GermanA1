@@ -47,7 +47,7 @@ export const LANGUAGE_CONFIG = {
     },
     nextStep: {
       primary: 'Next Step',
-      aliases: ['Skip'],
+      aliases: ['Skip', 'Next'],
       description: 'Skip to the next exercise',
       action: 'skipToNextStep'
     },

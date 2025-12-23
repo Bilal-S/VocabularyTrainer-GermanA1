@@ -67,9 +67,9 @@ const ChatInterface = ({
 
     // Set context-aware loading messages
     const normalizedCommand = command.toLowerCase()
-    if (normalizedCommand.includes('today is a new day')) {
+    if (normalizedCommand.includes('today is a new day') || normalizedCommand.includes('tiand') ) {
       setLoadingMessage('Starting your daily routine...')
-    } else if (normalizedCommand === 'next step') {
+    } else if (normalizedCommand === 'next step' || ormalizedCommand === 'skip' ) {
       setLoadingMessage('Skipping to next step...')
     } else if (normalizedCommand === 'clear all progress data') {
       setLoadingMessage('Clearing all progress data...')

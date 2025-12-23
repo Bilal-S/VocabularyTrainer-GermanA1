@@ -7,6 +7,20 @@ import { speak } from '../services/speechSynthesisService'
 import { LANGUAGE_CONFIG } from '../config/language.js'
 
 export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats) => {
+  // Check if speech synthesis with German voices is supported
+  const hasGermanVoices = () => {
+    try {
+      const synth = window.speechSynthesis
+      if (!synth) return false
+      const voices = synth.getVoices()
+      return voices.some(voice => 
+        voice.lang.startsWith('de-') || voice.lang.startsWith('de_')
+      )
+    } catch (e) {
+      return false
+    }
+  }
+
   // Get speech settings from state
   const getSpeechSettings = () => {
     return {
@@ -115,13 +129,13 @@ export const useDailyRoutine = (state, setMessages, updateProgress, trackSession
 
     if (normalizedCommand === 'today is a new day' || normalizedCommand === 'tiand' || normalizedCommand === 'new day') {
       await startDailyRoutine()
-    } else if (normalizedCommand === 'next step') {
+    } else if (normalizedCommand === 'next step' || normalizedCommand === 'skip' || normalizedCommand === 'next') {
       if (currentStep === 0) {
         addSystemMessage(`Please start your daily routine first. Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin.`, { autoPopulateInput: LANGUAGE_CONFIG.commands.todayIsNewDay.primary })
       } else {
         await skipToNextStep()
       }
-    } else if (normalizedCommand === 'progress summary') {
+    } else if (normalizedCommand === 'progress summary' || normalizedCommand === 'progress') {
       await generateProgressSummary()
     } else if (normalizedCommand === 'redo') {
       await handleRedo()
@@ -187,7 +201,7 @@ This is your personal German vocabulary trainer using only official Goethe-Insti
 ${LANGUAGE_CONFIG.getCommandsList()}
 
 ## Features:
-${LANGUAGE_CONFIG.getFeaturesList(updateChecker.isPWA)}
+${LANGUAGE_CONFIG.getFeaturesList(hasGermanVoices())}
 
 Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin your German learning journey!${updateMessage}`
     
