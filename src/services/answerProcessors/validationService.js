@@ -68,7 +68,7 @@ export class ValidationService {
   
     const normalizeCorrect = (val) =>
       Array.isArray(val)
-        ? val.map((v) => this.normalizeUunlauts(String(v).trim()))
+        ? val.map((v) => this.normalizeUmlauts(String(v).trim()))
         : this.normalizeUmlauts(String(val).trim())
   
     const normalizedCorrect = normalizeCorrect(correctAnswer)
