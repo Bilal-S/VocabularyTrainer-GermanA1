@@ -228,7 +228,7 @@ export class VocabularyManager {
                 subject: subjectObj.display, // Keep display subject for reference
                 cleanSubject: subjectObj.clean, // Store clean subject for validation
                 conjugation: conjugation,
-                word: `${letterData.german}|${randomCleanSubject}`, // Store with subject for progress tracking
+                word: `${letterData.german}|${subjectObj.display}`, // Store with subject for progress tracking
                 originSection: section,
                 originalItemWord: itemWord, // Track original for cleanup
                 hasRandomSubject // Flag if we randomly assigned a subject
@@ -632,7 +632,7 @@ export class VocabularyManager {
         subject: subjectObj.display,
         cleanSubject: subjectObj.clean,
         conjugation: combo.conjugation,
-        word: `${combo.verb}|${subjectObj.clean}` // CRITICAL FIX: Use verb|subject format for progress tracking
+        word: `${combo.verb}|${subjectObj.display}` // CRITICAL FIX: Use verb|subject format for progress tracking
       }
     })
 
