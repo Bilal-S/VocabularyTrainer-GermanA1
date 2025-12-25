@@ -523,6 +523,27 @@ export const useVocabularyState = () => {
     return state.settings
   }
 
+  /**
+   * Directly update the review queue (used for cleanup operations)
+   * @param {Array} cleanedReviewQueue - The cleaned review queue
+   * @returns {Object} - The new state
+   */
+  const updateReviewQueue = (cleanedReviewQueue) => {
+    const newState = {
+      ...state,
+      pools: {
+        ...state.pools,
+        reviewQueue: cleanedReviewQueue
+      },
+      currentSessionStats: {
+        ...state.currentSessionStats,
+        initialReviewQueueSize: cleanedReviewQueue.length
+      }
+    }
+    saveState(newState)
+    return newState
+  }
+
   return {
     state,
     loadState,
@@ -537,6 +558,7 @@ export const useVocabularyState = () => {
     resetSessionStats,
     getCurrentSessionStats,
     updateSettings,
-    getSettings
+    getSettings,
+    updateReviewQueue
   }
 }

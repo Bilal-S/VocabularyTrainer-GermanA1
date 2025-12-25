@@ -69,7 +69,7 @@ const ChatInterface = ({
     const normalizedCommand = command.toLowerCase()
     if (normalizedCommand.includes('today is a new day') || normalizedCommand.includes('tiand') ) {
       setLoadingMessage('Starting your daily routine...')
-    } else if (normalizedCommand === 'next step' || ormalizedCommand === 'skip' ) {
+    } else if (normalizedCommand === 'next step' || normalizedCommand === 'skip' ) {
       setLoadingMessage('Skipping to next step...')
     } else if (normalizedCommand === 'clear all progress data') {
       setLoadingMessage('Clearing all progress data...')

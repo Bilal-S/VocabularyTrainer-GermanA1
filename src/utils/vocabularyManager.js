@@ -196,14 +196,27 @@ export class VocabularyManager {
               
               // CRITICAL FIX: Use the specific subject from verbSubject if available, otherwise random
               let randomCleanSubject
+              let hasRandomSubject = false
+              
               if (verbSubject && verbSubject.subject) {
                 randomCleanSubject = verbSubject.subject
               } else {
                 const cleanSubjects = Object.keys(subjectMapping)
                 randomCleanSubject = cleanSubjects[Math.floor(Math.random() * cleanSubjects.length)]
+                hasRandomSubject = true
               }
               
-              const subjectObj = subjectMapping[randomCleanSubject]
+              // CRITICAL FIX: Ensure we always have a valid subjectObj
+              let subjectObj = subjectMapping[randomCleanSubject]
+              if (!subjectObj) {
+                // Fallback: create subject object if mapping fails
+                subjectObj = {
+                  clean: randomCleanSubject,
+                  display: randomCleanSubject
+                }
+                console.warn(`Subject mapping fallback for: "${randomCleanSubject}"`)
+              }
+              
               const conjugation = letterData.conjugations[randomCleanSubject]
               
               return {
@@ -216,7 +229,9 @@ export class VocabularyManager {
                 cleanSubject: subjectObj.clean, // Store clean subject for validation
                 conjugation: conjugation,
                 word: `${letterData.german}|${randomCleanSubject}`, // Store with subject for progress tracking
-                originSection: section
+                originSection: section,
+                originalItemWord: itemWord, // Track original for cleanup
+                hasRandomSubject // Flag if we randomly assigned a subject
               }
             }
             break
@@ -746,5 +761,95 @@ export class VocabularyManager {
   // Add normalizeAccents method to match what TestHarness expects
   normalizeAccents(text) {
     return validationService.normalizeUmlauts(text)
+  }
+
+  /**
+   * Clean the review queue by removing VERBS items not found in vocabulary data
+   * and updating VERBS items with randomly assigned subjects
+   * @param {Array} originalReviewQueue - The original review queue
+   * @param {Array} generatedBatch - The batch generated from generateReviewBatch
+   * @returns {Array} - The cleaned review queue
+   */
+  cleanReviewQueue(originalReviewQueue, generatedBatch) {
+    if (!originalReviewQueue || originalReviewQueue.length === 0) {
+      return []
+    }
+
+    console.log('Cleaning review queue:', {
+      originalLength: originalReviewQueue.length,
+      batchLength: generatedBatch.length
+    })
+
+    const allLetters = getAvailableLetters()
+    const itemsToUpdate = new Map()
+    const verbsToRemove = new Set()
+
+    // Analyze generated batch to find VERBS items that need updates
+    generatedBatch.forEach(batchItem => {
+      if (batchItem.originSection === 'VERBS' && batchItem.hasRandomSubject && batchItem.originalItemWord !== undefined) {
+        // Mark this VERBS item for update - replace with verb|subject format
+        const newFormat = batchItem.word // This is already in format "verb|subject"
+        itemsToUpdate.set(batchItem.originalItemWord, {
+          oldFormat: batchItem.originalItemWord,
+          newFormat: newFormat,
+          section: 'VERBS'
+        })
+        console.log(`Marking VERBS item for update: "${batchItem.originalItemWord}" -> "${newFormat}"`)
+      }
+    })
+
+    // CRITICAL FIX: Only remove VERBS that don't exist in vocabulary data
+    // For other sections, keep all items even if they failed to generate
+    originalReviewQueue.forEach((item, index) => {
+      const itemWord = typeof item === 'string' ? item : item.word
+      const itemSection = typeof item === 'string' ? 'VOCABULARY' : item.section
+
+      // Only check VERBS for removal
+      if (itemSection === 'VERBS') {
+        // Extract verb part (before pipe if exists)
+        const verb = itemWord.includes('|') ? itemWord.split('|')[0] : itemWord
+        
+        // Check if verb exists in vocabulary data
+        const verbExists = this.findWordInLetters(verb, allLetters)
+        
+        // Remove if: 1) not found anywhere, OR 2) found but not a verb type (incorrectly categorized as VERBS)
+        if (verbExists?.type !== 'verb') {
+          verbsToRemove.add(itemWord)
+          console.log(`Marking VERBS item for removal (${!verbExists ? 'not found' : 'not a verb type'}): "${itemWord}"`)
+        }
+      }
+    })
+
+    // Build the cleaned review queue
+    const cleanedQueue = originalReviewQueue.map((item, index) => {
+      const itemWord = typeof item === 'string' ? item : item.word
+      const itemSection = typeof item === 'string' ? 'VOCABULARY' : item.section
+
+      // Only remove VERBS that don't exist in data
+      if (itemSection === 'VERBS' && verbsToRemove.has(itemWord)) {
+        return null
+      }
+
+      // If this item should be updated (VERBS with random subject)
+      if (itemsToUpdate.has(itemWord)) {
+        const update = itemsToUpdate.get(itemWord)
+        return {
+          word: update.newFormat,
+          section: update.section
+        }
+      }
+
+      // Keep the item as-is (VOCABULARY, PLURAL, ARTICLES, TRANSLATIONS all stay)
+      return item
+    }).filter(Boolean) // Remove nulls
+
+    console.log('Review queue cleanup complete:', {
+      originalLength: originalReviewQueue.length,
+      cleanedLength: cleanedQueue.length,
+      verbsRemoved: verbsToRemove.size,
+      verbsUpdated: itemsToUpdate.size
+    })
+
+    return cleanedQueue
   }
 }

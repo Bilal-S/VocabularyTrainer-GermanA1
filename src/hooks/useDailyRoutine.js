@@ -6,7 +6,7 @@ import { getStepConfig, getCurrentSection as getCurrentStepSection, STEPS, STEP_
 import { speak } from '../services/speechSynthesisService'
 import { LANGUAGE_CONFIG } from '../config/language.js'
 
-export const useDailyRoutine = (state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats) => {
+export const useDailyRoutine = (state, setMessages, updateProgress, updateReviewQueue, trackSessionLearning, getCurrentSessionStats, resetSessionStats) => {
   // Check if speech synthesis with German voices is supported
   const hasGermanVoices = () => {
     try {
@@ -254,12 +254,19 @@ Type **"${LANGUAGE_CONFIG.commands.todayIsNewDay.primary}"** to begin your Germa
     // Generate review batch with configurable batch size
     const reviewBatchSize = Math.min(state.settings.maxReviewBatchSize, state.pools.reviewQueue.length)
     const reviewBatch = vocabManager.generateReviewBatch(state.pools.reviewQueue, reviewBatchSize)
+    
+    // CRITICAL FIX: Clean up review queue - remove items not found and update VERBS items with subjects
+    const cleanedReviewQueue = vocabManager.cleanReviewQueue(state.pools.reviewQueue, reviewBatch)
+    
+    // Update the state with cleaned review queue (this will be persisted)
+    updateReviewQueue(cleanedReviewQueue)
+    
     setCurrentExercise(reviewBatch[0])
     setBatchProgress({ completed: 1, total: reviewBatch.length }) // Start with 1 since we're on question 1
       
     const currentReview = reviewBatch[0]
     addSystemMessage(`## Step 1: Review Previous Mistakes
-We'll review ${state.pools.reviewQueue.length} items from your review queue.
+We'll review ${reviewBatch.length} items from your review queue.
 
 **Question 1 of ${reviewBatch.length}: From ${currentReview?.originSection || 'Unknown'}**
 ---

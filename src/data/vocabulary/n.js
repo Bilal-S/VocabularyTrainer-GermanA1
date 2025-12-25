@@ -11,7 +11,7 @@ export const letterN = {
   verbs: [
     {"to take": ["nehmen", "nehme", "nimmst", "nimmt", "nimmt", "nimmt", "nehmen", "nehmt", "nehmen", "nehmen"]},
     {"to name": ["nennen", "nenne", "nennst", "nennt", "nennt", "nennt", "nennen", "nennt", "nennen", "nennen"]},
-    {"to use": ["nutzen", "nutze", "nutzt", "nutzt", "nutzt", "nutzt", "nutzen", "nutzt", "nutzen", "nutzen"]}
+    {"to use": ["benutzen", "benutze", "benutzt", "benutzt", "benutzt", "benutzt", "benutzen", "benutzt", "benutzen", "benutzen"]}
   ],
   examples: {
     nominative: [

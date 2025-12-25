@@ -48,7 +48,8 @@ function App() {
     getCurrentSessionStats,
     updateSettings,
     getSettings,
-    resetSessionStats
+    resetSessionStats,
+    updateReviewQueue
   } = useVocabularyState()
 
   const {
@@ -61,7 +62,7 @@ function App() {
     getRemainingQuestions,
     isCompleting,
     speakGerman
-  } = useDailyRoutine(state, setMessages, updateProgress, trackSessionLearning, getCurrentSessionStats, resetSessionStats)
+  } = useDailyRoutine(state, setMessages, updateProgress, updateReviewQueue, trackSessionLearning, getCurrentSessionStats, resetSessionStats)
 
   // Speech synthesis hook
   const { speak } = useSpeechSynthesis(state.settings?.speechSettings || {})
